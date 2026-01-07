@@ -14,6 +14,12 @@ export default function Login() {
 
   const finalEmail = `${emailId}@${isCustomDomain? customDomain : domain}`;
 
+  const isFormValid =
+    name.trim().length > 0 &&
+    nickname.trim().length > 0 &&
+    emailId.trim().length > 0 &&
+    (isCustomDomain ? customDomain.trim().length > 0 : true);
+
   const onSubmit = (e) => {
     e.preventDefault();
     //TODO: 가입 API 붙이기
@@ -80,7 +86,8 @@ export default function Login() {
             )}
           {/* 가입 버튼 */}
           <button type="submit"
-          className="w-full h-11 rounded-xl border outline-none ">
+          disabled = {!isFormValid}
+          className={["w-full h-11 rounded-xl border outline-none", isFormValid ? "bg-gray-900 text-white cursor-pointer" : "bg-gray-200 text-gray-400 cursor-not-allowed"].join(" ")}>
             가입하기
           </button>
         </form>
