@@ -1,7 +1,8 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {useState} from "react";
 
 export default function Login() {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [nickname, setNickname] = useState("");
   const [emailId, setEmailId] = useState("");
@@ -22,7 +23,13 @@ export default function Login() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    //TODO: 가입 API 붙이기
+    if(!isFormValid) return;
+    try{
+      //TODO: 가입 API 붙이기
+      navigate("/home");
+    } catch(err){
+      console.error(err);
+    }
     console.log({name, nickname, finalEmail});
   }
   return (
