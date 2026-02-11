@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import logo from "../../assets/logo2.png";
-import discord_logo from "../../assets/discord.png";
+import logo from "../../assets/png/logo2.png";
+import discord_logo from "../../assets/png/discord.png";
 
 export default function Login_Landing() {
   return (
