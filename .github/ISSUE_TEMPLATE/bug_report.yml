@@ -1,0 +1,101 @@
+name: "🐛 Bug Report"
+description: "버그나 오류를 신고합니다."
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        버그를 발견해주셔서 감사합니다! 아래 내용을 최대한 자세히 작성해주세요.
+
+  - type: dropdown
+    id: bug-type
+    attributes:
+      label: 버그 유형
+      description: 버그 유형을 선택해주세요.
+      options:
+        - UI/스타일 깨짐
+        - 기능 오동작
+        - API 연동 오류
+        - 라우팅 문제
+        - 상태 관리 오류
+        - 빌드/배포 오류
+        - 성능 문제
+        - 기타
+    validations:
+      required: true
+
+  - type: dropdown
+    id: affected-area
+    attributes:
+      label: 영향받는 영역
+      options:
+        - 특정 페이지
+        - 특정 컴포넌트
+        - 전체 앱
+        - 모바일 환경
+        - 데스크톱 환경
+        - 기타
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 버그 설명
+      description: 발생한 버그를 간단히 설명해주세요.
+      placeholder: "예: 출석 버튼 클릭 시 페이지가 새로고침됨"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: 재현 방법
+      description: 버그를 재현하는 단계를 작성해주세요.
+      placeholder: |
+        1. 메인 페이지 접속
+        2. 출석하기 버튼 클릭
+        3. 페이지 새로고침 발생
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: 예상 동작
+      description: 정상적으로 동작했다면 어떻게 되어야 하나요?
+      placeholder: "예: 출석 완료 메시지가 표시되고 캘린더에 체크 표시"
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: 스크린샷
+      description: 버그 화면을 캡처해서 첨부해주세요.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: 심각도
+      options:
+        - 🔴 Critical - 앱 사용 불가
+        - 🟠 High - 주요 기능 장애
+        - 🟡 Medium - 일부 기능 장애
+        - 🟢 Low - 사소한 문제
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: 환경 정보
+      placeholder: |
+        - 브라우저: Chrome 120
+        - OS: macOS / Windows / iOS / Android
+        - 화면 크기: 데스크톱 / 모바일
+    validations:
+      required: false
