@@ -1,0 +1,74 @@
+name: "✨ Feature Request"
+description: "새로운 기능 추가를 요청합니다."
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        새로운 기능 추가 요청입니다. 아래 내용을 작성해주세요.
+
+  - type: dropdown
+    id: feature-type
+    attributes:
+      label: 기능 유형
+      description: 추가할 기능 유형을 선택해주세요.
+      options:
+        - 페이지 (Page)
+        - 컴포넌트 (Component)
+        - 훅 (Hook)
+        - 유틸리티 (Utility)
+        - API 연동
+        - 스타일/UI
+        - 기타
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 설명
+      description: 추가할 기능에 대해 설명해주세요.
+      placeholder: |
+        예: 출석 체크 페이지 추가
+        - 캘린더로 출석 현황 표시
+        - 오늘 출석하기 버튼
+        - 연속 출석 일수 표시
+    validations:
+      required: true
+
+  - type: textarea
+    id: reason
+    attributes:
+      label: 필요한 이유
+      description: 이 기능이 왜 필요한지 설명해주세요.
+      placeholder: "예: 사용자가 매일 출석 체크를 할 수 있어야 합니다."
+    validations:
+      required: true
+
+  - type: textarea
+    id: design
+    attributes:
+      label: 디자인/UI 참고
+      description: 참고할 디자인이나 와이어프레임이 있다면 첨부해주세요.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 우선순위
+      options:
+        - 🔴 High
+        - 🟡 Medium
+        - 🟢 Low
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: 추가 정보
+      description: 참고할 만한 추가 정보가 있다면 작성해주세요.
+    validations:
+      required: false

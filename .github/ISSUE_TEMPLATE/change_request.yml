@@ -1,0 +1,88 @@
+name: "🔧 Change Request"
+description: "기존 기능의 변경 또는 삭제를 요청합니다."
+title: "[Change]: "
+labels: ["change"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        기존 기능 변경/삭제 요청입니다. 아래 내용을 작성해주세요.
+
+  - type: dropdown
+    id: change-type
+    attributes:
+      label: 변경 유형
+      description: 변경 유형을 선택해주세요.
+      options:
+        - ✏️ 수정 (Modify)
+        - ➖ 삭제 (Delete)
+        - ♻️ 리팩토링 (Refactor)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: target-type
+    attributes:
+      label: 대상 유형
+      description: 변경할 대상 유형을 선택해주세요.
+      options:
+        - 페이지 (Page)
+        - 컴포넌트 (Component)
+        - 훅 (Hook)
+        - 유틸리티 (Utility)
+        - API 연동
+        - 스타일/UI
+        - 기타
+    validations:
+      required: true
+
+  - type: input
+    id: target-name
+    attributes:
+      label: 대상
+      description: 변경할 파일이나 컴포넌트 이름을 입력해주세요.
+      placeholder: "예: AttendancePage.jsx 또는 CalendarComponent"
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-state
+    attributes:
+      label: 현재 상태
+      description: 현재 동작이나 상태를 설명해주세요.
+      placeholder: |
+        - 현재 캘린더에 출석 표시가 안 됨
+        - 날짜 클릭 이벤트 없음
+    validations:
+      required: true
+
+  - type: textarea
+    id: desired-state
+    attributes:
+      label: 변경 후 상태
+      description: 변경 후 원하는 상태를 작성해주세요.
+      placeholder: |
+        - 출석한 날짜에 체크 표시
+        - 날짜 클릭 시 상세 정보 표시
+    validations:
+      required: true
+
+  - type: textarea
+    id: reason
+    attributes:
+      label: 변경 이유
+      description: 변경이 필요한 이유를 설명해주세요.
+      placeholder: "예: UX 개선을 위해 출석 현황을 시각적으로 표시해야 함"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 우선순위
+      options:
+        - 🔴 High
+        - 🟡 Medium
+        - 🟢 Low
+    validations:
+      required: true

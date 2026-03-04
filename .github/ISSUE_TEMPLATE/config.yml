@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📚 README 확인
+    url: https://github.com/Q-Check23/FrontEnd#readme
+    about: 먼저 README를 확인해주세요.
+  - name: 📖 React 문서
+    url: https://react.dev
+    about: React 공식 문서
