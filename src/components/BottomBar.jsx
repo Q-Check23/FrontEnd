@@ -26,7 +26,7 @@ export default function BottomBar() {
 
       <div
         className="flex flex-col items-center cursor-pointer"
-        onClick={() => navigate("/meeting")}
+        onClick={() => navigate("/event-manage")}
       >
         <img src={meeting} className="w-6 h-6" />
         <span className="text-xs mt-1">모임</span>

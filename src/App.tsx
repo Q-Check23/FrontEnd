@@ -22,9 +22,6 @@ import Profile from "./pages/Profile/Profile"
 
 import Layout from "./components/Layout"
 
-import { ThemeProvider } from "./context/ThemeContext"
-import { ToastProvider } from "./context/ToastContext"
-
 export default function App() {
   return (
     <ThemeProvider>

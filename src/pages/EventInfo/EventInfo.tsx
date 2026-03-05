@@ -52,7 +52,7 @@ export default function EventInfo() {
 
   const handleViewQRCode = () => {
     // Navigate to QR code check-in page
-    navigate("/check-in-qr");
+    navigate("/qr-checkin");
   };
 
   return (
