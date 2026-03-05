@@ -39,7 +39,7 @@ jobs:
           cp -r dist/* /var/www/qcheck/
 
       - name: Reload Nginx
-        run: nginx -s reload
+        run: /usr/sbin/nginx -s reload
 
       - name: Health check
         run: |
