@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import BottomBar from "../../components/BottomBar";
 
 interface EventCardProps {
@@ -284,14 +285,15 @@ const DetailEventCard = ({
 };
 
 export default function EventManage() {
+  const navigate = useNavigate();
   const [filterOpen, setFilterOpen] = useState(false);
 
   const handleDetailClick = (eventId: string) => {
-    console.log("View details for event:", eventId);
+    navigate("/event-info");
   };
 
   const handleReportClick = (eventId: string) => {
-    console.log("View report for event:", eventId);
+    navigate("/event-analysis");
   };
 
   return (

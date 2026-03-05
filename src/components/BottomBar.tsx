@@ -33,7 +33,7 @@ export default function BottomBar({
     {
       id: "activity",
       label: "모임",
-      path: "/activity",
+      path: "/event-manage",
       icon: ActivityIcon,
     },
     {
