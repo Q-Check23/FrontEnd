@@ -30,17 +30,12 @@ jobs:
 
       - name: Deploy to Nginx
         run: |
-          # 빌드 파일 배포 (/var/www/qcheck)
-          sudo mkdir -p /var/www/qcheck
-          sudo rm -rf /var/www/qcheck/*
-          sudo cp -r dist/* /var/www/qcheck/
-          
-          # 권한 설정
-          sudo chown -R www-data:www-data /var/www/qcheck
-          sudo chmod -R 755 /var/www/qcheck
+          # Deploy build files (requires pre-configured directory permissions)
+          rm -rf /var/www/qcheck/*
+          cp -r dist/* /var/www/qcheck/
 
       - name: Reload Nginx
-        run: sudo nginx -t && sudo systemctl reload nginx
+        run: sudo /bin/systemctl reload nginx
 
       - name: Health check
         run: |
