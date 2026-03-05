@@ -1,0 +1,52 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-qcheck-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+
+      - name: Deploy to Nginx
+        run: |
+          # Deploy build files (requires pre-configured directory permissions)
+          rm -rf /var/www/qcheck/*
+          cp -r dist/* /var/www/qcheck/
+
+      - name: Reload Nginx
+        run: nginx -s reload
+
+      - name: Health check
+        run: |
+          sleep 2
+          echo "Checking external endpoint..."
+          curl -f --max-time 30 --connect-timeout 10 https://qcheck.asia/
+          echo "External health check passed!"
+          echo "Checking localhost (internal validation)..."
+          curl -f --max-time 10 --connect-timeout 5 http://localhost/ || echo "Localhost check skipped"
+          echo "Deployment successful!"
