@@ -4,7 +4,7 @@ import BottomBar from "./BottomBar"
 export default function Layout() {
 
   return (
-    <div className="relative min-h-screen pb-20">
+    <div className="relative h-full">
 
       {/* 페이지 영역 */}
       <Outlet />
