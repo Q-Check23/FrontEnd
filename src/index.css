@@ -1,3 +1,4 @@
+@config "../tailwind.config.js";
 @import "tailwindcss";
 
 /* 1) Reset */
@@ -12,7 +13,7 @@ body {
   background: #e9e9e9; /* 바깥(캔버스) 배경 */
   display: grid;
   place-items: center; /* 가운데 정렬 */
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  font-family: Pretendard, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
 }
 
 /* 2) App frame (390x844) */
@@ -68,3 +69,23 @@ button, input {
   color: #000;
 }
 
+@layer utilities {
+  .t-placeholder {
+    @apply placeholder:font-sans placeholder:text-ui14 placeholder:font-ui500 placeholder:text-ui-grayC0;
+  }
+  .t-strong {
+    @apply font-sans text-ui14 font-ui500 text-ui-black text-center;
+  }
+  .t-btn {
+    @apply font-sans text-ui16 font-ui600 text-ui-white;
+  }
+  .t-title-sm {
+    @apply font-sans text-ui16 font-ui600 text-ui-black;
+  }
+  .t-title-md {
+    @apply font-sans text-ui18 font-ui500 text-ui-black text-center tracking-[0];
+  }
+  .t-title-lg {
+    @apply font-sans text-ui24 font-ui500 text-ui-black text-center tracking-[0];
+  }
+}
