@@ -6,6 +6,10 @@ on:
       - main
   workflow_dispatch:
 
+concurrency:
+  group: deploy-qcheck-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-and-deploy:
     runs-on: self-hosted
@@ -35,10 +39,14 @@ jobs:
           cp -r dist/* /var/www/qcheck/
 
       - name: Reload Nginx
-        run: sudo /bin/systemctl reload nginx
+        run: nginx -s reload
 
       - name: Health check
         run: |
           sleep 2
-          curl -f https://qcheck.asia/ || curl -f http://localhost/ || exit 1
+          echo "Checking external endpoint..."
+          curl -f --max-time 30 --connect-timeout 10 https://qcheck.asia/
+          echo "External health check passed!"
+          echo "Checking localhost (internal validation)..."
+          curl -f --max-time 10 --connect-timeout 5 http://localhost/ || echo "Localhost check skipped"
           echo "Deployment successful!"
