@@ -252,7 +252,7 @@ export default function GroupDetail() {
       </div>
 
       {/* Bottom Navigation */}
-      <BottomBar activeItem="home" />
+      <BottomBar activeItem="moim" />
     </div>
   );
 }

@@ -18,7 +18,7 @@ import Login_Landing from "./pages/Landing/Login-Landing"
 import Login from "./pages/Login/Login"
 import Home from "./pages/Home/Home"
 import Meeting from "./pages/Meeting/Meeting"
-import Profile from "./pages/Profile/Profile"
+import Profile from "./pages/Profile/ProfilePage"
 import GroupDetail from "./pages/GroupDetail/GroupDetail";
 
 import Layout from "./components/Layout"

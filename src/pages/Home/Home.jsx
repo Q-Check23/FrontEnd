@@ -2,6 +2,7 @@ import Calendar from "react-calendar";
 import { useState } from "react";
 import chevronUp from "../../assets/svg/ChevronUp.svg";
 import search from "../../assets/svg/Search.svg";
+import BottomBar from "../../components/BottomBar";
 
 export default function Home() {
   const [open, setOpen] = useState(false);
@@ -141,7 +142,7 @@ export default function Home() {
         </div>
 
       </div>
-
+             <BottomBar activeItem="home" />
     </div>
   );
 }

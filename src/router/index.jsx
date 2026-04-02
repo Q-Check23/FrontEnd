@@ -4,7 +4,7 @@ import Home from "../pages/Home/Home"
 import Landing from "../pages/Landing/Landing"
 import Login from "../pages/Login/Login"
 import Meeting from "../pages/Meeting/Meeting"
-import Profile from "../pages/Profile/Profile"
+import Profile from "../pages/Profile/ProfilePage"
 
 export const router = createBrowserRouter([
   {
