@@ -19,6 +19,7 @@ import Login from "./pages/Login/Login"
 import Home from "./pages/Home/Home"
 import Meeting from "./pages/Meeting/Meeting"
 import Profile from "./pages/Profile/Profile"
+import GroupDetail from "./pages/GroupDetail/GroupDetail";
 
 import Layout from "./components/Layout"
 
@@ -41,7 +42,7 @@ export default function App() {
               <Route path="/qr-checkin" element={<QRCheckIn/>}></Route>
               <Route path="/event-manage" element={<EventManage/>}></Route>
               <Route path="/event-analysis" element={<EventAnalysis/>}></Route>
-              
+              <Route path="/group-detail" element={<GroupDetail />} />
 
               {/* BottomBar 없는 페이지 */}
               <Route path="/" element={<Landing />} />
