@@ -1,10 +1,8 @@
 import { useState } from "react";
 import BottomBar from "../../components/BottomBar";
-
-type TabType = "qr" | "dashboard" | "participants";
+import EventManageTabs from "../../components/EventManageTabs";
 
 export default function QRInfo() {
-  const [activeTab, setActiveTab] = useState<TabType>("qr");
   const [copied, setCopied] = useState(false);
 
   const registrationUrl = "https://www.qcheck.com";
@@ -39,33 +37,7 @@ export default function QRInfo() {
         <h1 className="text-2xl font-medium text-black">KUIT</h1>
       </div>
 
-      {/* Tabs */}
-      <div className="flex items-center border-b border-t border-[#c0c0c0]">
-        <button
-          onClick={() => setActiveTab("qr")}
-          className={`flex-1 h-11 text-center font-medium text-lg px-6 py-2 border-b-[0.5px] border-[#c0c0c0] transition-colors ${
-            activeTab === "qr" ? "text-[#649f76]" : "text-black"
-          }`}
-        >
-          등록 QR 정보
-        </button>
-        <button
-          onClick={() => setActiveTab("dashboard")}
-          className={`flex-1 h-11 text-center font-medium text-lg px-6 py-2 border-b-[0.5px] border-[#c0c0c0] transition-colors ${
-            activeTab === "dashboard" ? "text-[#649f76]" : "text-black"
-          }`}
-        >
-          대시보드
-        </button>
-        <button
-          onClick={() => setActiveTab("participants")}
-          className={`flex-1 h-11 text-center font-medium text-lg px-6 py-2 border-b-[0.5px] border-[#c0c0c0] transition-colors ${
-            activeTab === "participants" ? "text-[#649f76]" : "text-black"
-          }`}
-        >
-          참가자 목록
-        </button>
-      </div>
+      <EventManageTabs activeTab="qr" />
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto bg-white px-4 py-6">

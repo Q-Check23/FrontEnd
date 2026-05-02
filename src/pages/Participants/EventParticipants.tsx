@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import BottomBar from "../../components/BottomBar";
+import EventManageTabs from "../../components/EventManageTabs";
 
 type ParticipantStatus = "attended" | "waiting" | "absent";
 
@@ -12,12 +12,7 @@ interface Participant {
   avatar?: string;
 }
 
-type TabType = "qr" | "dashboard" | "participants";
-
 export default function EventParticipants() {
-  const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<TabType>("participants");
-
   // Mock participant data
   const [participants] = useState<Participant[]>([
     {
@@ -158,39 +153,7 @@ export default function EventParticipants() {
         <h1 className="text-2xl font-medium text-black">KUIT</h1>
       </div>
 
-      {/* Tabs */}
-      <div className="flex items-center border-t border-b border-[#c0c0c0]">
-        <button
-          onClick={() => setActiveTab("qr")}
-          className={`flex-1 h-11 text-center font-medium text-lg transition-colors ${
-            activeTab === "qr"
-              ? "text-black border-b-2 border-black"
-              : "text-[#c0c0c0] text-black"
-          }`}
-        >
-          등록 QR 링크
-        </button>
-        <button
-          onClick={() => setActiveTab("dashboard")}
-          className={`flex-1 h-11 text-center font-medium text-lg transition-colors ${
-            activeTab === "dashboard"
-              ? "text-black border-b-2 border-black"
-              : "text-[#c0c0c0] text-black"
-          }`}
-        >
-          대시보드
-        </button>
-        <button
-          onClick={() => setActiveTab("participants")}
-          className={`flex-1 h-11 text-center font-medium text-lg transition-colors ${
-            activeTab === "participants"
-              ? "text-[#649f76]"
-              : "text-black"
-          }`}
-        >
-          참가자 목록
-        </button>
-      </div>
+      <EventManageTabs activeTab="participants" />
 
       {/* Content */}
       <div className="flex-1 bg-[#f9f9f9] overflow-y-auto">
