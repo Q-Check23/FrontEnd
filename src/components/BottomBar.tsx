@@ -3,9 +3,14 @@ import home from "../assets/svg/Home.svg"
 import meeting from "../assets/svg/Network.svg"
 import profile from "../assets/svg/Person.svg"
 
-export default function BottomBar({ activeItem }: { activeItem?: "home" | "moim" | "profile" }) {
+export default function BottomBar({
+  activeItem,
+}: {
+  activeItem?: "home" | "moim" | "profile" | "activity";
+}) {
 
   const navigate = useNavigate()
+  const isMeetingActive = activeItem === "moim" || activeItem === "activity"
 
   return (
     <div className="
@@ -28,8 +33,8 @@ export default function BottomBar({ activeItem }: { activeItem?: "home" | "moim"
         className="flex flex-col items-center cursor-pointer"
         onClick={() => navigate("/group-detail")}
       >
-        <img src={meeting} className="w-6 h-6" style={{ opacity: activeItem === "moim" ? 1 : 0.4 }} />
-        <span className="text-xs mt-1" style={{ color: activeItem === "moim" ? "#702f95" : "#888888", fontWeight: activeItem === "moim" ? 600 : 400 }}>모임</span>
+        <img src={meeting} className="w-6 h-6" style={{ opacity: isMeetingActive ? 1 : 0.4 }} />
+        <span className="text-xs mt-1" style={{ color: isMeetingActive ? "#702f95" : "#888888", fontWeight: isMeetingActive ? 600 : 400 }}>모임</span>
       </div>
 
       <div

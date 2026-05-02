@@ -1,12 +1,17 @@
-import { useNavigate } from "react-router-dom";
-import {useState} from "react";
+import { useContext, useState } from "react";
+import { checkNicknameAvailability } from "../../api/auth";
+import { ToastContext } from "../../context/ToastContext";
 
 export default function Login() {
-  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [nickname, setNickname] = useState("");
   const [emailId, setEmailId] = useState("");
   const [domain, setDomain] = useState("gmail.com");
+  const [isCheckingNickname, setIsCheckingNickname] = useState(false);
+  const [checkedNickname, setCheckedNickname] = useState("");
+  const [nicknameStatus, setNicknameStatus] = useState("idle");
+  const [nicknameMessage, setNicknameMessage] = useState("");
+  const toast = useContext(ToastContext);
 
   const domains = ["직접입력", "gmail.com", "naver.com", "daum.net", "kakao.com"];
 
@@ -21,20 +26,85 @@ export default function Login() {
     emailId.trim().length > 0 &&
     (isCustomDomain ? customDomain.trim().length > 0 : true);
 
+  const isNicknameAvailable =
+    nicknameStatus === "available" && checkedNickname === nickname.trim();
+
+  const resetNicknameCheck = (nextNickname) => {
+    setNickname(nextNickname);
+    if (nextNickname.trim() !== checkedNickname) {
+      setNicknameStatus("idle");
+      setNicknameMessage("");
+    }
+  };
+
+  const handleNicknameCheck = async () => {
+    const trimmedNickname = nickname.trim();
+
+    if (!trimmedNickname) {
+      setNicknameStatus("error");
+      setNicknameMessage("닉네임을 먼저 입력해주세요.");
+      return;
+    }
+
+    setIsCheckingNickname(true);
+    setNicknameStatus("idle");
+    setNicknameMessage("");
+
+    try {
+      const response = await checkNicknameAvailability(trimmedNickname);
+      setCheckedNickname(trimmedNickname);
+
+      if (response.available) {
+        setNicknameStatus("available");
+        setNicknameMessage("사용 가능한 닉네임입니다.");
+        toast?.push("닉네임을 사용할 수 있습니다.");
+        return;
+      }
+
+      setNicknameStatus("taken");
+      setNicknameMessage("이미 사용 중인 닉네임입니다.");
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "닉네임 확인에 실패했습니다.";
+      setNicknameStatus("error");
+      setNicknameMessage(message);
+      toast?.push(message);
+    } finally {
+      setIsCheckingNickname(false);
+    }
+  };
+
   const onSubmit = (e) => {
     e.preventDefault();
-    if(!isFormValid) return;
-    try{
-      //TODO: 가입 API 붙이기
-      navigate("/home");
-    } catch(err){
-      console.error(err);
+
+    if (!isFormValid) {
+      return;
     }
-    console.log({name, nickname, finalEmail});
-  }
+
+    if (!isNicknameAvailable) {
+      toast?.push("회원가입 전 닉네임 중복 확인이 필요합니다.");
+      return;
+    }
+
+    toast?.push("Discord OAuth 연동 전까지는 회원가입 완료를 진행할 수 없습니다.");
+    console.log({ name, nickname, finalEmail });
+  };
+
+  const nicknameMessageColor =
+    nicknameStatus === "available"
+      ? "text-[#009a49]"
+      : nicknameStatus === "taken" || nicknameStatus === "error"
+        ? "text-[#d93025]"
+        : "text-gray-500";
+
   return (
     <div className="h-full w-full flex flex-col items-center justify-start gap-16">
-        <h1 className="text-2xl font-bold self-start mt-10 ml-10">회원가입</h1>
+        <div className="self-start mt-10 ml-10">
+          <h1 className="text-2xl font-bold">회원가입</h1>
+          <p className="mt-2 text-sm text-gray-500">
+            현재는 닉네임 중복 확인만 먼저 연동되어 있습니다.
+          </p>
+        </div>
       
       <div className="h-full w-full flex flex-col p-5">
         <form onSubmit={onSubmit} className="flex flex-col gap-5">
@@ -51,12 +121,25 @@ export default function Login() {
 
           {/* 닉네임 */}
            <div>
-            <input
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
-            placeholder="닉네임"
-            className="w-full h-11 rounded-xl border border-gray-200 outline-none focus:border-gray-400 p-5"
-            />
+            <div className="flex items-center gap-2">
+              <input
+                value={nickname}
+                onChange={(e) => resetNicknameCheck(e.target.value)}
+                placeholder="닉네임"
+                className="flex-1 h-11 rounded-xl border border-gray-200 outline-none focus:border-gray-400 px-5"
+              />
+              <button
+                type="button"
+                onClick={handleNicknameCheck}
+                disabled={isCheckingNickname}
+                className="shrink-0 h-11 rounded-xl border border-gray-900 px-4 text-sm font-medium text-gray-900 disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-400"
+              >
+                {isCheckingNickname ? "확인 중" : "중복 확인"}
+              </button>
+            </div>
+            <p className={`text-xs text-left pl-3 pt-2 ${nicknameMessageColor}`}>
+              {nicknameMessage || "회원가입 전 닉네임 중복 확인을 진행해주세요."}
+            </p>
           </div>
 
           {/* 이메일 */}
@@ -95,7 +178,7 @@ export default function Login() {
           <button type="submit"
           disabled = {!isFormValid}
           className={["w-full h-11 rounded-xl border outline-none", isFormValid ? "bg-gray-900 text-white cursor-pointer" : "bg-gray-200 text-gray-400 cursor-not-allowed"].join(" ")}>
-            가입하기
+            OAuth 연동 후 가입 가능
           </button>
         </form>
       </div>
