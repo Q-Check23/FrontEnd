@@ -267,6 +267,13 @@ export default function EventInfo() {
                 >
                   참가자 목록 보기
                 </button>
+                <button
+                  type="button"
+                  onClick={() => navigate(`/qr-checkin?eventId=${eventDetail.eventId}`)}
+                  className="rounded-xl border border-[#d9d9d9] px-4 py-2 text-sm font-medium text-[#111111]"
+                >
+                  체크인 화면 보기
+                </button>
               </div>
 
               <div className="mt-5 flex items-center justify-between gap-3">
