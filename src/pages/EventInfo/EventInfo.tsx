@@ -259,7 +259,17 @@ export default function EventInfo() {
 
           <div className="px-5 pt-4">
             <div className="rounded-3xl bg-white px-5 py-5 shadow-[0_1px_4px_rgba(0,0,0,0.05)]">
-              <div className="flex items-center justify-between gap-3">
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => navigate(`/participants?eventId=${eventDetail.eventId}`)}
+                  className="rounded-xl border border-[#d9d9d9] px-4 py-2 text-sm font-medium text-[#111111]"
+                >
+                  참가자 목록 보기
+                </button>
+              </div>
+
+              <div className="mt-5 flex items-center justify-between gap-3">
                 <div>
                   <h3 className="text-lg font-bold text-[#111111]">행사 수정</h3>
                   <p className="mt-1 text-sm text-[#808080]">

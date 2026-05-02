@@ -94,6 +94,34 @@ export interface EventDetail {
   }>;
 }
 
+interface RegistrationAnswerResponse {
+  fieldId: number;
+  label: string | null;
+  value: string | null;
+}
+
+interface EventRegistrationResponse {
+  registrationId: number;
+  userId: number;
+  username: string | null;
+  status: string | null;
+  qrToken: string | null;
+  answers: RegistrationAnswerResponse[] | null;
+}
+
+export interface EventRegistration {
+  registrationId: number;
+  userId: number;
+  username: string;
+  status: string;
+  qrToken: string;
+  answers: Array<{
+    fieldId: number;
+    label: string;
+    value: string;
+  }>;
+}
+
 function normalizeText(value: string | null | undefined) {
   return typeof value === "string" ? value.trim() : "";
 }
@@ -124,6 +152,24 @@ function mapEventDetail(response: EventDetailResponse): EventDetail {
       options: (field.options ?? [])
         .map((option) => normalizeText(option))
         .filter(Boolean),
+    })),
+  };
+}
+
+function mapEventRegistration(
+  registration: EventRegistrationResponse,
+): EventRegistration {
+  return {
+    registrationId: registration.registrationId,
+    userId: registration.userId,
+    username:
+      normalizeText(registration.username) || `user-${registration.userId}`,
+    status: normalizeText(registration.status) || "UNKNOWN",
+    qrToken: normalizeText(registration.qrToken),
+    answers: (registration.answers ?? []).map((answer) => ({
+      fieldId: answer.fieldId,
+      label: normalizeText(answer.label) || `질문 ${answer.fieldId}`,
+      value: normalizeText(answer.value),
     })),
   };
 }
@@ -177,4 +223,16 @@ export async function updateEvent(eventId: number, body: UpdateEventRequest) {
   });
 
   return mapEventDetail(response);
+}
+
+export async function getEventRegistrations(eventId: number) {
+  const response = await apiRequest<EventRegistrationResponse[]>(
+    `/api/events/${eventId}/registrations`,
+    {
+      method: "GET",
+      auth: { type: "dev-user" },
+    },
+  );
+
+  return response.map(mapEventRegistration);
 }

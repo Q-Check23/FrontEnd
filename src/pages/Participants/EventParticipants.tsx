@@ -1,184 +1,215 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import BottomBar from "../../components/BottomBar";
 import EventManageTabs from "../../components/EventManageTabs";
+import {
+  getEventRegistrations,
+  type EventRegistration,
+} from "../../api/events";
+import { ToastContext } from "../../context/ToastContext";
 
-type ParticipantStatus = "attended" | "waiting" | "absent";
+type ToastValue = {
+  push: (message: string) => void;
+};
 
-interface Participant {
-  id: string;
-  name: string;
-  role: "organizer" | "participant";
-  status: ParticipantStatus;
-  avatar?: string;
+function getStatusDisplay(status: string) {
+  switch (status) {
+    case "CHECKED_IN":
+      return {
+        text: "입장 완료",
+        color: "#009a49",
+        bgColor: "#e7f6ee",
+      };
+    case "REGISTERED":
+      return {
+        text: "등록 완료",
+        color: "#5f6368",
+        bgColor: "#f1f3f4",
+      };
+    case "CANCELED":
+      return {
+        text: "취소",
+        color: "#d93025",
+        bgColor: "#fdecea",
+      };
+    default:
+      return {
+        text: status,
+        color: "#702f95",
+        bgColor: "#f0ebfa",
+      };
+  }
+}
+
+function RegistrationCard({
+  registration,
+}: {
+  registration: EventRegistration;
+}) {
+  const statusDisplay = getStatusDisplay(registration.status);
+  const answersPreview =
+    registration.answers.length > 0
+      ? registration.answers
+          .map((answer) => `${answer.label}: ${answer.value || "-"}`)
+          .join(" · ")
+      : "추가 응답 없음";
+
+  return (
+    <div className="rounded-2xl border border-[#ececec] bg-white px-4 py-4 shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-[#ebe7f9] text-lg font-bold text-[#702f95]">
+            {registration.username.charAt(0)}
+          </div>
+          <div className="min-w-0">
+            <p className="truncate text-base font-semibold text-[#111111]">
+              {registration.username}
+            </p>
+            <p className="mt-1 text-xs text-[#808080]">
+              User ID {registration.userId} · Registration ID {registration.registrationId}
+            </p>
+          </div>
+        </div>
+        <span
+          className="shrink-0 rounded-full px-3 py-1 text-xs font-semibold"
+          style={{
+            color: statusDisplay.color,
+            backgroundColor: statusDisplay.bgColor,
+          }}
+        >
+          {statusDisplay.text}
+        </span>
+      </div>
+
+      <p className="mt-4 text-sm leading-6 text-[#5f6368]">{answersPreview}</p>
+
+      <div className="mt-3 flex items-center justify-between gap-3 text-xs text-[#9a9a9a]">
+        <span className="truncate">
+          QR Token {registration.qrToken || "미생성"}
+        </span>
+        <span>{registration.answers.length}개 응답</span>
+      </div>
+    </div>
+  );
 }
 
 export default function EventParticipants() {
-  // Mock participant data
-  const [participants] = useState<Participant[]>([
-    {
-      id: "1",
-      name: "김민우",
-      role: "organizer",
-      status: "attended",
-    },
-    {
-      id: "2",
-      name: "김지현",
-      role: "participant",
-      status: "attended",
-    },
-    {
-      id: "3",
-      name: "김서진",
-      role: "participant",
-      status: "waiting",
-    },
-    {
-      id: "4",
-      name: "박성현",
-      role: "participant",
-      status: "absent",
-    },
-  ]);
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const toast = useContext(ToastContext) as ToastValue | null;
+  const [registrations, setRegistrations] = useState<EventRegistration[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+  const eventIdParam = searchParams.get("eventId");
+  const eventId = eventIdParam ? Number(eventIdParam) : NaN;
 
-  const attendedCount = participants.filter(
-    (p) => p.status === "attended"
-  ).length;
+  const loadRegistrations = async () => {
+    if (!Number.isFinite(eventId)) {
+      setError("유효한 eventId가 없습니다.");
+      setIsLoading(false);
+      return;
+    }
 
-  const getStatusDisplay = (status: ParticipantStatus) => {
-    switch (status) {
-      case "attended":
-        return {
-          text: "참여",
-          color: "#009a49",
-          icon: "✓",
-        };
-      case "waiting":
-        return {
-          text: "대기",
-          color: "#808080",
-          icon: "⏱",
-        };
-      case "absent":
-        return {
-          text: "불참",
-          color: "#ff0000",
-          icon: "✕",
-        };
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const nextRegistrations = await getEventRegistrations(eventId);
+      setRegistrations(nextRegistrations);
+    } catch (loadError) {
+      const message =
+        loadError instanceof Error
+          ? loadError.message
+          : "참가자 목록을 불러오지 못했습니다.";
+      setError(message);
+      toast?.push(message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const ParticipantCard = ({ participant }: { participant: Participant }) => {
-    const statusDisplay = getStatusDisplay(participant.status);
+  useEffect(() => {
+    void loadRegistrations();
+  }, [eventIdParam]);
 
-    return (
-      <div className="flex items-center justify-between gap-2 p-2.5 w-full">
-        {/* Avatar and Info */}
-        <div className="flex items-center gap-2">
-          {/* Avatar */}
-          <div className="flex-shrink-0">
-            <div className="w-15 h-15 bg-[#e8e8e8] rounded-full" />
-          </div>
-
-          {/* Name and Role */}
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2">
-              <span className="text-base font-medium text-black">
-                {participant.name}
-              </span>
-              {participant.role === "organizer" && (
-                <span className="text-xs font-medium text-[#731fc0] bg-[#f2e4fd] px-3.75 py-0.5 rounded">
-                  운영진
-                </span>
-              )}
-            </div>
-            <span className="text-sm font-medium text-[#808080]">
-              {participant.role === "organizer" ? "운영진" : "참가자"}
-            </span>
-          </div>
-        </div>
-
-        {/* Status */}
-        <div className="flex items-center gap-2">
-          {participant.status === "attended" && (
-            <svg
-              className="w-4 h-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#009a49"
-              strokeWidth="3"
-            >
-              <polyline points="20 6 9 17 4 12" />
-            </svg>
-          )}
-          {participant.status === "waiting" && (
-            <svg
-              className="w-4 h-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#808080"
-              strokeWidth="2"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <polyline points="12 6 12 12 16 14" />
-            </svg>
-          )}
-          {participant.status === "absent" && (
-            <svg
-              className="w-4 h-4"
-              viewBox="0 0 24 24"
-              fill="#ff0000"
-              stroke="#ff0000"
-              strokeWidth="2"
-            >
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          )}
-          <span
-            className="text-base font-medium w-7 text-center"
-            style={{ color: statusDisplay.color }}
-          >
-            {statusDisplay.text}
-          </span>
-        </div>
-      </div>
-    );
-  };
+  const checkedInCount = registrations.filter(
+    (registration) => registration.status === "CHECKED_IN",
+  ).length;
 
   return (
-    <div className="relative w-full h-full bg-white flex flex-col">
-      {/* Header */}
-      <div className="flex items-center justify-center py-5">
-        <h1 className="text-2xl font-medium text-black">KUIT</h1>
+    <div className="relative flex h-full w-full flex-col bg-white">
+      <div className="flex items-center justify-between border-b border-[#f0f0f0] px-5 py-5">
+        <div>
+          <h1 className="text-2xl font-bold text-[#111111]">참가자 목록</h1>
+          <p className="mt-2 text-sm text-[#808080]">
+            관리자용 `/registrations` 응답을 그대로 표시합니다.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="rounded-xl border border-[#d9d9d9] px-3 py-2 text-sm font-medium text-[#111111]"
+        >
+          뒤로가기
+        </button>
       </div>
 
       <EventManageTabs activeTab="participants" />
 
-      {/* Content */}
-      <div className="flex-1 bg-[#f9f9f9] overflow-y-auto">
-        <div className="bg-white rounded-t-3xl mt-6 p-6 flex flex-col gap-4">
-          {/* Section Header */}
-          <div className="flex items-end justify-between">
-            <h2 className="text-xl font-bold text-black">참가자 목록</h2>
-            <span className="text-lg text-[#808080]">
-              {attendedCount}/{participants.length}명
-            </span>
+      <div className="flex-1 overflow-y-auto bg-[#f9f9f9] px-4 py-4 pb-24">
+        {isLoading ? (
+          <div className="rounded-3xl bg-white px-5 py-6 text-sm text-[#666666] shadow-[0_1px_4px_rgba(0,0,0,0.05)]">
+            참가자 목록을 불러오는 중입니다.
           </div>
+        ) : error ? (
+          <div className="rounded-3xl bg-white px-5 py-6 shadow-[0_1px_4px_rgba(0,0,0,0.05)]">
+            <p className="text-sm font-medium text-[#d93025]">{error}</p>
+            <button
+              type="button"
+              onClick={() => void loadRegistrations()}
+              className="mt-4 rounded-xl bg-[#111111] px-4 py-2 text-sm font-medium text-white"
+            >
+              다시 시도
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4">
+            <div className="rounded-3xl bg-white px-5 py-5 shadow-[0_1px_4px_rgba(0,0,0,0.05)]">
+              <div className="flex items-end justify-between gap-3">
+                <div>
+                  <h2 className="text-lg font-bold text-[#111111]">
+                    Event ID {Number.isFinite(eventId) ? eventId : "-"}
+                  </h2>
+                  <p className="mt-1 text-sm text-[#808080]">
+                    입장 완료 {checkedInCount}명 / 전체 등록 {registrations.length}명
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => void loadRegistrations()}
+                  className="rounded-xl border border-[#d9d9d9] px-3 py-2 text-sm font-medium text-[#111111]"
+                >
+                  새로고침
+                </button>
+              </div>
+            </div>
 
-          {/* Participant List */}
-          <div className="flex flex-col gap-3">
-            {participants.map((participant) => (
-              <ParticipantCard
-                key={participant.id}
-                participant={participant}
-              />
-            ))}
+            {registrations.length > 0 ? (
+              registrations.map((registration) => (
+                <RegistrationCard
+                  key={registration.registrationId}
+                  registration={registration}
+                />
+              ))
+            ) : (
+              <div className="rounded-3xl border border-dashed border-[#d9d9d9] bg-white px-5 py-6 text-sm text-[#666666]">
+                등록된 참가자가 없습니다.
+              </div>
+            )}
           </div>
-        </div>
+        )}
       </div>
 
-      {/* Bottom Navigation */}
       <BottomBar activeItem="activity" />
     </div>
   );

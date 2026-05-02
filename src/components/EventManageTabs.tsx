@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 type EventManageTab = "qr" | "dashboard" | "participants";
 
@@ -26,6 +26,8 @@ export default function EventManageTabs({
   activeTab: EventManageTab;
 }) {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const currentQuery = searchParams.toString();
 
   return (
     <div className="flex items-center border-y border-[#c0c0c0] bg-white">
@@ -37,7 +39,9 @@ export default function EventManageTabs({
           <button
             key={tabKey}
             type="button"
-            onClick={() => navigate(tab.path)}
+            onClick={() =>
+              navigate(currentQuery ? `${tab.path}?${currentQuery}` : tab.path)
+            }
             className={`flex-1 border-b px-4 py-3 text-center text-base font-medium transition-colors ${
               isActive
                 ? "border-[#649f76] text-[#649f76]"
