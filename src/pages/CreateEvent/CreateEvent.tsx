@@ -245,7 +245,7 @@ export default function CreateEvent() {
       });
 
       toast?.push(`행사를 생성했습니다. Event ID ${createdEvent.eventId}`);
-      navigate("/dashboard");
+      navigate(`/event-info?eventId=${createdEvent.eventId}`);
     } catch (error) {
       const message =
         error instanceof Error

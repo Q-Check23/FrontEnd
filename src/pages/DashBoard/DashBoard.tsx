@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getMyClubs, type ClubSummary } from "../../api/clubs";
 import { getEvents, type EventListPage } from "../../api/events";
 import BottomBar from "../../components/BottomBar";
@@ -70,11 +71,17 @@ function formatStartTime(value: string) {
 
 function EventCard({
   event,
+  onClick,
 }: {
   event: EventListPage["items"][number];
+  onClick: () => void;
 }) {
   return (
-    <div className="rounded-2xl border border-[#e9e9e9] bg-white px-4 py-4 shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
+    <button
+      type="button"
+      onClick={onClick}
+      className="w-full rounded-2xl border border-[#e9e9e9] bg-white px-4 py-4 text-left shadow-[0_1px_4px_rgba(0,0,0,0.04)]"
+    >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="truncate text-lg font-bold text-[#111111]">
@@ -103,11 +110,12 @@ function EventCard({
           Event ID {event.eventId}
         </span>
       </div>
-    </div>
+    </button>
   );
 }
 
 export default function DashBoard() {
+  const navigate = useNavigate();
   const toast = useContext(ToastContext) as ToastValue | null;
   const [clubs, setClubs] = useState<ClubSummary[]>([]);
   const [eventPage, setEventPage] = useState<EventListPage | null>(null);
@@ -236,7 +244,11 @@ export default function DashBoard() {
 
               {eventPage && eventPage.items.length > 0 ? (
                 eventPage.items.map((event) => (
-                  <EventCard key={event.eventId} event={event} />
+                  <EventCard
+                    key={event.eventId}
+                    event={event}
+                    onClick={() => navigate(`/event-info?eventId=${event.eventId}`)}
+                  />
                 ))
               ) : (
                 <div className="rounded-2xl border border-dashed border-[#d9d9d9] bg-white px-4 py-5 text-sm text-[#666666]">

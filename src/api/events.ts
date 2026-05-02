@@ -53,6 +53,13 @@ export interface CreateEventRequest {
   formFields: CreateEventFormField[];
 }
 
+export interface UpdateEventRequest {
+  title: string;
+  startTime: string;
+  location: string;
+  isActive: boolean;
+}
+
 interface EventFormFieldResponse {
   id: number;
   type: EventFormFieldType | null;
@@ -121,6 +128,15 @@ function mapEventDetail(response: EventDetailResponse): EventDetail {
   };
 }
 
+export async function getEventDetail(eventId: number) {
+  const response = await apiRequest<EventDetailResponse>(`/api/events/${eventId}`, {
+    method: "GET",
+    auth: { type: "dev-user" },
+  });
+
+  return mapEventDetail(response);
+}
+
 export async function getEvents({
   page = 0,
   size = 10,
@@ -146,6 +162,16 @@ export async function getEvents({
 export async function createEvent(body: CreateEventRequest) {
   const response = await apiRequest<EventDetailResponse>("/api/events", {
     method: "POST",
+    auth: { type: "dev-user" },
+    body,
+  });
+
+  return mapEventDetail(response);
+}
+
+export async function updateEvent(eventId: number, body: UpdateEventRequest) {
+  const response = await apiRequest<EventDetailResponse>(`/api/events/${eventId}`, {
+    method: "PUT",
     auth: { type: "dev-user" },
     body,
   });

@@ -289,7 +289,7 @@ export default function EventManage() {
   const [filterOpen, setFilterOpen] = useState(false);
 
   const handleDetailClick = (eventId: string) => {
-    navigate("/event-info");
+    navigate(`/event-info?eventId=${eventId}`);
   };
 
   const handleReportClick = (eventId: string) => {
