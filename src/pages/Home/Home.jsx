@@ -3,7 +3,11 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import chevronUp from "../../assets/svg/ChevronUp.svg";
 import search from "../../assets/svg/Search.svg";
 import BottomBar from "../../components/BottomBar";
-import { getMonthlyCalendar } from "../../api/calendar";
+import {
+  filterCalendarEvents,
+  getMonthlyCalendar,
+  searchCalendarEvents,
+} from "../../api/calendar";
 import { ToastContext } from "../../context/ToastContext";
 
 const clubBadgeStyles = [
@@ -74,6 +78,18 @@ function sortByStartTime(a, b) {
   return a.startTime.localeCompare(b.startTime);
 }
 
+function formatInputDateTimeForApi(value) {
+  if (!value) {
+    return "";
+  }
+
+  return value.length === 16 ? `${value}:00` : value;
+}
+
+function getBadgeClass(clubId) {
+  return clubBadgeStyles[Math.abs(Number(clubId) || 0) % clubBadgeStyles.length];
+}
+
 export default function Home() {
   const toast = useContext(ToastContext);
   const today = useMemo(() => new Date(), []);
@@ -86,6 +102,17 @@ export default function Home() {
   const [calendarGroups, setCalendarGroups] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [sheetMode, setSheetMode] = useState("month");
+  const [sheetEvents, setSheetEvents] = useState([]);
+  const [isLoadingSheet, setIsLoadingSheet] = useState(false);
+  const [sheetError, setSheetError] = useState("");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [filterDraft, setFilterDraft] = useState({
+    startDate: "",
+    endDate: "",
+    eventName: "",
+    clubName: "",
+  });
 
   useEffect(() => {
     let ignore = false;
@@ -165,30 +192,131 @@ export default function Home() {
   const monthEvents = useMemo(
     () =>
       calendarGroups
-        .flatMap((group, index) =>
+        .flatMap((group) =>
           group.events.map((event) => ({
             ...event,
-            badgeClass: clubBadgeStyles[index % clubBadgeStyles.length],
+            badgeClass: getBadgeClass(event.clubId),
           })),
         )
         .sort(sortByStartTime),
     [calendarGroups],
   );
 
-  const filteredMonthEvents = useMemo(() => {
-    const keyword = searchQuery.trim().toLowerCase();
+  const visibleSheetEvents = sheetMode === "month" ? monthEvents : sheetEvents;
 
-    if (!keyword) {
-      return monthEvents;
+  const handleSearch = async (event) => {
+    event?.preventDefault();
+    const trimmedQuery = searchQuery.trim();
+
+    if (!trimmedQuery) {
+      setSheetMode("month");
+      setSheetEvents([]);
+      setSheetError("");
+      return;
     }
 
-    return monthEvents.filter((event) =>
-      [event.eventTitle, event.clubName, event.location]
-        .join(" ")
-        .toLowerCase()
-        .includes(keyword),
-    );
-  }, [monthEvents, searchQuery]);
+    setSheetMode("search");
+    setIsLoadingSheet(true);
+    setSheetError("");
+
+    try {
+      const results = await searchCalendarEvents(trimmedQuery);
+      setSheetEvents(
+        results
+          .map((item) => ({
+            ...item,
+            badgeClass: getBadgeClass(item.clubId),
+          }))
+          .sort(sortByStartTime),
+      );
+      setIsFilterOpen(false);
+    } catch (loadError) {
+      const message =
+        loadError instanceof Error
+          ? loadError.message
+          : "이벤트 검색에 실패했습니다.";
+      setSheetError(message);
+      toast?.push(message);
+      setSheetEvents([]);
+    } finally {
+      setIsLoadingSheet(false);
+    }
+  };
+
+  const handleFilterDraftChange = (key, value) => {
+    setFilterDraft((current) => ({
+      ...current,
+      [key]: value,
+    }));
+  };
+
+  const handleFilterApply = async () => {
+    const payload = {
+      startDate: formatInputDateTimeForApi(filterDraft.startDate),
+      endDate: formatInputDateTimeForApi(filterDraft.endDate),
+      eventName: filterDraft.eventName.trim(),
+      clubName: filterDraft.clubName.trim(),
+    };
+
+    if (
+      !payload.startDate &&
+      !payload.endDate &&
+      !payload.eventName &&
+      !payload.clubName
+    ) {
+      toast?.push("필터 조건을 하나 이상 입력해주세요.");
+      return;
+    }
+
+    if (
+      payload.startDate &&
+      payload.endDate &&
+      payload.startDate > payload.endDate
+    ) {
+      toast?.push("기간 시작일은 종료일보다 늦을 수 없습니다.");
+      return;
+    }
+
+    setSheetMode("filter");
+    setIsLoadingSheet(true);
+    setSheetError("");
+
+    try {
+      const results = await filterCalendarEvents(payload);
+      setSheetEvents(
+        results
+          .map((item) => ({
+            ...item,
+            badgeClass: getBadgeClass(item.clubId),
+          }))
+          .sort(sortByStartTime),
+      );
+    } catch (loadError) {
+      const message =
+        loadError instanceof Error
+          ? loadError.message
+          : "캘린더 필터에 실패했습니다.";
+      setSheetError(message);
+      toast?.push(message);
+      setSheetEvents([]);
+    } finally {
+      setIsLoadingSheet(false);
+    }
+  };
+
+  const resetSheetMode = () => {
+    setSheetMode("month");
+    setSheetEvents([]);
+    setSheetError("");
+    setSearchQuery("");
+    setFilterDraft({
+      startDate: "",
+      endDate: "",
+      eventName: "",
+      clubName: "",
+    });
+    setIsFilterOpen(false);
+  };
 
   const handleDateChange = (value) => {
     const nextDate = Array.isArray(value) ? value[0] : value;
@@ -351,34 +479,153 @@ export default function Home() {
 
         <div className="px-4 pb-6 pt-2">
           <div className="rounded-2xl bg-white px-4 py-4">
-            <h2 className="text-base font-bold text-[#111111]">이번 달 전체 행사</h2>
-            <p className="mt-1 text-sm text-[#808080]">
-              이번 묶음은 `/api/calendar` 월별 조회만 사용합니다.
-            </p>
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <h2 className="text-base font-bold text-[#111111]">
+                  {sheetMode === "month"
+                    ? "이번 달 전체 행사"
+                    : sheetMode === "search"
+                      ? "검색 결과"
+                      : "필터 결과"}
+                </h2>
+                <p className="mt-1 text-sm text-[#808080]">
+                  {sheetMode === "month"
+                    ? "월별 조회, 검색, 필터 결과를 이 시트에서 전환합니다."
+                    : "검색/필터는 현재 백엔드 정책 기준 결과를 그대로 표시합니다."}
+                </p>
+              </div>
+              {sheetMode !== "month" ? (
+                <button
+                  type="button"
+                  onClick={resetSheetMode}
+                  className="shrink-0 rounded-full border border-[#e2d6f2] px-3 py-1 text-xs font-semibold text-[#702f95]"
+                >
+                  월별로 복귀
+                </button>
+              ) : null}
+            </div>
           </div>
 
-          <div className="relative pt-4">
+          <form onSubmit={handleSearch} className="relative pt-4">
             <input
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
-              placeholder="이번 달 목록 내 검색"
-              className="w-full rounded-full border border-purple-200 px-4 py-3 pr-12 text-sm focus:outline-none"
+              placeholder="이벤트명 검색"
+              className="w-full rounded-full border border-purple-200 px-4 py-3 pr-24 text-sm focus:outline-none"
             />
 
-            <img
-              src={search}
-              alt="search"
-              className="absolute right-4 top-[31px] h-5 w-5 -translate-y-1/2"
-            />
+            <button
+              type="submit"
+              className="absolute right-3 top-[31px] flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-[#702f95]"
+              aria-label="검색"
+            >
+              <img src={search} alt="" className="h-4 w-4 brightness-0 invert" />
+            </button>
+          </form>
+
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setIsFilterOpen((current) => !current)}
+              className="rounded-full border border-[#e2d6f2] bg-white px-3 py-1 text-xs font-semibold text-[#702f95]"
+            >
+              {isFilterOpen ? "필터 닫기" : "필터 열기"}
+            </button>
+            <div className="inline-flex rounded-full border border-[#e2d6f2] bg-white px-3 py-1 text-xs font-semibold text-[#702f95]">
+              {sheetMode === "month" ? `${formatMonthLabel(activeStartDate)} 기준` : "백엔드 결과"}
+            </div>
           </div>
 
-          <div className="mt-3 inline-flex rounded-full border border-[#e2d6f2] bg-white px-3 py-1 text-xs font-semibold text-[#702f95]">
-            {formatMonthLabel(activeStartDate)} 기준
-          </div>
+          {isFilterOpen ? (
+            <div className="mt-4 rounded-2xl bg-white px-4 py-4">
+              <div className="grid grid-cols-1 gap-3">
+                <div>
+                  <label className="mb-2 block text-xs font-medium text-[#666666]">
+                    시작 일시
+                  </label>
+                  <input
+                    type="datetime-local"
+                    value={filterDraft.startDate}
+                    onChange={(event) =>
+                      handleFilterDraftChange("startDate", event.target.value)
+                    }
+                    className="h-11 w-full rounded-xl border border-[#d9d9d9] px-3 text-sm outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="mb-2 block text-xs font-medium text-[#666666]">
+                    종료 일시
+                  </label>
+                  <input
+                    type="datetime-local"
+                    value={filterDraft.endDate}
+                    onChange={(event) =>
+                      handleFilterDraftChange("endDate", event.target.value)
+                    }
+                    className="h-11 w-full rounded-xl border border-[#d9d9d9] px-3 text-sm outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="mb-2 block text-xs font-medium text-[#666666]">
+                    이벤트명
+                  </label>
+                  <input
+                    type="text"
+                    value={filterDraft.eventName}
+                    onChange={(event) =>
+                      handleFilterDraftChange("eventName", event.target.value)
+                    }
+                    placeholder="예: OT"
+                    className="h-11 w-full rounded-xl border border-[#d9d9d9] px-3 text-sm outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="mb-2 block text-xs font-medium text-[#666666]">
+                    클럽명
+                  </label>
+                  <input
+                    type="text"
+                    value={filterDraft.clubName}
+                    onChange={(event) =>
+                      handleFilterDraftChange("clubName", event.target.value)
+                    }
+                    placeholder="예: UMC"
+                    className="h-11 w-full rounded-xl border border-[#d9d9d9] px-3 text-sm outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="mt-4 flex gap-2">
+                <button
+                  type="button"
+                  onClick={handleFilterApply}
+                  disabled={isLoadingSheet}
+                  className="h-11 flex-1 rounded-xl bg-[#111111] text-sm font-semibold text-white disabled:cursor-not-allowed disabled:bg-[#d9d9d9]"
+                >
+                  {isLoadingSheet && sheetMode === "filter" ? "필터 중..." : "필터 적용"}
+                </button>
+                <button
+                  type="button"
+                  onClick={resetSheetMode}
+                  className="h-11 rounded-xl border border-[#d9d9d9] px-4 text-sm font-medium text-[#111111]"
+                >
+                  초기화
+                </button>
+              </div>
+            </div>
+          ) : null}
 
           <div className="mt-4 max-h-[360px] space-y-3 overflow-y-auto pb-24">
-            {!isLoading && filteredMonthEvents.length > 0 ? (
-              filteredMonthEvents.map((event) => (
+            {isLoadingSheet ? (
+              <div className="rounded-xl border border-dashed border-[#d9d9d9] bg-white px-4 py-5 text-sm text-[#666666]">
+                {sheetMode === "search" ? "검색 결과를 불러오는 중입니다." : sheetMode === "filter" ? "필터 결과를 불러오는 중입니다." : "목록을 준비하는 중입니다."}
+              </div>
+            ) : sheetError ? (
+              <div className="rounded-xl border border-[#fde0dd] bg-[#fff7f7] px-4 py-5 text-sm font-medium text-[#d93025]">
+                {sheetError}
+              </div>
+            ) : !isLoading && visibleSheetEvents.length > 0 ? (
+              visibleSheetEvents.map((event) => (
                 <div
                   key={event.eventId}
                   className="rounded-xl border border-purple-200 bg-white p-4 shadow-sm"
@@ -407,9 +654,11 @@ export default function Home() {
               ))
             ) : !isLoading ? (
               <div className="rounded-xl border border-dashed border-[#d9d9d9] bg-white px-4 py-5 text-sm text-[#666666]">
-                {searchQuery.trim()
-                  ? "검색 조건에 맞는 일정이 없습니다."
-                  : "이번 달에 표시할 일정이 없습니다."}
+                {sheetMode === "search"
+                  ? "검색 결과가 없습니다."
+                  : sheetMode === "filter"
+                    ? "필터 결과가 없습니다."
+                    : "이번 달에 표시할 일정이 없습니다."}
               </div>
             ) : null}
           </div>

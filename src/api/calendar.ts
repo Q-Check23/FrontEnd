@@ -55,6 +55,10 @@ function mapCalendarClubGroup(
   };
 }
 
+function mapCalendarEventList(events: CalendarEventResponse[] | null | undefined) {
+  return (events ?? []).map(mapCalendarEvent);
+}
+
 export async function getMonthlyCalendar({
   year,
   month,
@@ -72,4 +76,41 @@ export async function getMonthlyCalendar({
   });
 
   return response.map(mapCalendarClubGroup);
+}
+
+export async function searchCalendarEvents(query: string) {
+  const response = await apiRequest<CalendarEventResponse[]>("/api/calendar/search", {
+    method: "GET",
+    auth: { type: "dev-user" },
+    query: {
+      query,
+    },
+  });
+
+  return mapCalendarEventList(response);
+}
+
+export async function filterCalendarEvents({
+  startDate,
+  endDate,
+  eventName,
+  clubName,
+}: {
+  startDate?: string;
+  endDate?: string;
+  eventName?: string;
+  clubName?: string;
+}) {
+  const response = await apiRequest<CalendarEventResponse[]>("/api/calendar/filter", {
+    method: "GET",
+    auth: { type: "dev-user" },
+    query: {
+      startDate,
+      endDate,
+      eventName,
+      clubName,
+    },
+  });
+
+  return mapCalendarEventList(response);
 }
