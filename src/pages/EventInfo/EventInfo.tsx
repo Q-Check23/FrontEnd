@@ -2,11 +2,15 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import BottomBar from "../../components/BottomBar";
 import {
+  createEventRegistration,
   getEventDetail,
+  getMyEventRegistration,
   type EventDetail,
+  type MyEventRegistration,
   updateEvent,
 } from "../../api/events";
 import { ToastContext } from "../../context/ToastContext";
+import { ApiError } from "../../api/client";
 
 type ToastValue = {
   push: (message: string) => void;
@@ -19,6 +23,35 @@ type DraftEvent = {
   location: string;
   isActive: boolean;
 };
+
+function formatRegistrationStatus(status: string) {
+  switch (status) {
+    case "CHECKED_IN":
+      return {
+        text: "입장 완료",
+        color: "#009a49",
+        bgColor: "#e7f6ee",
+      };
+    case "REGISTERED":
+      return {
+        text: "신청 완료",
+        color: "#5f6368",
+        bgColor: "#f1f3f4",
+      };
+    case "CANCELED":
+      return {
+        text: "취소",
+        color: "#d93025",
+        bgColor: "#fdecea",
+      };
+    default:
+      return {
+        text: status,
+        color: "#702f95",
+        bgColor: "#f0ebfa",
+      };
+  }
+}
 
 function formatDateTime(value: string) {
   if (!value) {
@@ -58,6 +91,19 @@ function buildStartTime(date: string, time: string) {
   return `${date}T${time}:00`;
 }
 
+function buildRegistrationDraft(
+  detail: EventDetail,
+  registration?: MyEventRegistration | null,
+) {
+  return detail.formFields.reduce<Record<string, string>>((accumulator, field) => {
+    const existingAnswer = registration?.answers.find(
+      (answer) => answer.fieldId === field.id,
+    );
+    accumulator[String(field.id)] = existingAnswer?.value ?? "";
+    return accumulator;
+  }, {});
+}
+
 function FieldBadge({
   label,
   value,
@@ -78,10 +124,15 @@ export default function EventInfo() {
   const [searchParams] = useSearchParams();
   const toast = useContext(ToastContext) as ToastValue | null;
   const [eventDetail, setEventDetail] = useState<EventDetail | null>(null);
+  const [myRegistration, setMyRegistration] = useState<MyEventRegistration | null>(null);
   const [draft, setDraft] = useState<DraftEvent | null>(null);
+  const [registrationDraft, setRegistrationDraft] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoadingRegistration, setIsLoadingRegistration] = useState(true);
+  const [isRegistering, setIsRegistering] = useState(false);
   const [error, setError] = useState("");
+  const [registrationError, setRegistrationError] = useState("");
   const eventIdParam = searchParams.get("eventId");
   const eventId = eventIdParam ? Number(eventIdParam) : NaN;
 
@@ -95,6 +146,39 @@ export default function EventInfo() {
       location: detail.location,
       isActive: detail.isActive,
     });
+  };
+
+  const loadMyRegistration = async (detail: EventDetail) => {
+    if (!Number.isFinite(eventId)) {
+      setMyRegistration(null);
+      setRegistrationDraft(buildRegistrationDraft(detail));
+      setIsLoadingRegistration(false);
+      return;
+    }
+
+    setIsLoadingRegistration(true);
+    setRegistrationError("");
+
+    try {
+      const registration = await getMyEventRegistration(eventId);
+      setMyRegistration(registration);
+      setRegistrationDraft(buildRegistrationDraft(detail, registration));
+    } catch (loadError) {
+      if (loadError instanceof ApiError && loadError.status === 404) {
+        setMyRegistration(null);
+        setRegistrationDraft(buildRegistrationDraft(detail));
+      } else {
+        const message =
+          loadError instanceof Error
+            ? loadError.message
+            : "내 신청 정보를 불러오지 못했습니다.";
+        setRegistrationError(message);
+        setMyRegistration(null);
+        setRegistrationDraft(buildRegistrationDraft(detail));
+      }
+    } finally {
+      setIsLoadingRegistration(false);
+    }
   };
 
   const loadEvent = async () => {
@@ -111,6 +195,7 @@ export default function EventInfo() {
       const nextDetail = await getEventDetail(eventId);
       setEventDetail(nextDetail);
       syncDraft(nextDetail);
+      await loadMyRegistration(nextDetail);
     } catch (loadError) {
       const message =
         loadError instanceof Error
@@ -188,6 +273,69 @@ export default function EventInfo() {
     setDraft((current) => (current ? { ...current, [key]: value } : current));
   };
 
+  const handleRegistrationDraftChange = (fieldId: number, value: string) => {
+    setRegistrationDraft((current) => ({
+      ...current,
+      [String(fieldId)]: value,
+    }));
+  };
+
+  const handleRegister = async () => {
+    if (!eventDetail) {
+      return;
+    }
+
+    for (const field of eventDetail.formFields) {
+      const value = (registrationDraft[String(field.id)] ?? "").trim();
+
+      if (field.required && !value) {
+        toast?.push(`${field.label} 항목은 필수입니다.`);
+        return;
+      }
+
+      if (field.type === "SELECT" && value && !field.options.includes(value)) {
+        toast?.push(`${field.label} 항목은 목록에서 선택해야 합니다.`);
+        return;
+      }
+    }
+
+    setIsRegistering(true);
+
+    try {
+      await createEventRegistration(eventDetail.eventId, {
+        answers: eventDetail.formFields
+          .map((field) => ({
+            fieldId: field.id,
+            value: (registrationDraft[String(field.id)] ?? "").trim(),
+          }))
+          .filter((answer) => answer.value !== ""),
+      });
+
+      const registration = await getMyEventRegistration(eventDetail.eventId);
+      setMyRegistration(registration);
+      setRegistrationDraft(buildRegistrationDraft(eventDetail, registration));
+      setRegistrationError("");
+      toast?.push("행사 신청이 완료되었습니다.");
+    } catch (registerError) {
+      const message =
+        registerError instanceof Error
+          ? registerError.message
+          : "행사 신청에 실패했습니다.";
+      toast?.push(message);
+    } finally {
+      setIsRegistering(false);
+    }
+  };
+
+  const handleCopyQrToken = async () => {
+    if (!myRegistration?.qrToken || !navigator.clipboard) {
+      return;
+    }
+
+    await navigator.clipboard.writeText(myRegistration.qrToken);
+    toast?.push("QR 토큰을 복사했습니다.");
+  };
+
   return (
     <div className="relative flex h-full w-full flex-col overflow-y-auto bg-[#f9f9f9] pb-24">
       <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[#ececec] bg-[#f9f9f9] px-3 py-3">
@@ -254,6 +402,151 @@ export default function EventInfo() {
                   value={eventDetail.isActive ? "진행 중" : "비활성"}
                 />
               </div>
+            </div>
+          </div>
+
+          <div className="px-5 pt-4">
+            <div className="rounded-3xl bg-white px-5 py-5 shadow-[0_1px_4px_rgba(0,0,0,0.05)]">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <h3 className="text-lg font-bold text-[#111111]">내 신청 정보</h3>
+                  <p className="mt-1 text-sm text-[#808080]">
+                    미신청 상태면 바로 신청하고, 신청 후에는 QR 토큰을 확인할 수 있습니다.
+                  </p>
+                </div>
+                {myRegistration ? (
+                  <span
+                    className="shrink-0 rounded-full px-3 py-1 text-xs font-semibold"
+                    style={{
+                      color: formatRegistrationStatus(myRegistration.status).color,
+                      backgroundColor: formatRegistrationStatus(myRegistration.status).bgColor,
+                    }}
+                  >
+                    {formatRegistrationStatus(myRegistration.status).text}
+                  </span>
+                ) : null}
+              </div>
+
+              {isLoadingRegistration ? (
+                <div className="mt-4 rounded-2xl bg-[#fcfcfc] px-4 py-5 text-sm text-[#666666]">
+                  내 신청 정보를 불러오는 중입니다.
+                </div>
+              ) : registrationError ? (
+                <div className="mt-4 rounded-2xl border border-[#fde0dd] bg-[#fff7f7] px-4 py-5">
+                  <p className="text-sm font-medium text-[#d93025]">{registrationError}</p>
+                  <button
+                    type="button"
+                    onClick={() => void loadMyRegistration(eventDetail)}
+                    className="mt-3 rounded-xl bg-[#111111] px-4 py-2 text-sm font-medium text-white"
+                  >
+                    다시 시도
+                  </button>
+                </div>
+              ) : myRegistration ? (
+                <div className="mt-4 flex flex-col gap-4">
+                  <div className="grid grid-cols-2 gap-3">
+                    <FieldBadge
+                      label="신청 번호"
+                      value={String(myRegistration.registrationId)}
+                    />
+                    <FieldBadge
+                      label="신청 시각"
+                      value={formatDateTime(myRegistration.createdAt)}
+                    />
+                  </div>
+
+                  <div className="rounded-2xl border border-[#ededed] bg-[#fcfcfc] px-4 py-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <p className="text-xs font-medium text-[#808080]">QR Token</p>
+                        <p className="mt-2 break-all text-sm font-semibold text-[#111111]">
+                          {myRegistration.qrToken || "발급되지 않음"}
+                        </p>
+                      </div>
+                      {myRegistration.qrToken ? (
+                        <button
+                          type="button"
+                          onClick={() => void handleCopyQrToken()}
+                          className="shrink-0 rounded-xl border border-[#d9d9d9] px-3 py-2 text-sm font-medium text-[#111111]"
+                        >
+                          복사
+                        </button>
+                      ) : null}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-3">
+                    {myRegistration.answers.length > 0 ? (
+                      myRegistration.answers.map((answer) => (
+                        <div
+                          key={answer.fieldId}
+                          className="rounded-2xl border border-[#ededed] bg-[#fcfcfc] px-4 py-4"
+                        >
+                          <p className="text-xs font-medium text-[#808080]">{answer.label}</p>
+                          <p className="mt-2 text-sm font-semibold text-[#111111]">
+                            {answer.value || "-"}
+                          </p>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="rounded-2xl border border-dashed border-[#d9d9d9] bg-[#fcfcfc] px-4 py-5 text-sm text-[#666666]">
+                        추가 응답 없이 신청된 행사입니다.
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="mt-4 flex flex-col gap-4">
+                  {eventDetail.formFields.length > 0 ? (
+                    eventDetail.formFields.map((field) => (
+                      <div key={field.id}>
+                        <label className="mb-2 block text-xs font-medium text-[#666666]">
+                          {field.label} {field.required ? "(필수)" : "(선택)"}
+                        </label>
+                        {field.type === "SELECT" ? (
+                          <select
+                            value={registrationDraft[String(field.id)] ?? ""}
+                            onChange={(event) =>
+                              handleRegistrationDraftChange(field.id, event.target.value)
+                            }
+                            className="h-12 w-full rounded-2xl border border-[#d5d5d5] bg-white px-4 outline-none focus:border-[#702f95]"
+                          >
+                            <option value="">선택하세요</option>
+                            {field.options.map((option) => (
+                              <option key={option} value={option}>
+                                {option}
+                              </option>
+                            ))}
+                          </select>
+                        ) : (
+                          <input
+                            type="text"
+                            value={registrationDraft[String(field.id)] ?? ""}
+                            onChange={(event) =>
+                              handleRegistrationDraftChange(field.id, event.target.value)
+                            }
+                            placeholder={`${field.label} 입력`}
+                            className="h-12 w-full rounded-2xl border border-[#d5d5d5] px-4 outline-none focus:border-[#702f95]"
+                          />
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="rounded-2xl border border-dashed border-[#d9d9d9] bg-[#fcfcfc] px-4 py-5 text-sm text-[#666666]">
+                      추가 질문 없이 바로 신청할 수 있는 행사입니다.
+                    </div>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={handleRegister}
+                    disabled={isRegistering}
+                    className="h-12 rounded-2xl bg-[#111111] text-sm font-semibold text-white disabled:cursor-not-allowed disabled:bg-[#d9d9d9]"
+                  >
+                    {isRegistering ? "신청 처리 중..." : "행사 신청하기"}
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 

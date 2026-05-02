@@ -122,6 +122,43 @@ export interface EventRegistration {
   }>;
 }
 
+interface MyEventRegistrationResponse {
+  registrationId: number;
+  qrToken: string | null;
+  status: string | null;
+  createdAt: string | null;
+  answers: RegistrationAnswerResponse[] | null;
+}
+
+interface CreateEventRegistrationResponse {
+  registrationId: number;
+  qrToken: string | null;
+}
+
+export interface CreateEventRegistrationRequest {
+  answers: Array<{
+    fieldId: number;
+    value: string;
+  }>;
+}
+
+export interface CreatedEventRegistration {
+  registrationId: number;
+  qrToken: string;
+}
+
+export interface MyEventRegistration {
+  registrationId: number;
+  qrToken: string;
+  status: string;
+  createdAt: string;
+  answers: Array<{
+    fieldId: number;
+    label: string;
+    value: string;
+  }>;
+}
+
 function normalizeText(value: string | null | undefined) {
   return typeof value === "string" ? value.trim() : "";
 }
@@ -156,6 +193,14 @@ function mapEventDetail(response: EventDetailResponse): EventDetail {
   };
 }
 
+function mapAnswer(answer: RegistrationAnswerResponse) {
+  return {
+    fieldId: answer.fieldId,
+    label: normalizeText(answer.label) || `질문 ${answer.fieldId}`,
+    value: normalizeText(answer.value),
+  };
+}
+
 function mapEventRegistration(
   registration: EventRegistrationResponse,
 ): EventRegistration {
@@ -166,11 +211,19 @@ function mapEventRegistration(
       normalizeText(registration.username) || `user-${registration.userId}`,
     status: normalizeText(registration.status) || "UNKNOWN",
     qrToken: normalizeText(registration.qrToken),
-    answers: (registration.answers ?? []).map((answer) => ({
-      fieldId: answer.fieldId,
-      label: normalizeText(answer.label) || `질문 ${answer.fieldId}`,
-      value: normalizeText(answer.value),
-    })),
+    answers: (registration.answers ?? []).map(mapAnswer),
+  };
+}
+
+function mapMyEventRegistration(
+  registration: MyEventRegistrationResponse,
+): MyEventRegistration {
+  return {
+    registrationId: registration.registrationId,
+    qrToken: normalizeText(registration.qrToken),
+    status: normalizeText(registration.status) || "UNKNOWN",
+    createdAt: normalizeText(registration.createdAt),
+    answers: (registration.answers ?? []).map(mapAnswer),
   };
 }
 
@@ -235,4 +288,35 @@ export async function getEventRegistrations(eventId: number) {
   );
 
   return response.map(mapEventRegistration);
+}
+
+export async function getMyEventRegistration(eventId: number) {
+  const response = await apiRequest<MyEventRegistrationResponse>(
+    `/api/events/${eventId}/registrations/me`,
+    {
+      method: "GET",
+      auth: { type: "dev-user" },
+    },
+  );
+
+  return mapMyEventRegistration(response);
+}
+
+export async function createEventRegistration(
+  eventId: number,
+  body: CreateEventRegistrationRequest,
+) {
+  const response = await apiRequest<CreateEventRegistrationResponse>(
+    `/api/events/${eventId}/registrations`,
+    {
+      method: "POST",
+      auth: { type: "dev-user" },
+      body,
+    },
+  );
+
+  return {
+    registrationId: response.registrationId,
+    qrToken: normalizeText(response.qrToken),
+  } satisfies CreatedEventRegistration;
 }
