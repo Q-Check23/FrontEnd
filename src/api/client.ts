@@ -53,7 +53,7 @@ interface ApiRequestOptions
   query?: Record<string, QueryValue>;
 }
 
-const API_ORIGIN =
+export const API_ORIGIN =
   import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "") ?? DEFAULT_BASE_URL;
 const API_BASE_URL = `${API_ORIGIN}/api`;
 
