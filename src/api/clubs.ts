@@ -1,5 +1,7 @@
 import { apiRequest } from "./client";
 
+export type ClubRole = "OWNER" | "ADMIN" | "MEMBER";
+
 interface ClubSummaryResponse {
   clubId: number;
   clubName: string | null;
@@ -12,6 +14,19 @@ export interface ClubSummary {
   clubName: string;
   clubDescription: string;
   myRole: string;
+}
+
+export interface CreateClubRequest {
+  name: string;
+  description: string;
+  discordGuildId: string;
+  coverImageUrl: string;
+}
+
+export interface ClubResponse {
+  id: number;
+  name: string;
+  description: string;
 }
 
 function normalizeText(value: string | null | undefined) {
@@ -34,4 +49,12 @@ export async function getMyClubs() {
   });
 
   return response.map(mapClubSummary);
+}
+
+export function createClub(body: CreateClubRequest) {
+  return apiRequest<ClubResponse>("/clubs", {
+    method: "POST",
+    auth: { type: "dev-user" },
+    body,
+  });
 }
