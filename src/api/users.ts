@@ -46,3 +46,25 @@ export async function updateMyProfile(body: UpdateMyProfileRequest) {
 
   return mapProfile(response);
 }
+
+export interface UserSearchResult {
+  userId: number;
+  username: string;
+  realName: string | null;
+}
+
+export interface SearchUsersParams {
+  nickname?: string;
+  email?: string;
+}
+
+export function searchUsers(params: SearchUsersParams) {
+  return apiRequest<UserSearchResult[]>("/users/search", {
+    method: "GET",
+    auth: { type: "dev-user" },
+    query: {
+      nickname: params.nickname,
+      email: params.email,
+    },
+  });
+}
