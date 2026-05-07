@@ -148,6 +148,7 @@ export async function apiRequest<T>(
 
   try {
     response = await fetch(requestUrl, {
+      credentials: "include",
       ...init,
       headers: buildHeaders({ auth, headers, body }),
       ...(requestBody !== undefined ? { body: requestBody } : {}),
