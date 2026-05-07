@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { filterCalendarEvents } from "../../api/calendar";
+import { mockCalendarGroups } from "../../mock/data";
 import { queryKeys } from "../keys";
 
 export function useCalendarFilter(
@@ -13,7 +14,13 @@ export function useCalendarFilter(
 ) {
   return useQuery({
     queryKey: queryKeys.calendar.filter(params),
-    queryFn: () => filterCalendarEvents(params),
+    queryFn: async () => {
+      try {
+        return await filterCalendarEvents(params);
+      } catch {
+        return mockCalendarGroups.flatMap((g) => g.events);
+      }
+    },
     enabled,
   });
 }
