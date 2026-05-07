@@ -1,6 +1,6 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { checkNicknameAvailability } from "../../api/auth";
-import { ToastContext } from "../../context/ToastContext";
+import { useToastStore } from "../../stores/useToastStore";
 
 export default function Login() {
   const [name, setName] = useState("");
@@ -11,7 +11,7 @@ export default function Login() {
   const [checkedNickname, setCheckedNickname] = useState("");
   const [nicknameStatus, setNicknameStatus] = useState("idle");
   const [nicknameMessage, setNicknameMessage] = useState("");
-  const toast = useContext(ToastContext);
+  const toast = useToastStore();
 
   const domains = ["직접입력", "gmail.com", "naver.com", "daum.net", "kakao.com"];
 

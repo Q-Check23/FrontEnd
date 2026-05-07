@@ -1,66 +1,64 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import { QueryClientProvider } from "@tanstack/react-query"
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
+import { queryClient } from "./lib/query-client"
 import "./App.css"
 
-import CreateEvent from "./pages/CreateEvent/CreateEvent";
-import { ThemeProvider } from "./context/ThemeContext";
-import { ToastProvider } from "./context/ToastContext";
-import FormBuilder from "./pages/FormBuilder/FormBuilder";
-import EventParticipants from "./pages/Participants/EventParticipants";
 import DashBoard from "./pages/DashBoard/DashBoard";
 import QRInfo from "./pages/QRInfo/QRInfo";
-import EventInfo from "./pages/EventInfo/EventInfo";
-import QRCheckIn from "./pages/QRCheckIn/QRCheckIn";
-import ParticipantRegister from "./components/ParticipantRegister";
-import EventManage from "./pages/EventManage/EventManage";
-import EventAnalysis from "./pages/EventAnalysis/EventAnalysis";
 import Landing from "./pages/Landing/Landing"
 import Login_Landing from "./pages/Landing/Login-Landing"
 import Login from "./pages/Login/Login"
 import Home from "./pages/Home/Home"
-import Meeting from "./pages/Meeting/Meeting"
+import Meeting from "./pages/Meetings/Meetings"
 import Profile from "./pages/Profile/ProfilePage"
-import GroupDetail from "./pages/GroupDetail/GroupDetail";
+import GroupNotice from "./pages/GroupNotice/GroupNotice";
+import GroupEvents from "./pages/GroupEvents/GroupEvents";
+import GroupMembers from "./pages/GroupMembers/GroupMembers";
+import EventInfo from "./pages/EventInfo/EventInfo";
+import QRCheckIn from "./pages/QRCheckIn/QRCheckIn";
+import EventParticipants from "./pages/EventParticipants/EventParticipants";
+import CreateEvent from "./pages/CreateEvent/CreateEvent";
 
 import Layout from "./components/Layout"
+import ToastContainer from "./components/ToastContainer"
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <ToastProvider>
-        <Router>
-          <div className="App">
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <div className="App">
 
-            <Routes>
+          <Routes>
 
-              <Route path="/event-creating" element={<CreateEvent/>}></Route>
-              <Route path="/form-building" element={<FormBuilder/>}></Route>
-              <Route path="/participants" element={<EventParticipants/>}></Route>
-              <Route path="/dashboard" element={<DashBoard/>}></Route>
-              <Route path="/qr-info" element={<QRInfo/>}></Route>
-              <Route path="/event-info" element={<EventInfo/>}></Route>
-              <Route path="/qr-checkin" element={<QRCheckIn/>}></Route>
-              <Route path="/qr-checkin" element={<QRCheckIn/>}></Route>
-              <Route path="/event-manage" element={<EventManage/>}></Route>
-              <Route path="/event-analysis" element={<EventAnalysis/>}></Route>
-              <Route path="/group-detail" element={<GroupDetail />} />
+            <Route path="/dashboard" element={<DashBoard/>}></Route>
+            <Route path="/qr-info" element={<QRInfo/>}></Route>
+            <Route path="/group-notice" element={<GroupNotice />} />
+            <Route path="/group-events" element={<GroupEvents />} />
+            <Route path="/group-members" element={<GroupMembers />} />
+            <Route path="/event-info" element={<EventInfo />} />
+            <Route path="/qrcheck-in" element={<QRCheckIn />} />
+            <Route path="/participants" element={<EventParticipants />} />
+            <Route path="/create-event" element={<CreateEvent />} />
 
-              {/* BottomBar 없는 페이지 */}
-              <Route path="/" element={<Landing />} />
-              <Route path="/login-landing" element={<Login_Landing />} />
-              <Route path="/login" element={<Login />} />
+            {/*<Route path="/" element={<Landing />} />*/}
+            {/*<Route path="/login-landing" element={<Login_Landing />} />*/}
+            {/*<Route path="/login" element={<Login />} />*/}
 
-              {/* BottomBar 있는 페이지 */}
-              <Route element={<Layout />}>
-                <Route path="/home" element={<Home />} />
-                <Route path="/meeting" element={<Meeting />} />
-                <Route path="/profile" element={<Profile />} />
-              </Route>
+            {/* BottomBar 있는 페이지 */}
+            <Route element={<Layout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/home" element={<Home />} />
+              <Route path="/meeting" element={<Meeting />} />
+              <Route path="/profile" element={<Profile />} />
+            </Route>
 
-            </Routes>
+          </Routes>
 
-          </div>
-        </Router>
-      </ToastProvider>
-    </ThemeProvider>
+        </div>
+      </Router>
+      <ToastContainer />
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   )
 }
