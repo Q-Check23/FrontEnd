@@ -38,3 +38,9 @@ export function signup(payload: SignupRequest, signupToken: string) {
     auth: { type: "bearer", token: signupToken },
   });
 }
+
+export function refreshAccessToken() {
+  return apiRequest<AuthTokenResponse>("/auth/refresh", {
+    method: "POST",
+  });
+}
