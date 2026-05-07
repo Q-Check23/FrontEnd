@@ -49,13 +49,15 @@ interface ApiRequestOptions
   query?: Record<string, QueryValue>;
 }
 
-const API_BASE_URL =
+const API_ORIGIN =
   import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "") ?? DEFAULT_BASE_URL;
+const API_BASE_URL = `${API_ORIGIN}/api`;
 
 const DEV_USER_ID = import.meta.env.VITE_DEV_USER_ID ?? DEFAULT_DEV_USER_ID;
 
 function buildUrl(path: string, query?: Record<string, QueryValue>) {
-  const url = new URL(path, `${API_BASE_URL}/`);
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  const url = new URL(`${API_BASE_URL}${normalizedPath}`);
 
   if (!query) {
     return url.toString();
