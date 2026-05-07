@@ -26,9 +26,47 @@ export default {
           white: "#FFFFFF",
         },
         primary: {
+          DEFAULT: "#9f00b4",
           bright: "#E101FF",
-          dark: "#870199"
-        }
+          dark: "#870199",
+          container: "#c700e2",
+          fixed: "#ffd6fc",
+          "fixed-dim": "#fbaaff",
+        },
+        secondary: {
+          DEFAULT: "#9b24ac",
+          container: "#f278fe",
+          fixed: "#ffd6fc",
+          "fixed-dim": "#fcaaff",
+        },
+        tertiary: {
+          DEFAULT: "#3c49d7",
+          container: "#5764f1",
+          fixed: "#e0e0ff",
+          "fixed-dim": "#bec2ff",
+        },
+        surface: {
+          DEFAULT: "#fcf9f8",
+          dim: "#dcd9d9",
+          bright: "#fcf9f8",
+          container: "#f0eded",
+          "container-low": "#f6f3f2",
+          "container-high": "#eae7e7",
+          "container-highest": "#e5e2e1",
+          "container-lowest": "#ffffff",
+          variant: "#e5e2e1",
+        },
+        "on-surface": {
+          DEFAULT: "#1b1b1c",
+          variant: "#544153",
+        },
+        "on-primary": {
+          DEFAULT: "#ffffff",
+        },
+        outline: {
+          DEFAULT: "#867085",
+          variant: "#d9bfd5",
+        },
       },
 
       // 2) 라인하이트 토큰 (요구사항 그대로)

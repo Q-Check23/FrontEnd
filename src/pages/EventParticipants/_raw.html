@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+
+<html class="light" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#000569",
+                        "surface-dim": "#dcd9d9",
+                        "on-secondary-container": "#6d007c",
+                        "tertiary-fixed": "#e0e0ff",
+                        "primary-fixed": "#ffd6fc",
+                        "surface-container-high": "#eae7e7",
+                        "on-secondary-fixed": "#36003e",
+                        "on-tertiary-container": "#fffbff",
+                        "surface-container-low": "#f6f3f2",
+                        "surface-container": "#f0eded",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed-variant": "#222fc2",
+                        "on-surface-variant": "#544153",
+                        "secondary-container": "#f278fe",
+                        "on-error-container": "#93000a",
+                        "inverse-on-surface": "#f3f0ef",
+                        "surface-bright": "#fcf9f8",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed-dim": "#bec2ff",
+                        "secondary-fixed-dim": "#fcaaff",
+                        "error": "#ba1a1a",
+                        "surface-tint": "#a300b9",
+                        "on-surface": "#1b1b1c",
+                        "surface-container-highest": "#e5e2e1",
+                        "on-secondary-fixed-variant": "#7c008d",
+                        "on-primary-fixed": "#36003e",
+                        "inverse-primary": "#fbaaff",
+                        "surface": "#fcf9f8",
+                        "secondary": "#9b24ac",
+                        "inverse-surface": "#303030",
+                        "on-primary-fixed-variant": "#7c008d",
+                        "on-primary-container": "#fffbff",
+                        "primary-container": "#c700e2",
+                        "background": "#fcf9f8",
+                        "tertiary-container": "#5764f1",
+                        "primary-fixed-dim": "#fbaaff",
+                        "outline": "#867085",
+                        "on-error": "#ffffff",
+                        "surface-variant": "#e5e2e1",
+                        "outline-variant": "#d9bfd5",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#3c49d7",
+                        "secondary-fixed": "#ffd6fc",
+                        "on-tertiary": "#ffffff",
+                        "on-background": "#1b1b1c",
+                        "primary": "#9f00b4",
+                        "on-secondary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "container-padding": "20px",
+                        "stack-gap": "12px",
+                        "grid-gutter": "16px",
+                        "section-gap": "24px"
+                    },
+                    "fontFamily": {
+                        "h1": ["Manrope"],
+                        "label-sm": ["Manrope"],
+                        "body-md": ["Manrope"],
+                        "body-lg": ["Manrope"],
+                        "h2": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "500"}],
+                        "h2": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-nav {
+            background: rgba(252, 249, 248, 0.8);
+            backdrop-filter: blur(12px);
+        }
+        .vivid-gradient {
+            background: linear-gradient(135deg, #9f00b4 0%, #c700e2 100%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- Top AppBar -->
+<header class="bg-surface dark:bg-surface-dim flex items-center px-container-padding h-14 w-full shadow-sm sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim cursor-pointer active:opacity-70 transition-colors" data-icon="arrow_back">arrow_back</span>
+<h1 class="font-h2 text-h2 text-on-surface">행사 상세 설정</h1>
+</div>
+</header>
+<!-- Tabs Navigation -->
+<nav class="glass-nav sticky top-14 z-40 px-container-padding">
+<div class="flex items-center justify-between border-b border-outline-variant/30">
+<button class="flex-1 py-4 text-center font-label-sm text-label-sm text-on-surface-variant/60 hover:bg-surface-container-high transition-colors">
+                등록 QR 정보
+            </button>
+<button class="flex-1 py-4 text-center font-label-sm text-label-sm text-on-surface-variant/60 hover:bg-surface-container-high transition-colors">
+                대시보드
+            </button>
+<button class="flex-1 py-4 text-center font-label-sm text-label-sm text-primary font-bold border-b-2 border-primary">
+                참가자 목록
+            </button>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="p-container-padding pb-section-gap">
+<!-- Header Section -->
+<section class="mb-section-gap flex items-center justify-between">
+<div>
+<h2 class="font-h1 text-h1 text-on-surface">참가자 목록</h2>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1 mt-1">
+                    현재 참여 인원 
+                    <span class="text-primary font-bold">8/12명</span>
+</p>
+</div>
+<button class="vivid-gradient text-on-primary px-4 py-2 rounded-xl font-label-sm text-label-sm flex items-center gap-2 shadow-lg active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="person_add">person_add</span>
+                초대하기
+            </button>
+</section>
+<!-- Participant List -->
+<div class="space-y-stack-gap">
+<!-- Item: Admin -->
+<div class="bg-surface-container-lowest rounded-xl p-4 flex items-center justify-between shadow-[0px_4px_20px_rgba(0,0,0,0.04)] hover:shadow-md transition-shadow">
+<div class="flex items-center gap-4">
+<div class="relative flex-shrink-0">
+<img alt="김민우" class="w-12 h-12 rounded-full object-cover border-2 border-primary-fixed shadow-sm" src="https://lh3.googleusercontent.com/aida/ADBb0ugXq5PcGYxXgCk6DQTzpBF836lfX1AblcU2RNqsTL_5uVkXausjLofLTh1rqexRSmzbHgUJx6pKOMogtFywjdCE9rOdPokQ0L8Pzdjyw6Dm-3GaoXBkAimIKUUhX3Rzz-QAS8NPnsiaugYPalSMsQA5838UwAaz6bCH2TIg631Ta_Tu-M4s53cAULKmFdpn1zqPY63wshbCV07JASn1A4z7vbWESkaiYq0xvIUDIkgu90KMy4zLa0lMm4g8wW9B7LsFXHtI0oic"/>
+<div class="absolute -bottom-1 -right-1 bg-primary p-0.5 rounded-full border-2 border-surface-container-lowest flex items-center justify-center">
+<span class="material-symbols-outlined text-[12px] text-on-primary leading-none" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-body-lg text-body-lg text-on-surface">김민우</span>
+<span class="bg-secondary-container/20 text-on-secondary-fixed-variant px-2 py-0.5 rounded-full font-label-sm text-[10px] uppercase tracking-wider">운영진</span>
+</div>
+<p class="font-label-sm text-on-surface-variant/70">minu.dev@example.com</p>
+</div>
+</div>
+<div class="flex items-center gap-1.5 bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full">
+<span class="material-symbols-outlined text-[18px] flex items-center justify-center" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-label-sm text-label-sm">참여</span>
+</div>
+</div>
+<!-- Item: Participant 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-4 flex items-center justify-between shadow-[0px_4px_20px_rgba(0,0,0,0.04)]">
+<div class="flex items-center gap-4">
+<img alt="김지현" class="w-12 h-12 rounded-full object-cover border-2 border-outline-variant shadow-sm flex-shrink-0" src="https://lh3.googleusercontent.com/aida/ADBb0uijJIuKf-rcIUwu2jZ9ilUPGa6LcES2_dH9DCYrB9CzwPmII0l5wdBcieqSKpNPJpBwLZBSH5SkRdEu4ICpm983jVVrptXoiuwQbmWk5MXfEL11tJVRcNeW01C9hjCt_K7Vc34WWZn0WBkeE_ku_rFFCdhh4vO6eLMtWGeXPgBSMXb36BuE1UUWj71IhyTKqhYC-1_uLP26NP10JYBfd82cP3ZSkgdTBhmpWwvyiDw87-UT5NJMQxYkpi4ptKDdP3LUUkEovkmPRQ"/>
+<div>
+<span class="font-body-lg text-body-lg text-on-surface">김지현</span>
+<p class="font-label-sm text-on-surface-variant/70">jh.kim@example.com</p>
+</div>
+</div>
+<div class="flex items-center gap-1.5 bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full">
+<span class="material-symbols-outlined text-[18px] flex items-center justify-center" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-label-sm text-label-sm">참여</span>
+</div>
+</div>
+<!-- Item: Participant 2 (Waiting) -->
+<div class="bg-surface-container-lowest rounded-xl p-4 flex items-center justify-between shadow-[0px_4px_20px_rgba(0,0,0,0.04)]">
+<div class="flex items-center gap-4">
+<img alt="이준서" class="w-12 h-12 rounded-full object-cover border-2 border-outline-variant shadow-sm flex-shrink-0" src="https://lh3.googleusercontent.com/aida/ADBb0uiZ_WOTssSTIaC7diNMptysrBrotdmZ1OLoSAyrogM8ZTsGOPlQUTWWcjwOvyb31Y1wewWj-624RyR4cizQzd0E36XiNWxldnRMtvu8TRgiIDjtEtOpfAhydT09XixNaY2-xNo59ujWwSu0JbqviZRzLaGlwzZgYLkYCcP7IyCM9Pr3YGewYrVln5MNKN46sxBJcvT0rHs_WwfPbjSbshJ8Fu1PeZxkpUsTXtznVpi9IB-qzpsXRWiqlBbTmbIvJ_fCfPdYQDyC"/>
+<div>
+<span class="font-body-lg text-body-lg text-on-surface">이준서</span>
+<p class="font-label-sm text-on-surface-variant/70">junseo_lee@example.com</p>
+</div>
+</div>
+<div class="flex items-center gap-1.5 bg-amber-100 text-amber-700 px-3 py-1 rounded-full">
+<span class="material-symbols-outlined text-[18px] flex items-center justify-center" data-icon="schedule">schedule</span>
+<span class="font-label-sm text-label-sm">대기</span>
+</div>
+</div>
+<!-- Item: Participant 3 (Absent) -->
+<div class="bg-surface-container-lowest rounded-xl p-4 flex items-center justify-between shadow-[0px_4px_20px_rgba(0,0,0,0.04)] opacity-70">
+<div class="flex items-center gap-4">
+<img alt="박서연" class="w-12 h-12 rounded-full object-cover border-2 border-outline-variant shadow-sm flex-shrink-0" src="https://lh3.googleusercontent.com/aida/ADBb0uhzKGM6xORKMnY_Huj-CA3-ISDSq6OF-kRhlwnZkwwZcISEJSX1TdX4qxPvyHyPTW5iGgcdPyPpzD3KJl3pURMg2LpTbBtmY5iYgkUVkTj3pg67eFelrcu6szfDgW0VGJ-Qd-YdgR3Cy2_zTxDmzg284sn53EnIPLFvW8KYC03_pHaF4arLrFw1PiT25yTeUSB9qI12oGzeua6jb5qKKVlgEIJ7Fs2JrYTc8FI131RbD_1Kyk7hTB-4NTP7y6Tb4-khh4zdGylPPw"/>
+<div>
+<span class="font-body-lg text-body-lg text-on-surface">박서연</span>
+<p class="font-label-sm text-on-surface-variant/70">seoyeon.p@example.com</p>
+</div>
+</div>
+<div class="flex items-center gap-1.5 bg-surface-container-high text-on-surface-variant px-3 py-1 rounded-full">
+<span class="material-symbols-outlined text-[18px] flex items-center justify-center" data-icon="cancel">cancel</span>
+<span class="font-label-sm text-label-sm">불참</span>
+</div>
+</div>
+<!-- Item: Participant 4 -->
+<div class="bg-surface-container-lowest rounded-xl p-4 flex items-center justify-between shadow-[0px_4px_20px_rgba(0,0,0,0.04)]">
+<div class="flex items-center gap-4">
+<img alt="최현우" class="w-12 h-12 rounded-full object-cover border-2 border-outline-variant shadow-sm flex-shrink-0" src="https://lh3.googleusercontent.com/aida/ADBb0uj4KiYSKBzHFq7oQDtodwpr7gIRKSbhCKlQuCvSmxsf2j0T2KMJw8v0uTDwF3l4vL1UBYVC7bRFb5BvWEU8NLPh2KzMcfvlkWTVM_qnO4WYdp3Hi_Z-zX_fer-u1g4ymSanL0_PkSPmUXndA77ETcM3cV2K9Ur7HnXE88ysOQRtiIhi9hwGSTq6S0Fpnvt-n_g8Dh8Xdz4B3Su-TI1szlFYSNmNVtyh9Vy9juz63gn2QjGkFjxDpJgBlvnORC19V3c7IM1ImqLbFg"/>
+<div>
+<span class="font-body-lg text-body-lg text-on-surface">최현우</span>
+<p class="font-label-sm text-on-surface-variant/70">hwoo.choi@example.com</p>
+</div>
+</div>
+<div class="flex items-center gap-1.5 bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full">
+<span class="material-symbols-outlined text-[18px] flex items-center justify-center" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-label-sm text-label-sm">참여</span>
+</div>
+</div>
+<!-- Discord Sync Status Section -->
+</div>
+</main>
+<!-- FAB (Invite) - Suppressed as per Task-Focused/Details Screen logic, but button included in header section -->
+</body></html>

@@ -1,135 +1,80 @@
-import { useState } from "react";
-import BottomBar from "../../components/BottomBar";
+import { useSearchParams } from "react-router-dom";
+import BackHeader from "../../components/BackHeader";
 import EventManageTabs from "../../components/EventManageTabs";
 
 export default function QRInfo() {
-  const [copied, setCopied] = useState(false);
+  const [searchParams] = useSearchParams();
+  const eventId = searchParams.get("eventId");
 
-  const registrationUrl = "https://www.qcheck.com";
-  const qrCodeImage = "http://localhost:3845/assets/7394bbd9e0ddace986aa0d1ce1a7dc798ca61fab.png";
+  // TODO: API 연동 - 사전 등록 링크 조회
+  const registrationLink = `https://www.qcheck.com/register/${eventId ?? ""}`;
 
-  const handleCopyUrl = () => {
-    navigator.clipboard.writeText(registrationUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const handleDownloadQR = () => {
-    // Download QR code image
-    const link = document.createElement("a");
-    link.href = qrCodeImage;
-    link.download = "qr-code.png";
-    link.click();
-  };
-
-  const handlePrintQR = () => {
-    // Print QR code
-    const printWindow = window.open(qrCodeImage);
-    if (printWindow) {
-      printWindow.print();
-    }
-  };
+  function handleCopyLink() {
+    void navigator.clipboard.writeText(registrationLink);
+  }
 
   return (
-    <div className="relative w-full h-full bg-white flex flex-col">
-      {/* Header */}
-      <div className="flex items-center justify-center py-5 border-b border-[#f0f0f0]">
-        <h1 className="text-2xl font-medium text-black">KUIT</h1>
-      </div>
-
+    <div className="bg-surface h-full overflow-y-auto">
+      <BackHeader title="행사 상세 설정" />
       <EventManageTabs activeTab="qr" />
 
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto bg-white px-4 py-6">
-        <div className="flex flex-col gap-8 max-w-md mx-auto">
-          {/* Registration Link Section */}
-          <div className="flex flex-col gap-2">
-            <h2 className="text-xl font-medium text-black">사전 등록 링크</h2>
-            <div className="bg-[#f7f7f7] border border-[#f0f0f0] rounded-lg px-3 py-3 flex items-center justify-between h-12">
-              <p className="text-xl font-medium text-black flex-1 truncate">
-                {registrationUrl}
-              </p>
-              <button
-                onClick={handleCopyUrl}
-                title="Copy URL"
-                className="flex-shrink-0 ml-2 p-1.5 hover:bg-[#eee] rounded transition-colors"
-              >
-                <svg
-                  className="w-6 h-6 text-gray-700"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <rect x="3" y="3" width="8" height="8" />
-                  <rect x="13" y="3" width="8" height="8" />
-                  <rect x="3" y="13" width="8" height="8" />
-                  <rect x="13" y="13" width="8" height="8" />
-                </svg>
-              </button>
-            </div>
-            {copied && (
-              <p className="text-sm text-green-600">복사되었습니다</p>
-            )}
+      <main className="pt-14 px-5 pb-24">
+        {/* 사전 등록 링크 */}
+        <section className="mb-6">
+          <h3 className="text-base font-semibold mb-3 text-on-surface">
+            사전 등록 링크
+          </h3>
+          <div className="flex items-center gap-2 bg-surface-container-low p-4 rounded-xl border border-outline-variant focus-within:border-primary transition-colors">
+            <input
+              type="text"
+              readOnly
+              value={registrationLink}
+              className="flex-1 bg-transparent border-none focus:outline-none focus:ring-0 text-sm text-on-surface"
+            />
+            <button
+              onClick={handleCopyLink}
+              className="text-primary hover:bg-primary-container/10 p-2 rounded-lg transition-colors active:scale-95"
+            >
+              <span className="material-symbols-outlined">content_copy</span>
+            </button>
           </div>
+          <p className="text-xs font-semibold text-on-surface-variant mt-2 px-1">
+            참가자들에게 전달할 공식 사전 등록 페이지 링크입니다.
+          </p>
+        </section>
 
-          {/* QR Code Section */}
-          <div className="flex flex-col gap-3">
-            <h2 className="text-xl font-medium text-black">사전 등록 QR 코드</h2>
-
-            {/* QR Code Display */}
-            <div className="bg-[#fafafa] border border-[#e9e9e9] rounded-lg p-8 flex items-center justify-center aspect-square">
-              <img
-                src={qrCodeImage}
-                alt="QR Code"
-                className="w-48 h-48 object-cover"
-              />
+        {/* QR 코드 */}
+        <section className="mb-6">
+          <h3 className="text-base font-semibold mb-3 text-on-surface">
+            사전 등록 QR 코드
+          </h3>
+          <div className="bg-surface-container-lowest rounded-xl p-8 shadow-[0px_4px_20px_rgba(0,0,0,0.04)] flex flex-col items-center justify-center border border-outline-variant/30">
+            {/* QR 코드 영역 */}
+            <div className="relative w-64 h-64 bg-white p-4 rounded-xl shadow-inner flex items-center justify-center">
+              <div className="text-on-surface-variant text-sm">
+                QR 코드 영역
+              </div>
+              {/* 코너 가이드 */}
+              <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-primary rounded-tl-lg" />
+              <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-primary rounded-tr-lg" />
+              <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-primary rounded-bl-lg" />
+              <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-primary rounded-br-lg" />
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex gap-3">
-              <button
-                onClick={handleDownloadQR}
-                className="flex-1 bg-[rgba(253,253,253,0.5)] border border-[#d9d9d9] rounded-lg px-6 py-3 flex items-center justify-center gap-1 hover:bg-[#f5f5f5] transition-colors h-12"
-              >
-                <svg
-                  className="w-6 h-6 text-black"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                  <polyline points="7 10 12 15 17 10" />
-                  <line x1="12" y1="15" x2="12" y2="3" />
-                </svg>
-                <span className="text-lg font-medium text-black">다운로드</span>
+            {/* 버튼 */}
+            <div className="mt-8 flex w-full gap-3">
+              <button className="flex-1 bg-gradient-to-br from-primary to-secondary text-white flex items-center justify-center gap-2 py-4 rounded-xl text-base font-medium shadow-lg active:scale-[0.98] transition-all">
+                <span className="material-symbols-outlined">download</span>
+                다운로드
               </button>
-
-              <button
-                onClick={handlePrintQR}
-                className="flex-1 bg-[rgba(253,253,253,0.5)] border border-[#d9d9d9] rounded-lg px-6 py-3 flex items-center justify-center gap-1 hover:bg-[#f5f5f5] transition-colors h-12"
-              >
-                <svg
-                  className="w-6 h-6 text-black"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <polyline points="6 9 6 2 18 2 18 9" />
-                  <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-                  <rect x="6" y="14" width="12" height="8" />
-                </svg>
-                <span className="text-lg font-medium text-black">인쇄하기</span>
+              <button className="flex-1 border-2 border-primary text-primary flex items-center justify-center gap-2 py-4 rounded-xl text-base font-medium hover:bg-primary/5 active:scale-[0.98] transition-all">
+                <span className="material-symbols-outlined">print</span>
+                인쇄하기
               </button>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Bottom Navigation */}
-      <BottomBar activeItem="activity" />
+        </section>
+      </main>
     </div>
   );
 }

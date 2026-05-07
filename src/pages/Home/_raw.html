@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface": "#fcf9f8",
+                      "surface-container-highest": "#e5e2e1",
+                      "on-surface": "#1b1b1c",
+                      "on-surface-variant": "#544153",
+                      "on-tertiary-container": "#fffbff",
+                      "primary": "#9f00b4",
+                      "on-secondary-fixed-variant": "#7c008d",
+                      "on-primary-fixed": "#36003e",
+                      "error": "#ba1a1a",
+                      "on-primary-fixed-variant": "#7c008d",
+                      "on-background": "#1b1b1c",
+                      "secondary-fixed": "#ffd6fc",
+                      "on-tertiary-fixed-variant": "#222fc2",
+                      "primary-fixed-dim": "#fbaaff",
+                      "on-tertiary-fixed": "#000569",
+                      "error-container": "#ffdad6",
+                      "on-secondary": "#ffffff",
+                      "inverse-on-surface": "#f3f0ef",
+                      "inverse-surface": "#303030",
+                      "outline-variant": "#d9bfd5",
+                      "primary-container": "#c700e2",
+                      "inverse-primary": "#fbaaff",
+                      "on-error": "#ffffff",
+                      "tertiary-container": "#5764f1",
+                      "on-primary-container": "#fffbff",
+                      "surface-container": "#f0eded",
+                      "background": "#fcf9f8",
+                      "surface-container-low": "#f6f3f2",
+                      "outline": "#867085",
+                      "on-primary": "#ffffff",
+                      "surface-tint": "#a300b9",
+                      "secondary-container": "#f278fe",
+                      "on-error-container": "#93000a",
+                      "tertiary-fixed-dim": "#bec2ff",
+                      "surface-bright": "#fcf9f8",
+                      "on-secondary-fixed": "#36003e",
+                      "primary-fixed": "#ffd6fc",
+                      "on-secondary-container": "#6d007c",
+                      "surface-container-high": "#eae7e7",
+                      "tertiary": "#3c49d7",
+                      "secondary-fixed-dim": "#fcaaff",
+                      "secondary": "#9b24ac",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-dim": "#dcd9d9",
+                      "on-tertiary": "#ffffff",
+                      "tertiary-fixed": "#e0e0ff",
+                      "surface-variant": "#e5e2e1"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "unit": "4px",
+                      "grid-gutter": "16px",
+                      "stack-gap": "12px",
+                      "section-gap": "24px",
+                      "container-padding": "20px"
+              },
+              "fontFamily": {
+                      "h1": ["Manrope"],
+                      "h2": ["Manrope"],
+                      "body-lg": ["Manrope"],
+                      "body-md": ["Manrope"],
+                      "label-sm": ["Manrope"]
+              },
+              "fontSize": {
+                      "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "h2": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "500"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-md">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md border-b border-outline-variant/20 dark:border-outline/10 shadow-sm dark:shadow-none">
+<div class="flex items-center justify-between px-container-padding h-16 w-full">
+<div class="flex items-center gap-stack-gap">
+<span class="material-symbols-outlined text-primary" data-icon="qr_code_scanner">qr_code_scanner</span>
+<h1 class="font-h1 text-h1 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Q-check</h1>
+</div>
+<div class="w-8 h-8 rounded-full overflow-hidden border-2 border-primary/20">
+<img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0uhpVStE_UJcXgWyfN3M1Gea0PYsmjceJqRzKuioQ6AT8ODrQ4PVwfypO8JNKe-F3yAPfY8QoCti-_VJ73O9FXUZBDMOnv8wfVBRVDPrFM6RpeZv3iztD8QScsAc-BguqmiBWAmRMAs9a9eSBxyiQoSKfiJAww1LwLSNhlBBkGr0U5eZmgeHOO5-E9gNJjn0uIXl2_uQaoyitYpi9nOaBwJW_Bkn4_pCJUvlxm753Q2nxu9QGVVWyrFFHs3n-cAahFTjGhjTK9VFdw"/>
+</div>
+</div>
+</header>
+<main class="pt-20 pb-24 px-container-padding">
+<!-- Calendar Section -->
+<section class="mb-section-gap">
+<div class="flex items-center justify-between mb-stack-gap">
+<h2 class="font-h2 text-h2 text-on-surface">Sep 2025</h2>
+<div class="flex gap-unit">
+<button class="p-unit rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">chevron_left</span>
+</button>
+<button class="p-unit rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-stack-gap shadow-sm">
+<div class="grid grid-cols-7 mb-stack-gap text-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant">S</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">M</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">T</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">W</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">T</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">F</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">S</span>
+</div>
+<div class="grid grid-cols-7 gap-y-stack-gap text-center">
+<!-- Week 1 & 2 omitted for brevity, focusing on the target row -->
+<span class="font-body-md text-on-surface-variant/40">31</span>
+<span class="font-body-md text-on-surface">1</span>
+<span class="font-body-md text-on-surface">2</span>
+<span class="font-body-md text-on-surface">3</span>
+<span class="font-body-md text-on-surface">4</span>
+<span class="font-body-md text-on-surface">5</span>
+<span class="font-body-md text-on-surface">6</span>
+<span class="font-body-md text-on-surface">7</span>
+<span class="font-body-md text-on-surface">8</span>
+<div class="relative flex items-center justify-center"><div class="absolute w-8 h-8 bg-surface-container-highest rounded-full"></div><span class="relative font-body-md text-on-surface">9</span></div>
+<span class="font-body-md text-on-surface">10</span>
+<div class="relative flex items-center justify-center"><div class="absolute w-8 h-8 bg-surface-container-highest rounded-full"></div><span class="relative font-body-md text-on-surface">11</span></div>
+<span class="font-body-md text-on-surface">12</span>
+<span class="font-body-md text-on-surface">13</span>
+<span class="font-body-md text-on-surface">14</span>
+<span class="font-body-md text-on-surface">15</span>
+<span class="font-body-md text-on-surface">16</span>
+<span class="font-body-md text-on-surface">17</span>
+<!-- Selected Date -->
+<div class="relative flex items-center justify-center">
+<div class="absolute w-8 h-8 bg-primary rounded-full"></div>
+<span class="relative font-body-md text-on-primary font-bold">18</span>
+</div>
+<span class="font-body-md text-on-surface">19</span>
+<span class="font-body-md text-on-surface">20</span>
+</div>
+</div>
+</section>
+<!-- Schedule Section -->
+<section>
+<div class="flex items-center gap-unit mb-stack-gap">
+<span class="w-1 h-6 bg-primary rounded-full"></span>
+<h3 class="font-h2 text-h2 text-on-surface">09/18 Wed</h3>
+</div>
+<div class="space-y-stack-gap">
+<!-- kuit Item -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-container-padding shadow-[0px_4px_20px_0px_rgba(0,0,0,0.04)] flex gap-grid-gutter items-center">
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">kuit</span>
+<span class="bg-primary/10 text-primary text-[10px] px-unit rounded font-bold">참여</span>
+</div>
+<h4 class="font-body-lg text-body-lg text-on-surface mt-1">서버 스터디, 웹 회식</h4>
+<div class="flex items-center gap-unit mt-1">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">location_on</span>
+<span class="font-body-md text-on-surface-variant">Gangnam Office B2</span>
+</div><div class="flex items-center gap-unit mt-1">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">schedule</span>
+<span class="font-body-md text-on-surface-variant">19:00 - 21:00</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</div>
+<!-- gdg Item -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-container-padding shadow-[0px_4px_20px_0px_rgba(0,0,0,0.04)] flex gap-grid-gutter items-center">
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">gdg</span>
+<span class="bg-surface-container-highest text-on-surface-variant text-[10px] px-unit rounded font-bold">미참여</span>
+</div>
+<h4 class="font-body-lg text-body-lg text-on-surface mt-1">세션</h4>
+<div class="flex items-center gap-unit mt-1">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">location_on</span>
+<span class="font-body-md text-on-surface-variant">Gangnam Office B2</span>
+</div><div class="flex items-center gap-unit mt-1">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">schedule</span>
+<span class="font-body-md text-on-surface-variant">19:00 - 21:00</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- Discord Sync Hint (Style Guidance) -->
+</main>
+<!-- FAB for Quick Check-in -->
+<!-- BottomNavBar -->
+<!-- Bottom Sheet Peeking -->
+<div class="fixed bottom-20 left-0 right-0 z-40">
+<div class="bg-surface-container-lowest border-t border-x border-outline-variant/30 rounded-t-xl shadow-[0px_-8px_20px_0px_rgba(0,0,0,0.04)] h-8 flex flex-col items-center justify-start pt-2">
+<!-- Grab Handle -->
+<div class="w-8 h-1.5 bg-outline-variant/50 rounded-full"></div>
+</div>
+</div><nav class="fixed bottom-0 w-full z-50 rounded-t-xl bg-surface/90 dark:bg-surface-dim/90 backdrop-blur-xl border-t border-outline-variant/30 dark:border-outline/20 shadow-[0px_-4px_20px_0px_rgba(0,0,0,0.04)]">
+<div class="flex justify-around items-center h-20 pb-safe px-unit">
+<!-- Home (Active) -->
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed-dim font-bold transition-transform active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="home" data-weight="fill">home</span>
+<span class="font-label-sm text-label-sm mt-1">Home</span>
+</a>
+<!-- Meetings -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:bg-primary/5 dark:hover:bg-primary-fixed-dim/5 rounded-full px-4 py-2 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-label-sm text-label-sm mt-1">Meetings</span>
+</a>
+<!-- My Page -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:bg-primary/5 dark:hover:bg-primary-fixed-dim/5 rounded-full px-4 py-2 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm mt-1">My Page</span>
+</a>
+</div>
+</nav>
+</body></html>

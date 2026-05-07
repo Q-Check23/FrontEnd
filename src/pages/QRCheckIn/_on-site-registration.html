@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>참가자 직접 등록 - Check-in</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#f3f0ef",
+                        "on-primary-container": "#fffbff",
+                        "tertiary-fixed-dim": "#bec2ff",
+                        "secondary": "#9b24ac",
+                        "error": "#ba1a1a",
+                        "inverse-surface": "#303030",
+                        "tertiary-fixed": "#e0e0ff",
+                        "tertiary": "#3c49d7",
+                        "on-secondary-fixed-variant": "#7c008d",
+                        "secondary-fixed": "#ffd6fc",
+                        "on-tertiary-container": "#fffbff",
+                        "primary-container": "#c700e2",
+                        "on-tertiary-fixed": "#000569",
+                        "on-secondary-container": "#6d007c",
+                        "on-primary-fixed-variant": "#7c008d",
+                        "surface-tint": "#a300b9",
+                        "background": "#fcf9f8",
+                        "outline-variant": "#d9bfd5",
+                        "surface": "#fcf9f8",
+                        "surface-bright": "#fcf9f8",
+                        "surface-container": "#f0eded",
+                        "secondary-container": "#f278fe",
+                        "primary-fixed-dim": "#fbaaff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-container": "#5764f1",
+                        "surface-container-high": "#eae7e7",
+                        "on-surface": "#1b1b1c",
+                        "on-primary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-background": "#1b1b1c",
+                        "primary-fixed": "#ffd6fc",
+                        "surface-container-highest": "#e5e2e1",
+                        "primary": "#9f00b4",
+                        "on-secondary": "#ffffff",
+                        "surface-container-low": "#f6f3f2",
+                        "on-primary-fixed": "#36003e",
+                        "surface-variant": "#e5e2e1",
+                        "on-secondary-fixed": "#36003e",
+                        "surface-dim": "#dcd9d9",
+                        "inverse-primary": "#fbaaff",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#867085",
+                        "on-tertiary-fixed-variant": "#222fc2",
+                        "on-surface-variant": "#544153",
+                        "secondary-fixed-dim": "#fcaaff",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "stack-gap": "12px",
+                        "grid-gutter": "16px",
+                        "section-gap": "24px",
+                        "container-padding": "20px"
+                    },
+                    "fontFamily": {
+                        "h1": ["Manrope"],
+                        "label-sm": ["Manrope"],
+                        "body-md": ["Manrope"],
+                        "body-lg": ["Manrope"],
+                        "h2": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "500" }],
+                        "h2": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-modal {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        .qr-scanner-guide {
+            border: 2px solid #9f00b4;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6);
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #c700e2 0%, #9f00b4 100%);
+        }
+    </style>
+</head>
+<body class="bg-[#000000] text-on-background font-body-md min-h-screen relative overflow-hidden">
+<!-- Background: Simulated Camera Scan View -->
+<!-- Modal Overlay Backdrop -->
+<div class="fixed inset-0 z-40 bg-[#000000] flex items-center justify-center p-grid-gutter">
+<!-- Registration Modal Card -->
+<div class="w-full max-w-sm glass-modal rounded-[16px] shadow-[0px_4px_20px_rgba(0,0,0,0.1)] p-section-gap flex flex-col items-center">
+<!-- Modal Header -->
+<div class="text-center mb-section-gap">
+<h1 class="font-h1 text-h1 text-on-surface mb-unit">참가자 직접 등록</h1>
+<p class="font-body-md text-on-surface-variant">정보를 입력하여 입장 처리합니다.</p>
+</div>
+<!-- Registration Form -->
+<div class="w-full space-y-grid-gutter mb-section-gap">
+<!-- Input Name -->
+<div class="space-y-unit">
+<label class="font-label-sm text-label-sm text-on-surface-variant block ml-1">이름</label>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-xl px-4 py-3 text-on-surface placeholder:text-on-surface-variant/50 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none" placeholder="이름을 입력하세요 (예: 홍길동)" type="text"/>
+</div>
+<!-- Input Phone -->
+<div class="space-y-unit">
+<label class="font-label-sm text-label-sm text-on-surface-variant block ml-1">전화번호</label>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-xl px-4 py-3 text-on-surface placeholder:text-on-surface-variant/50 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none" placeholder="전화번호 뒤 4자리" type="text"/>
+</div>
+</div>
+<!-- Actions -->
+<div class="w-full flex flex-col items-center gap-stack-gap">
+<button class="w-full btn-gradient py-4 rounded-xl text-on-primary font-h2 text-h2 shadow-md active:scale-95 transition-transform duration-150 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" data-icon="how_to_reg">how_to_reg</span>
+                    입장 처리
+                </button>
+<button class="text-on-surface-variant font-body-lg hover:text-primary transition-colors py-2 active:scale-95 duration-150">
+                    취소
+                </button>
+</div>
+<!-- Discord Sync Indicator (Brand Hint) -->
+</div>
+</div>
+<!-- Background Navigation Shell (Inactive UI) -->
+</body></html>

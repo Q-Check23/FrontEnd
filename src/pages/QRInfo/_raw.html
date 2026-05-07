@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+
+<html class="light" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#fcf9f8",
+                        "primary-container": "#c700e2",
+                        "tertiary": "#3c49d7",
+                        "tertiary-fixed": "#e0e0ff",
+                        "on-secondary-fixed-variant": "#7c008d",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#6d007c",
+                        "on-primary-container": "#fffbff",
+                        "secondary": "#9b24ac",
+                        "on-background": "#1b1b1c",
+                        "inverse-surface": "#303030",
+                        "surface-container-high": "#eae7e7",
+                        "surface-tint": "#a300b9",
+                        "on-tertiary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-secondary": "#ffffff",
+                        "surface": "#fcf9f8",
+                        "surface-dim": "#dcd9d9",
+                        "on-primary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "background": "#fcf9f8",
+                        "on-primary-fixed-variant": "#7c008d",
+                        "surface-container": "#f0eded",
+                        "surface-container-highest": "#e5e2e1",
+                        "primary-fixed": "#ffd6fc",
+                        "on-tertiary-container": "#fffbff",
+                        "secondary-container": "#f278fe",
+                        "outline-variant": "#d9bfd5",
+                        "primary-fixed-dim": "#fbaaff",
+                        "on-surface-variant": "#544153",
+                        "on-secondary-fixed": "#36003e",
+                        "tertiary-container": "#5764f1",
+                        "secondary-fixed": "#ffd6fc",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed": "#000569",
+                        "inverse-primary": "#fbaaff",
+                        "on-primary-fixed": "#36003e",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#867085",
+                        "surface-container-low": "#f6f3f2",
+                        "tertiary-fixed-dim": "#bec2ff",
+                        "on-surface": "#1b1b1c",
+                        "primary": "#9f00b4",
+                        "on-tertiary-fixed-variant": "#222fc2",
+                        "inverse-on-surface": "#f3f0ef",
+                        "secondary-fixed-dim": "#fcaaff",
+                        "surface-variant": "#e5e2e1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "grid-gutter": "16px",
+                        "container-padding": "20px",
+                        "section-gap": "24px",
+                        "unit": "4px",
+                        "stack-gap": "12px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Manrope"],
+                        "body-lg": ["Manrope"],
+                        "h2": ["Manrope"],
+                        "label-sm": ["Manrope"],
+                        "h1": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "500"}],
+                        "h2": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .vivid-gradient {
+            background: linear-gradient(135deg, #E101FF 0%, #9f00b4 100%);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-surface-dim shadow-sm fixed top-0 w-full z-50 flex items-center px-container-padding h-14 w-full">
+<div class="flex items-center gap-4 w-full">
+<button class="text-primary active:opacity-70 transition-colors">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-h2 text-h2 text-primary dark:text-primary-fixed-dim">행사 상세 설정</h1>
+</div>
+</header>
+<main class="pt-14 px-container-padding">
+<!-- Tab Menu -->
+<nav class="flex border-b border-outline-variant mt-6 mb-8 sticky top-14 bg-surface z-40">
+<button class="flex-1 py-3 text-center border-b-2 border-primary text-primary font-bold transition-all">
+<span class="text-body-lg font-body-lg">등록 QR 정보</span>
+</button>
+<button class="flex-1 py-3 text-center text-on-surface-variant hover:text-primary transition-all">
+<span class="text-body-lg font-body-lg">대시보드</span>
+</button>
+<button class="flex-1 py-3 text-center text-on-surface-variant hover:text-primary transition-all">
+<span class="text-body-lg font-body-lg">참가자 목록</span>
+</button>
+</nav>
+<!-- Registration Link Section -->
+<section class="mb-section-gap">
+<h3 class="text-body-lg font-h2 mb-stack-gap text-on-surface">사전 등록 링크</h3>
+<div class="flex items-center gap-2 bg-surface-container-low p-4 rounded-xl border border-outline-variant group focus-within:border-primary transition-colors">
+<input class="flex-1 bg-transparent border-none focus:ring-0 text-on-surface font-body-md" readonly="" type="text" value="https://www.qcheck.com"/>
+<button class="text-primary hover:bg-primary-container/10 p-2 rounded-lg transition-colors active:scale-95">
+<span class="material-symbols-outlined" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-2 px-1">참가자들에게 전달할 공식 사전 등록 페이지 링크입니다.</p>
+</section>
+<!-- QR Code Section -->
+<section class="mb-section-gap">
+<h3 class="text-body-lg font-h2 mb-stack-gap text-on-surface">사전 등록 QR 코드</h3>
+<div class="bg-surface-container-lowest rounded-xl p-8 shadow-[0px_4px_20px_rgba(0,0,0,0.04)] flex flex-col items-center justify-center border border-outline-variant/30">
+<div class="relative w-64 h-64 bg-white p-4 rounded-xl shadow-inner flex items-center justify-center">
+<!-- QR Image Placeholder -->
+<!-- Scanner Guide Overlays -->
+<div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-primary rounded-tl-lg"></div>
+<div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-primary rounded-tr-lg"></div>
+<div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-primary rounded-bl-lg"></div>
+<div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-primary rounded-br-lg"></div>
+</div>
+<div class="mt-8 flex flex-col w-full gap-3">
+<div class="flex gap-3">
+<button class="flex-1 vivid-gradient text-white flex items-center justify-center gap-2 py-4 rounded-xl font-body-lg shadow-lg active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+                            다운로드
+                        </button>
+<button class="flex-1 border-2 border-primary text-primary flex items-center justify-center gap-2 py-4 rounded-xl font-body-lg hover:bg-primary/5 active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined" data-icon="print">print</span>
+                            인쇄하기
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Status Card (Bento Style) -->
+</main>
+<!-- BottomNavBar -->
+</body></html>
