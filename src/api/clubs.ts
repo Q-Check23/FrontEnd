@@ -28,7 +28,7 @@ function mapClubSummary(club: ClubSummaryResponse): ClubSummary {
 }
 
 export async function getMyClubs() {
-  const response = await apiRequest<ClubSummaryResponse[]>("/api/clubs", {
+  const response = await apiRequest<ClubSummaryResponse[]>("/clubs", {
     method: "GET",
     auth: { type: "dev-user" },
   });

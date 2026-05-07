@@ -228,7 +228,7 @@ function mapMyEventRegistration(
 }
 
 export async function getEventDetail(eventId: number) {
-  const response = await apiRequest<EventDetailResponse>(`/api/events/${eventId}`, {
+  const response = await apiRequest<EventDetailResponse>(`/events/${eventId}`, {
     method: "GET",
     auth: { type: "dev-user" },
   });
@@ -240,7 +240,7 @@ export async function getEvents({
   page = 0,
   size = 10,
 }: ListEventsParams = {}) {
-  const response = await apiRequest<EventListResponse>("/api/events", {
+  const response = await apiRequest<EventListResponse>("/events", {
     method: "GET",
     auth: { type: "dev-user" },
     query: {
@@ -259,7 +259,7 @@ export async function getEvents({
 }
 
 export async function createEvent(body: CreateEventRequest) {
-  const response = await apiRequest<EventDetailResponse>("/api/events", {
+  const response = await apiRequest<EventDetailResponse>("/events", {
     method: "POST",
     auth: { type: "dev-user" },
     body,
@@ -269,7 +269,7 @@ export async function createEvent(body: CreateEventRequest) {
 }
 
 export async function updateEvent(eventId: number, body: UpdateEventRequest) {
-  const response = await apiRequest<EventDetailResponse>(`/api/events/${eventId}`, {
+  const response = await apiRequest<EventDetailResponse>(`/events/${eventId}`, {
     method: "PUT",
     auth: { type: "dev-user" },
     body,
@@ -280,7 +280,7 @@ export async function updateEvent(eventId: number, body: UpdateEventRequest) {
 
 export async function getEventRegistrations(eventId: number) {
   const response = await apiRequest<EventRegistrationResponse[]>(
-    `/api/events/${eventId}/registrations`,
+    `/events/${eventId}/registrations`,
     {
       method: "GET",
       auth: { type: "dev-user" },
@@ -292,7 +292,7 @@ export async function getEventRegistrations(eventId: number) {
 
 export async function getMyEventRegistration(eventId: number) {
   const response = await apiRequest<MyEventRegistrationResponse>(
-    `/api/events/${eventId}/registrations/me`,
+    `/events/${eventId}/registrations/me`,
     {
       method: "GET",
       auth: { type: "dev-user" },
@@ -307,7 +307,7 @@ export async function createEventRegistration(
   body: CreateEventRegistrationRequest,
 ) {
   const response = await apiRequest<CreateEventRegistrationResponse>(
-    `/api/events/${eventId}/registrations`,
+    `/events/${eventId}/registrations`,
     {
       method: "POST",
       auth: { type: "dev-user" },

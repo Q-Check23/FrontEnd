@@ -29,7 +29,7 @@ function mapProfile(response: MyProfileResponse): MyProfile {
 }
 
 export async function getMyProfile() {
-  const response = await apiRequest<MyProfileResponse>("/api/users/me", {
+  const response = await apiRequest<MyProfileResponse>("/users/me", {
     method: "GET",
     auth: { type: "dev-user" },
   });
@@ -38,7 +38,7 @@ export async function getMyProfile() {
 }
 
 export async function updateMyProfile(body: UpdateMyProfileRequest) {
-  const response = await apiRequest<MyProfileResponse>("/api/users/me", {
+  const response = await apiRequest<MyProfileResponse>("/users/me", {
     method: "PUT",
     auth: { type: "dev-user" },
     body,
