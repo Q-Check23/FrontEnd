@@ -9,6 +9,17 @@ export interface AuthCodeResponse {
   token: string;
 }
 
+export interface SignupRequest {
+  name: string;
+  nickname: string;
+  email: string;
+}
+
+export interface AuthTokenResponse {
+  userId: number;
+  accessToken: string;
+}
+
 export function checkNicknameAvailability(nickname: string) {
   return apiRequest<NicknameCheckResponse>("/auth/nickname/check", {
     method: "GET",
@@ -18,4 +29,12 @@ export function checkNicknameAvailability(nickname: string) {
 
 export function redirectToDiscordLogin() {
   window.location.assign(`${API_ORIGIN}/api/auth/login`);
+}
+
+export function signup(payload: SignupRequest, signupToken: string) {
+  return apiRequest<AuthTokenResponse>("/auth/signup", {
+    method: "POST",
+    body: payload,
+    auth: { type: "bearer", token: signupToken },
+  });
 }
