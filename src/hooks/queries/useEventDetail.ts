@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getEventDetail } from "../../api/events";
-import { mockEventDetail } from "../../mock/data";
+import { mockEventDetail, mockEventDetailToday } from "../../mock/data";
 import { queryKeys } from "../keys";
 
 export function useEventDetail(eventId: number) {
@@ -10,7 +10,7 @@ export function useEventDetail(eventId: number) {
       try {
         return await getEventDetail(eventId);
       } catch {
-        return mockEventDetail;
+        return eventId === 8 ? mockEventDetailToday : mockEventDetail;
       }
     },
     enabled: eventId > 0,

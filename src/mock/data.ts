@@ -28,6 +28,11 @@ function thisMonth(day: number, hour = 14, minute = 0) {
   return d.toISOString();
 }
 
+/** 현재 시각으로부터 minutesLater분 뒤 */
+function fromNow(minutesLater: number) {
+  return new Date(Date.now() + minutesLater * 60 * 1000).toISOString();
+}
+
 /* ── Calendar ── */
 export const mockCalendarGroups: CalendarClubGroup[] = [
   {
@@ -169,22 +174,33 @@ export const mockEventDetail: EventDetail = {
     {
       id: 2,
       type: "TEXT",
-      label: "학번",
+      label: "전화번호",
+      required: true,
+      options: [],
+    },
+  ],
+};
+
+export const mockEventDetailToday: EventDetail = {
+  eventId: 8,
+  clubId: 1,
+  title: "KUIT 7기 정기 모임",
+  startTime: fromNow(15),
+  location: "고려대학교 중앙광장 세미나실",
+  isActive: true,
+  formFields: [
+    {
+      id: 1,
+      type: "TEXT",
+      label: "이름",
       required: true,
       options: [],
     },
     {
-      id: 3,
-      type: "SELECT",
-      label: "소속 파트",
-      required: true,
-      options: ["프론트엔드", "백엔드", "디자인", "PM"],
-    },
-    {
-      id: 4,
+      id: 2,
       type: "TEXT",
-      label: "특이사항",
-      required: false,
+      label: "전화번호",
+      required: true,
       options: [],
     },
   ],
@@ -195,8 +211,15 @@ export const mockEventList: EventListPage = {
   page: 0,
   size: 10,
   totalPages: 1,
-  totalElements: 5,
+  totalElements: 6,
   items: [
+    {
+      eventId: 8,
+      title: "KUIT 7기 정기 모임",
+      startTime: fromNow(15),
+      location: "고려대학교 중앙광장 세미나실",
+      isActive: true,
+    },
     {
       eventId: 1,
       title: "KUIT 6기 데모데이",

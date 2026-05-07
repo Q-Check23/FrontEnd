@@ -10,7 +10,7 @@ export default function BackHeader({ title, subtitle, rightSlot }: BackHeaderPro
   const navigate = useNavigate();
 
   return (
-    <header className="sticky top-0 z-50 bg-surface/80 backdrop-blur-md shadow-sm flex items-center px-5 h-14 w-full">
+    <header className="sticky top-0 z-50 bg-surface/80 backdrop-blur-md shadow-sm flex items-center px-5 h-16 w-full">
       <button
         onClick={() => navigate(-1)}
         className="material-symbols-outlined text-on-surface active:scale-95 transition-transform p-1"

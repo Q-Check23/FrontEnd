@@ -19,6 +19,7 @@ import EventInfo from "./pages/EventInfo/EventInfo";
 import QRCheckIn from "./pages/QRCheckIn/QRCheckIn";
 import EventParticipants from "./pages/EventParticipants/EventParticipants";
 import CreateEvent from "./pages/CreateEvent/CreateEvent";
+import Register from "./pages/Register/Register";
 
 import Layout from "./components/Layout"
 import ToastContainer from "./components/ToastContainer"
@@ -40,6 +41,7 @@ export default function App() {
             <Route path="/qrcheck-in" element={<QRCheckIn />} />
             <Route path="/participants" element={<EventParticipants />} />
             <Route path="/create-event" element={<CreateEvent />} />
+            <Route path="/register" element={<Register />} />
 
             {/*<Route path="/" element={<Landing />} />*/}
             {/*<Route path="/login-landing" element={<Login_Landing />} />*/}

@@ -4,11 +4,19 @@ import BackHeader from "../../components/BackHeader";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ErrorFallback from "../../components/ErrorFallback";
 
+function isBeforeRegistrationCutoff(startTime?: string): boolean {
+  if (!startTime) return false;
+  const start = new Date(startTime).getTime();
+  if (isNaN(start)) return false;
+  return Date.now() < start - 30 * 60 * 1000;
+}
+
 export default function EventInfo() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const eventId = Number(searchParams.get("eventId"));
   const { data: event, isLoading, isError, refetch } = useEventDetail(eventId);
+  const showRegistration = isBeforeRegistrationCutoff(event?.startTime);
 
   // TODO: API 연동 - 참가 인원 수 조회
   const participantCount = 42;
@@ -146,16 +154,22 @@ export default function EventInfo() {
           불참
         </button>
         <button
-          onClick={() => navigate(`/qrcheck-in?eventId=${eventId}`)}
+          onClick={() =>
+            navigate(
+              showRegistration
+                ? `/register?eventId=${eventId}`
+                : `/qrcheck-in?eventId=${eventId}`,
+            )
+          }
           className="flex-[2] h-14 bg-gradient-to-br from-primary-container to-primary text-white rounded-xl text-xl font-semibold shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2"
         >
           <span
             className="material-symbols-outlined"
             style={{ fontVariationSettings: "'FILL' 1" }}
           >
-            qr_code_2
+            {showRegistration ? "how_to_reg" : "qr_code_2"}
           </span>
-          입장 QR코드 보기
+          {showRegistration ? "사전 등록하기" : "QR 체크인하기"}
         </button>
       </footer>
     </div>
