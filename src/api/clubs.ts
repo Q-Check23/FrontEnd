@@ -40,6 +40,10 @@ export interface AddClubMemberRequest {
   userId: number;
 }
 
+export interface UpdateClubMemberRoleRequest {
+  role: ClubRole;
+}
+
 function normalizeText(value: string | null | undefined) {
   return typeof value === "string" ? value.trim() : "";
 }
@@ -80,6 +84,18 @@ export function getClubMembers(clubId: number) {
 export function addClubMember(clubId: number, body: AddClubMemberRequest) {
   return apiRequest<void>(`/clubs/${clubId}/members`, {
     method: "POST",
+    auth: { type: "dev-user" },
+    body,
+  });
+}
+
+export function updateClubMemberRole(
+  clubId: number,
+  memberId: number,
+  body: UpdateClubMemberRoleRequest,
+) {
+  return apiRequest<void>(`/clubs/${clubId}/members/${memberId}/role`, {
+    method: "PUT",
     auth: { type: "dev-user" },
     body,
   });
