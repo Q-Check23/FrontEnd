@@ -1,57 +1,40 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-type EventManageTab = "qr" | "dashboard" | "participants";
+type TabKey = "qr" | "dashboard" | "participants";
 
-const TAB_CONFIG: Record<
-  EventManageTab,
-  { label: string; path: string }
-> = {
-  qr: {
-    label: "등록 QR 정보",
-    path: "/qr-info",
-  },
-  dashboard: {
-    label: "대시보드",
-    path: "/dashboard",
-  },
-  participants: {
-    label: "참가자 목록",
-    path: "/participants",
-  },
-};
+interface EventManageTabsProps {
+  activeTab: TabKey;
+}
 
-export default function EventManageTabs({
-  activeTab,
-}: {
-  activeTab: EventManageTab;
-}) {
+const TABS: { key: TabKey; label: string; path: string }[] = [
+  { key: "qr", label: "등록 QR 정보", path: "/qr-info" },
+  { key: "dashboard", label: "대시보드", path: "/dashboard" },
+  { key: "participants", label: "참가자 목록", path: "/participants" },
+];
+
+export default function EventManageTabs({ activeTab }: EventManageTabsProps) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const currentQuery = searchParams.toString();
+  const eventId = searchParams.get("eventId") ?? "";
 
   return (
-    <div className="flex items-center border-y border-[#c0c0c0] bg-white">
-      {(Object.keys(TAB_CONFIG) as EventManageTab[]).map((tabKey) => {
-        const tab = TAB_CONFIG[tabKey];
-        const isActive = activeTab === tabKey;
-
+    <nav className="sticky top-14 z-40 bg-surface flex border-b border-outline-variant/30 px-5">
+      {TABS.map((tab) => {
+        const isActive = tab.key === activeTab;
         return (
           <button
-            key={tabKey}
-            type="button"
-            onClick={() =>
-              navigate(currentQuery ? `${tab.path}?${currentQuery}` : tab.path)
-            }
-            className={`flex-1 border-b px-4 py-3 text-center text-base font-medium transition-colors ${
+            key={tab.key}
+            onClick={() => navigate(`${tab.path}?eventId=${eventId}`)}
+            className={`flex-1 py-3 text-center text-sm transition-colors ${
               isActive
-                ? "border-[#649f76] text-[#649f76]"
-                : "border-transparent text-black"
+                ? "text-primary font-bold border-b-2 border-primary"
+                : "text-on-surface-variant/60 hover:text-primary"
             }`}
           >
             {tab.label}
           </button>
         );
       })}
-    </div>
+    </nav>
   );
 }

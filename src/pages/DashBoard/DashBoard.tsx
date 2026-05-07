@@ -1,266 +1,214 @@
-import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { getMyClubs, type ClubSummary } from "../../api/clubs";
-import { getEvents, type EventListPage } from "../../api/events";
-import BottomBar from "../../components/BottomBar";
+import { useSearchParams } from "react-router-dom";
+import { useEventDetail } from "../../hooks";
+import BackHeader from "../../components/BackHeader";
 import EventManageTabs from "../../components/EventManageTabs";
-import { ToastContext } from "../../context/ToastContext";
-
-type ToastValue = {
-  push: (message: string) => void;
-};
-
-function StatCard({
-  label,
-  value,
-  helper,
-}: {
-  label: string;
-  value: string | number;
-  helper: string;
-}) {
-  return (
-    <div className="flex-1 rounded-2xl border border-[#e7e7e7] bg-white px-4 py-4">
-      <p className="text-sm font-medium text-[#666666]">{label}</p>
-      <p className="mt-2 text-2xl font-bold text-[#111111]">{value}</p>
-      <p className="mt-1 text-xs text-[#9a9a9a]">{helper}</p>
-    </div>
-  );
-}
-
-function ClubCard({ club }: { club: ClubSummary }) {
-  return (
-    <div className="rounded-2xl border border-[#e9e9e9] bg-white px-4 py-4 shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className="truncate text-lg font-bold text-[#111111]">
-            {club.clubName}
-          </p>
-          <p className="mt-2 text-sm leading-6 text-[#666666]">
-            {club.clubDescription || "등록된 클럽 설명이 없습니다."}
-          </p>
-        </div>
-        <span className="shrink-0 rounded-full bg-[#f0ebfa] px-3 py-1 text-xs font-semibold text-[#702f95]">
-          {club.myRole}
-        </span>
-      </div>
-      <p className="mt-3 text-xs text-[#9a9a9a]">Club ID {club.clubId}</p>
-    </div>
-  );
-}
-
-function formatStartTime(value: string) {
-  if (!value) {
-    return "일시 미정";
-  }
-
-  const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return value;
-  }
-
-  return new Intl.DateTimeFormat("ko-KR", {
-    month: "short",
-    day: "numeric",
-    weekday: "short",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(date);
-}
-
-function EventCard({
-  event,
-  onClick,
-}: {
-  event: EventListPage["items"][number];
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="w-full rounded-2xl border border-[#e9e9e9] bg-white px-4 py-4 text-left shadow-[0_1px_4px_rgba(0,0,0,0.04)]"
-    >
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className="truncate text-lg font-bold text-[#111111]">
-            {event.title}
-          </p>
-          <p className="mt-2 text-sm font-medium text-[#4f4f4f]">
-            {formatStartTime(event.startTime)}
-          </p>
-        </div>
-        <span
-          className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${
-            event.isActive
-              ? "bg-[#e8f7ee] text-[#0a8f4d]"
-              : "bg-[#f1f1f1] text-[#777777]"
-          }`}
-        >
-          {event.isActive ? "진행 중" : "비활성"}
-        </span>
-      </div>
-
-      <div className="mt-4 flex items-center justify-between gap-3 text-sm text-[#666666]">
-        <span className="truncate">
-          {event.location || "장소 미등록"}
-        </span>
-        <span className="shrink-0 text-xs text-[#9a9a9a]">
-          Event ID {event.eventId}
-        </span>
-      </div>
-    </button>
-  );
-}
+import LoadingSpinner from "../../components/LoadingSpinner";
+import ErrorFallback from "../../components/ErrorFallback";
 
 export default function DashBoard() {
-  const navigate = useNavigate();
-  const toast = useContext(ToastContext) as ToastValue | null;
-  const [clubs, setClubs] = useState<ClubSummary[]>([]);
-  const [eventPage, setEventPage] = useState<EventListPage | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [searchParams] = useSearchParams();
+  const eventId = Number(searchParams.get("eventId"));
+  const { data: event, isLoading, isError, refetch } = useEventDetail(eventId);
 
-  const loadDashboard = async () => {
-    setIsLoading(true);
-    setError("");
-
-    try {
-      const [nextClubs, nextEvents] = await Promise.all([
-        getMyClubs(),
-        getEvents({ page: 0, size: 10 }),
-      ]);
-
-      setClubs(nextClubs);
-      setEventPage(nextEvents);
-    } catch (loadError) {
-      const message =
-        loadError instanceof Error
-          ? loadError.message
-          : "대시보드 데이터를 불러오지 못했습니다.";
-      setError(message);
-      toast?.push(message);
-    } finally {
-      setIsLoading(false);
-    }
+  // 별도 API 없으므로 하드코딩 유지
+  const dashStats = {
+    totalRegistrations: "-" as string | number,
+    checkedIn: "-" as string | number,
+    lastCheckIn: "-",
   };
 
-  useEffect(() => {
-    void loadDashboard();
-  }, []);
+  if (isLoading) {
+    return (
+      <div className="bg-surface h-full overflow-y-auto">
+        <BackHeader
+          title="행사 상세 설정"
+          rightSlot={
+            <button className="material-symbols-outlined text-on-surface-variant p-2">
+              more_vert
+            </button>
+          }
+        />
+        <EventManageTabs activeTab="dashboard" />
+        <LoadingSpinner />
+      </div>
+    );
+  }
 
-  const totalEvents = eventPage?.totalElements ?? 0;
-  const loadedEventCount = eventPage?.items.length ?? 0;
+  if (isError) {
+    return (
+      <div className="bg-surface h-full overflow-y-auto">
+        <BackHeader
+          title="행사 상세 설정"
+          rightSlot={
+            <button className="material-symbols-outlined text-on-surface-variant p-2">
+              more_vert
+            </button>
+          }
+        />
+        <EventManageTabs activeTab="dashboard" />
+        <ErrorFallback onRetry={refetch} />
+      </div>
+    );
+  }
 
   return (
-    <div className="relative flex h-full w-full flex-col bg-white">
-      <div className="border-b border-[#f0f0f0] bg-white px-5 py-5">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <h1 className="text-2xl font-bold text-[#111111]">대시보드</h1>
-            <p className="mt-2 text-sm text-[#808080]">
-              내 클럽과 최근 이벤트를 먼저 조회하도록 구성했습니다.
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => void loadDashboard()}
-            className="rounded-xl border border-[#d9d9d9] px-3 py-2 text-sm font-medium text-[#111111]"
-          >
-            새로고침
+    <div className="bg-surface h-full overflow-y-auto">
+      <BackHeader
+        title="행사 상세 설정"
+        rightSlot={
+          <button className="material-symbols-outlined text-on-surface-variant p-2">
+            more_vert
           </button>
-        </div>
-      </div>
-
+        }
+      />
       <EventManageTabs activeTab="dashboard" />
 
-      <div className="flex-1 overflow-y-auto bg-[#f7f7f7] px-4 py-4 pb-24">
-        {isLoading ? (
-          <div className="rounded-3xl bg-white px-5 py-6 text-sm text-[#666666] shadow-[0_1px_4px_rgba(0,0,0,0.05)]">
-            대시보드 데이터를 불러오는 중입니다.
-          </div>
-        ) : error ? (
-          <div className="rounded-3xl bg-white px-5 py-6 shadow-[0_1px_4px_rgba(0,0,0,0.05)]">
-            <p className="text-sm font-medium text-[#d93025]">{error}</p>
-            <button
-              type="button"
-              onClick={() => void loadDashboard()}
-              className="mt-4 rounded-xl bg-[#111111] px-4 py-2 text-sm font-medium text-white"
-            >
-              다시 시도
-            </button>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-5">
-            <div className="flex gap-3">
-              <StatCard
-                label="내 클럽"
-                value={clubs.length}
-                helper="현재 가입된 클럽 수"
-              />
-              <StatCard
-                label="전체 이벤트"
-                value={totalEvents}
-                helper="백엔드 목록 기준"
-              />
-              <StatCard
-                label="불러온 이벤트"
-                value={loadedEventCount}
-                helper="현재 페이지 기준"
-              />
+      <main className="p-5 space-y-6 pb-24">
+        {/* 실시간 입장 현황 */}
+        <section>
+          <div className="relative bg-surface-container-lowest rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] overflow-hidden border border-outline-variant/20">
+            <div className="p-4 border-b border-outline-variant/10 flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <span className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-primary" />
+                </span>
+                <h3 className="text-xl font-semibold">실시간 입장 현황</h3>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold text-on-surface-variant">
+                  현재 입장
+                </span>
+                <span className="text-primary font-bold text-xl">{dashStats.checkedIn}</span>
+              </div>
             </div>
 
-            <section className="flex flex-col gap-3">
-              <div className="flex items-end justify-between">
-                <div>
-                  <h2 className="text-lg font-bold text-[#111111]">내 클럽</h2>
-                  <p className="mt-1 text-sm text-[#808080]">
-                    `/api/clubs` 결과를 그대로 표시합니다.
-                  </p>
+            {/* 통계 요약 */}
+            <div className="grid grid-cols-2 divide-x divide-outline-variant/10 bg-surface-container-low/30">
+              <div className="p-4">
+                <span className="text-xs font-semibold text-on-surface-variant block mb-1">
+                  총 등록 수
+                </span>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-xl font-bold text-on-surface">{dashStats.totalRegistrations}</span>
+                  <span className="text-xs font-semibold text-on-surface-variant">
+                    명
+                  </span>
                 </div>
               </div>
-
-              {clubs.length > 0 ? (
-                clubs.map((club) => <ClubCard key={club.clubId} club={club} />)
-              ) : (
-                <div className="rounded-2xl border border-dashed border-[#d9d9d9] bg-white px-4 py-5 text-sm text-[#666666]">
-                  속한 클럽이 없습니다.
-                </div>
-              )}
-            </section>
-
-            <section className="flex flex-col gap-3">
-              <div className="flex items-end justify-between gap-3">
-                <div>
-                  <h2 className="text-lg font-bold text-[#111111]">
-                    최근 이벤트
-                  </h2>
-                  <p className="mt-1 text-sm text-[#808080]">
-                    총 {totalEvents}개 중 최근 {loadedEventCount}개를 보여줍니다.
-                  </p>
+              <div className="p-4">
+                <span className="text-xs font-semibold text-on-surface-variant block mb-1">
+                  실제 입장 수
+                </span>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-xl font-bold text-secondary">{dashStats.checkedIn}</span>
+                  <span className="text-xs font-semibold text-on-surface-variant">
+                    명
+                  </span>
                 </div>
               </div>
+            </div>
 
-              {eventPage && eventPage.items.length > 0 ? (
-                eventPage.items.map((event) => (
-                  <EventCard
-                    key={event.eventId}
-                    event={event}
-                    onClick={() => navigate(`/event-info?eventId=${event.eventId}`)}
-                  />
-                ))
-              ) : (
-                <div className="rounded-2xl border border-dashed border-[#d9d9d9] bg-white px-4 py-5 text-sm text-[#666666]">
-                  조회된 이벤트가 없습니다.
-                </div>
-              )}
-            </section>
+            <div className="px-4 py-3 bg-surface-container-lowest flex justify-between items-center border-t border-outline-variant/10">
+              <p className="text-xs text-on-surface-variant">
+                최근 입장: {dashStats.lastCheckIn}
+              </p>
+              <button className="text-primary text-xs font-bold flex items-center gap-1">
+                상세보기
+                <span className="material-symbols-outlined text-[16px]">
+                  chevron_right
+                </span>
+              </button>
+            </div>
           </div>
-        )}
-      </div>
+        </section>
 
-      <BottomBar activeItem="activity" />
+        {/* 행사 정보 */}
+        <section className="space-y-3">
+          <h3 className="text-xl font-semibold px-1">행사 정보 확인 및 수정</h3>
+          <div className="bg-surface-container-lowest rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] overflow-hidden border border-outline-variant/20">
+            <InfoRow
+              label="설명:"
+              value={event?.title ?? "-"}
+              icon="edit"
+            />
+            <InfoRow
+              label="장소:"
+              value={event?.location ?? "-"}
+              icon="map"
+              valueIcon="location_on"
+            />
+            <InfoRow
+              label="시간:"
+              value={event?.startTime ? formatDateTime(event.startTime) : "-"}
+              icon="calendar_today"
+            />
+            <InfoRow
+              label="인원 수:"
+              value="-"
+              icon="group"
+              isLast
+            />
+          </div>
+        </section>
+      </main>
     </div>
   );
+}
+
+function InfoRow({
+  label,
+  value,
+  icon,
+  valueIcon,
+  isLast,
+}: {
+  label: string;
+  value: string;
+  icon: string;
+  valueIcon?: string;
+  isLast?: boolean;
+}) {
+  return (
+    <div
+      className={`flex items-center p-4 ${
+        isLast ? "" : "border-b border-outline-variant/10"
+      }`}
+    >
+      <div className="w-24 shrink-0 text-on-surface-variant text-xs font-semibold">
+        {label}
+      </div>
+      <div className="flex-1 text-on-surface text-sm flex items-center gap-1">
+        {valueIcon && (
+          <span className="material-symbols-outlined text-primary text-[18px]">
+            {valueIcon}
+          </span>
+        )}
+        {value}
+      </div>
+      <button className="material-symbols-outlined text-outline text-[20px] ml-2">
+        {icon}
+      </button>
+    </div>
+  );
+}
+
+function formatDateTime(startTime: string) {
+  try {
+    const d = new Date(startTime);
+    if (!isNaN(d.getTime())) {
+      return d.toLocaleString("ko-KR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        weekday: "short",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      });
+    }
+  } catch {
+    // fallback
+  }
+  return startTime;
 }

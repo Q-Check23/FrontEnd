@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<html class="light" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-dim": "#dcd9d9",
+                        "on-tertiary-fixed-variant": "#222fc2",
+                        "inverse-surface": "#303030",
+                        "surface-container-high": "#eae7e7",
+                        "surface-container-highest": "#e5e2e1",
+                        "on-secondary-fixed": "#36003e",
+                        "on-background": "#1b1b1c",
+                        "outline": "#867085",
+                        "inverse-on-surface": "#f3f0ef",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "surface": "#fcf9f8",
+                        "background": "#fcf9f8",
+                        "on-secondary-fixed-variant": "#7c008d",
+                        "secondary-fixed-dim": "#fcaaff",
+                        "on-tertiary-container": "#fffbff",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed": "#000569",
+                        "primary-fixed": "#ffd6fc",
+                        "surface-bright": "#fcf9f8",
+                        "on-tertiary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "secondary": "#9b24ac",
+                        "tertiary-container": "#5764f1",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#e0e0ff",
+                        "surface-tint": "#a300b9",
+                        "inverse-primary": "#fbaaff",
+                        "on-surface-variant": "#544153",
+                        "tertiary": "#3c49d7",
+                        "primary-fixed-dim": "#fbaaff",
+                        "primary": "#9f00b4",
+                        "on-secondary-container": "#6d007c",
+                        "on-error-container": "#93000a",
+                        "surface-variant": "#e5e2e1",
+                        "on-surface": "#1b1b1c",
+                        "on-primary-container": "#fffbff",
+                        "tertiary-fixed-dim": "#bec2ff",
+                        "outline-variant": "#d9bfd5",
+                        "on-primary-fixed-variant": "#7c008d",
+                        "secondary-fixed": "#ffd6fc",
+                        "on-primary-fixed": "#36003e",
+                        "secondary-container": "#f278fe",
+                        "surface-container": "#f0eded",
+                        "primary-container": "#c700e2",
+                        "surface-container-low": "#f6f3f2"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-padding": "20px",
+                        "stack-gap": "12px",
+                        "unit": "4px",
+                        "grid-gutter": "16px",
+                        "section-gap": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Manrope"],
+                        "label-sm": ["Manrope"],
+                        "h1": ["Manrope"],
+                        "h2": ["Manrope"],
+                        "body-lg": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "h2": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-effect {
+            backdrop-filter: blur(12px);
+            background: rgba(252, 249, 248, 0.7);
+        }
+        .gradient-button {
+            background: linear-gradient(135deg, #9f00b4 0%, #a300b9 100%);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background font-body-md text-on-background min-h-screen">
+<!-- Top App Bar -->
+<header class="bg-surface dark:bg-surface-dim shadow-sm flex items-center px-container-padding h-14 w-full sticky top-0 z-50">
+<div class="flex items-center w-full">
+<button class="material-symbols-outlined text-primary dark:text-primary-fixed-dim mr-4 hover:bg-surface-container-high transition-colors p-2 rounded-full active:opacity-70">
+                arrow_back
+            </button>
+<h1 class="font-h2 text-h2 text-on-surface">행사 상세 설정</h1>
+<div class="ml-auto">
+<button class="material-symbols-outlined text-on-surface-variant p-2">more_vert</button>
+</div>
+</div>
+</header>
+<!-- Navigation Tabs -->
+<nav class="bg-surface sticky top-14 z-40 border-b border-outline-variant/30">
+<div class="flex px-container-padding"><button class="flex-1 py-3 text-on-surface-variant/60 text-center font-body-lg hover:bg-surface-container-low transition-colors">
+                등록 QR 정보
+            </button>
+<button class="flex-1 py-3 text-primary font-bold border-b-2 border-primary text-center font-body-lg">
+                대시보드
+            </button>
+<button class="flex-1 py-3 text-on-surface-variant/60 text-center font-body-lg hover:bg-surface-container-low transition-colors">
+                참가자 목록
+            </button></div>
+</nav>
+<main class="p-container-padding space-y-section-gap pb-10">
+<!-- Real-time Attendance & Integrated Stats Card -->
+<section>
+<div class="relative bg-surface-container-lowest rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] overflow-hidden border border-outline-variant/20">
+<div class="p-4 border-b border-outline-variant/10 flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="relative flex h-3 w-3">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
+</span>
+<h3 class="font-h2 text-h2">실시간 입장 현장</h3>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-label-sm font-label-sm text-on-surface-variant">현재 입장</span>
+<span class="text-primary font-bold text-h2">876</span>
+</div>
+</div>
+<!-- Integrated Statistics Summary -->
+<div class="grid grid-cols-2 divide-x divide-outline-variant/10 bg-surface-container-low/30">
+<div class="p-4">
+<span class="text-label-sm font-label-sm text-on-surface-variant block mb-1">총 등록 수</span>
+<div class="flex items-baseline gap-1">
+<span class="text-h2 font-h1 text-on-surface">1,234</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">명</span>
+</div>
+</div>
+<div class="p-4">
+<span class="text-label-sm font-label-sm text-on-surface-variant block mb-1">실제 입장 수</span>
+<div class="flex items-baseline gap-1">
+<span class="text-h2 font-h1 text-secondary">876</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">명</span>
+</div>
+</div>
+</div>
+<!-- Status Context -->
+<div class="px-4 py-3 bg-surface-container-lowest flex justify-between items-center border-t border-outline-variant/10">
+<div class="flex flex-col">
+<p class="text-label-sm text-on-surface-variant">최근 입장: 1분 전</p>
+</div>
+<button class="text-primary text-label-sm font-bold flex items-center gap-1">
+                        상세보기 <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Event Information Form/Section -->
+<section class="space-y-stack-gap">
+<h3 class="font-h2 text-h2 px-1">행사 정보 확인 및 수정</h3>
+<div class="bg-surface-container-lowest rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] overflow-hidden border border-outline-variant/20">
+<!-- Info Item 1 -->
+<div class="flex items-start p-4 border-b border-outline-variant/10">
+<div class="w-24 shrink-0 text-on-surface-variant font-label-sm pt-1">설명:</div>
+<div class="flex-1 text-on-surface font-body-md">
+                        2024년 상반기 커뮤니티 정기 모임 및 테크 컨퍼런스. 온/오프라인 하이브리드 진행.
+                    </div>
+<button class="material-symbols-outlined text-outline text-[20px] ml-2">edit</button>
+</div>
+<!-- Info Item 2 -->
+<div class="flex items-center p-4 border-b border-outline-variant/10">
+<div class="w-24 shrink-0 text-on-surface-variant font-label-sm">장소:</div>
+<div class="flex-1 text-on-surface font-body-md flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-[18px]">location_on</span>
+                        서울 강남구 테헤란로 비비드 타워 4F
+                    </div>
+<button class="material-symbols-outlined text-outline text-[20px] ml-2">map</button>
+</div>
+<!-- Info Item 3 -->
+<div class="flex items-center p-4 border-b border-outline-variant/10">
+<div class="w-24 shrink-0 text-on-surface-variant font-label-sm">시간:</div>
+<div class="flex-1 text-on-surface font-body-md">
+                        2024. 05. 24 (금) 14:00 - 18:00
+                    </div>
+<button class="material-symbols-outlined text-outline text-[20px] ml-2">calendar_today</button>
+</div>
+<!-- Info Item 4 -->
+<div class="flex items-center p-4">
+<div class="w-24 shrink-0 text-on-surface-variant font-label-sm">인원 수:</div>
+<div class="flex-1 text-on-surface font-body-md">
+                        최대 1,500명 (현재 1,234명 확정)
+                    </div>
+<button class="material-symbols-outlined text-outline text-[20px] ml-2">group</button>
+</div>
+</div>
+</section>
+<!-- Settlement Hint (Discord Sync) -->
+<!-- Actions -->
+</main>
+</body></html>

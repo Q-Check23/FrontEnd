@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html class="light" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000a",
+                        "on-primary-container": "#fffbff",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#fcaaff",
+                        "on-secondary-container": "#6d007c",
+                        "secondary-fixed": "#ffd6fc",
+                        "inverse-primary": "#fbaaff",
+                        "surface-container-highest": "#e5e2e1",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#ffd6fc",
+                        "surface": "#fcf9f8",
+                        "on-primary-fixed": "#36003e",
+                        "secondary-container": "#f278fe",
+                        "surface-container": "#f0eded",
+                        "surface-tint": "#a300b9",
+                        "on-primary": "#ffffff",
+                        "secondary": "#9b24ac",
+                        "primary": "#9f00b4",
+                        "surface-dim": "#dcd9d9",
+                        "background": "#fcf9f8",
+                        "on-primary-fixed-variant": "#7c008d",
+                        "primary-container": "#c700e2",
+                        "tertiary-container": "#5764f1",
+                        "on-tertiary-fixed-variant": "#222fc2",
+                        "on-surface-variant": "#544153",
+                        "on-surface": "#1b1b1c",
+                        "on-secondary-fixed-variant": "#7c008d",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-tertiary-container": "#fffbff",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#bec2ff",
+                        "inverse-on-surface": "#f3f0ef",
+                        "outline-variant": "#d9bfd5",
+                        "surface-container-low": "#f6f3f2",
+                        "on-secondary-fixed": "#36003e",
+                        "tertiary": "#3c49d7",
+                        "surface-bright": "#fcf9f8",
+                        "surface-container-high": "#eae7e7",
+                        "primary-fixed-dim": "#fbaaff",
+                        "on-tertiary-fixed": "#000569",
+                        "outline": "#867085",
+                        "inverse-surface": "#303030",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#1b1b1c",
+                        "surface-variant": "#e5e2e1",
+                        "tertiary-fixed": "#e0e0ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "grid-gutter": "16px",
+                        "section-gap": "24px",
+                        "stack-gap": "12px",
+                        "container-padding": "20px",
+                        "unit": "4px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Manrope"],
+                        "h1": ["Manrope"],
+                        "body-lg": ["Manrope"],
+                        "h2": ["Manrope"],
+                        "body-md": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "500"}],
+                        "h2": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #9f00b4 0%, #c700e2 100%);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="bg-surface sticky top-0 z-50 flex items-center px-container-padding h-14 w-full shadow-sm">
+<button class="mr-4 active:opacity-70 transition-colors">
+<span class="material-symbols-outlined text-primary" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-h2 text-h2 text-on-surface">새 행사 만들기</h1>
+</header>
+<main class="px-container-padding py-6 space-y-section-gap">
+<!-- Section: Basic Info -->
+<section class="space-y-stack-gap">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="event_note">event_note</span>
+<h2 class="font-h2 text-h2">기본 정보</h2>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm space-y-4">
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-2">행사 이름</label>
+<input class="w-full bg-surface-container-low border-none rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary text-body-md" placeholder="예: 12월 정기 모임" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-2">시작 날짜</label>
+<div class="relative">
+<input class="w-full bg-surface-container-low border-none rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary text-body-md" type="date"/>
+</div>
+</div>
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-2">시작 시간</label>
+<input class="w-full bg-surface-container-low border-none rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary text-body-md" type="time"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Location -->
+<section class="space-y-stack-gap">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="location_on">location_on</span>
+<h2 class="font-h2 text-h2">장소</h2>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm">
+<div class="relative flex items-center">
+<input class="w-full bg-surface-container-low border-none rounded-lg pl-4 pr-12 py-3 focus:ring-2 focus:ring-primary text-body-md" placeholder="장소를 검색하거나 직접 입력하세요" type="text"/>
+<button class="absolute right-3 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+</div>
+<div class="mt-4 rounded-lg overflow-hidden h-32 bg-surface-container">
+<img class="w-full h-full object-cover opacity-80" data-alt="A stylized map interface showing a suburban district with clean minimalist roads and soft pastel color coding. The map features a pinpoint marker in the brand's signature purple gradient, indicating a specific event location. The overall aesthetic is modern, bright, and professional with high legibility." src="https://lh3.googleusercontent.com/aida/ADBb0uhFCmtnnyDmzmXEybjQxCbhFB32F0X87XFzAu2YFZBj_oQvnghHYi7Rrfltee9cDd_HtVTzGHKsS1P3kNu4JD751A--zF0n9MGn_-E19XEYhCALoQLxx4TrWzxirleSPsGCAU9fNGvkPbGEhhlmJFegpL4LwpSKkCIDqpV4ePuvKLbBvrzXcKOTOyc6MHKVEeqzwNglsR7bsLdQ7fpNBHUcKxays6y1i3m3ys0E_c04s-1wg3c46ATVQf6llP9n_TmVQ6bHk19R8g"/>
+</div>
+</div>
+</section>
+<!-- Section: Settings -->
+<section class="space-y-stack-gap">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="settings">settings</span>
+<h2 class="font-h2 text-h2">설정</h2>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm flex items-center justify-between">
+<div class="flex-1 pr-4">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-[#5865F2] text-[18px]" data-icon="forum">forum</span>
+<span class="font-body-lg text-body-lg text-on-surface">디스코드 채널 자동 생성</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">행사 생성 시 해당 워크스페이스에 전용 채널이 생성됩니다.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</section>
+<!-- Section: Participant Info -->
+<section class="space-y-stack-gap">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="assignment_ind">assignment_ind</span>
+<h2 class="font-h2 text-h2">참가자 정보 수집</h2>
+</div>
+<div class="space-y-3">
+<!-- Field 1 -->
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm flex items-center justify-between border-l-4 border-primary">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="drag_indicator">drag_indicator</span>
+<span class="font-body-md text-body-md">참가자 실명</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-label-sm text-label-sm text-primary px-2 py-1 bg-primary/10 rounded">필수</span>
+<button class="text-outline">
+<span class="material-symbols-outlined text-[20px]" data-icon="close">close</span>
+</button>
+</div>
+</div>
+<!-- Field 2 -->
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm flex items-center justify-between border-l-4 border-primary">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="drag_indicator">drag_indicator</span>
+<span class="font-body-md text-body-md">연락처 (전화번호)</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-label-sm text-label-sm text-primary px-2 py-1 bg-primary/10 rounded">필수</span>
+<button class="text-outline">
+<span class="material-symbols-outlined text-[20px]" data-icon="close">close</span>
+</button>
+</div>
+</div>
+<!-- Field 3 -->
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="drag_indicator">drag_indicator</span>
+<span class="font-body-md text-body-md">소속/직무 입력</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-label-sm text-label-sm text-on-surface-variant px-2 py-1 bg-surface-container-high rounded">선택</span>
+<button class="text-outline">
+<span class="material-symbols-outlined text-[20px]" data-icon="close">close</span>
+</button>
+</div>
+</div>
+<!-- Add Button -->
+<button class="w-full py-4 border-2 border-dashed border-outline-variant rounded-xl flex items-center justify-center gap-2 text-on-surface-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+<span class="font-body-lg text-body-lg">질문 추가하기</span>
+</button>
+</div>
+</section>
+</main>
+<!-- Fixed Bottom Action -->
+<div class="fixed bottom-0 left-0 w-full p-container-padding glass-panel z-50">
+<button class="w-full primary-gradient text-on-primary py-4 rounded-xl font-h2 text-h2 shadow-lg active:scale-[0.98] transition-transform">
+            QR코드 생성하기
+        </button>
+</div>
+<!-- Background Decoration for Glassmorphism -->
+<div class="fixed top-20 right-[-100px] w-64 h-64 bg-primary/5 blur-[100px] -z-10 rounded-full"></div>
+<div class="fixed bottom-40 left-[-100px] w-80 h-80 bg-secondary/5 blur-[120px] -z-10 rounded-full"></div>
+</body></html>

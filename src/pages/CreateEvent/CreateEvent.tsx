@@ -1,389 +1,263 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { getMyClubs, type ClubSummary } from "../../api/clubs";
-import {
-  createEvent,
-  type CreateEventFormField,
-  type EventFormFieldType,
-} from "../../api/events";
-import BottomBar from "../../components/BottomBar";
-import CreateEventHeader from "../../components/CreateEventHeader";
-import GradientButton from "../../components/GradientButton";
-import TopSpace from "../../components/TopSpace";
-import { ToastContext } from "../../context/ToastContext";
+import { useCreateEvent } from "../../hooks";
+import BackHeader from "../../components/BackHeader";
 
-type ToastValue = {
-  push: (message: string) => void;
-};
-
-type DraftField = {
-  id: string;
-  type: EventFormFieldType;
+interface FormField {
   label: string;
   required: boolean;
-  optionsText: string;
-};
-
-function FieldCard({
-  field,
-  onChange,
-  onRemove,
-}: {
-  field: DraftField;
-  onChange: (id: string, next: Partial<DraftField>) => void;
-  onRemove: (id: string) => void;
-}) {
-  return (
-    <div className="rounded-2xl border border-[#e6e6e6] bg-white px-4 py-4 shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <span className="rounded-full bg-[#f0ebfa] px-3 py-1 text-xs font-semibold text-[#702f95]">
-            {field.type}
-          </span>
-          <button
-            type="button"
-            onClick={() =>
-              onChange(field.id, { type: field.type === "TEXT" ? "SELECT" : "TEXT" })
-            }
-            className="text-xs font-medium text-[#666666]"
-          >
-            형식 변경
-          </button>
-        </div>
-        <button
-          type="button"
-          onClick={() => onRemove(field.id)}
-          className="text-sm font-medium text-[#d93025]"
-        >
-          삭제
-        </button>
-      </div>
-
-      <div className="mt-4">
-        <label className="mb-2 block text-xs font-medium text-[#666666]">
-          질문 라벨
-        </label>
-        <input
-          type="text"
-          value={field.label}
-          onChange={(event) =>
-            onChange(field.id, { label: event.target.value })
-          }
-          placeholder="예: 학번"
-          className="h-11 w-full rounded-xl border border-[#d5d5d5] px-4 outline-none focus:border-[#702f95]"
-        />
-      </div>
-
-      {field.type === "SELECT" ? (
-        <div className="mt-4">
-          <label className="mb-2 block text-xs font-medium text-[#666666]">
-            선택지
-          </label>
-          <textarea
-            value={field.optionsText}
-            onChange={(event) =>
-              onChange(field.id, { optionsText: event.target.value })
-            }
-            placeholder={"한 줄에 하나씩 입력하거나 쉼표로 구분하세요\n예: 한식, 양식, 샐러드"}
-            className="min-h-[96px] w-full rounded-xl border border-[#d5d5d5] px-4 py-3 outline-none focus:border-[#702f95]"
-          />
-        </div>
-      ) : null}
-
-      <label className="mt-4 flex items-center gap-2 text-sm font-medium text-[#111111]">
-        <input
-          type="checkbox"
-          checked={field.required}
-          onChange={(event) =>
-            onChange(field.id, { required: event.target.checked })
-          }
-          className="h-4 w-4"
-        />
-        필수 응답
-      </label>
-    </div>
-  );
-}
-
-function buildStartTime(date: string, time: string) {
-  return `${date}T${time}:00`;
-}
-
-function parseOptions(optionsText: string) {
-  return optionsText
-    .split(/\n|,/)
-    .map((option) => option.trim())
-    .filter(Boolean);
 }
 
 export default function CreateEvent() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const toast = useContext(ToastContext) as ToastValue | null;
-  const [clubs, setClubs] = useState<ClubSummary[]>([]);
-  const [isLoadingClubs, setIsLoadingClubs] = useState(true);
-  const [selectedClubId, setSelectedClubId] = useState("");
+  const clubId = Number(searchParams.get("clubId") ?? "0");
+
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
-  const [time, setTime] = useState("19:00");
-  const [fields, setFields] = useState<DraftField[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [time, setTime] = useState("");
+  const [location, setLocation] = useState("");
+  const [discordChannel, setDiscordChannel] = useState(true);
+  const [fields, setFields] = useState<FormField[]>([
+    { label: "참가자 실명", required: true },
+    { label: "연락처 (전화번호)", required: true },
+    { label: "소속/직무 입력", required: false },
+  ]);
 
-  useEffect(() => {
-    const loadClubs = async () => {
-      setIsLoadingClubs(true);
+  const mutation = useCreateEvent();
 
-      try {
-        const nextClubs = await getMyClubs();
-        setClubs(nextClubs);
+  function handleRemoveField(index: number) {
+    setFields((prev) => prev.filter((_, i) => i !== index));
+  }
 
-        const clubIdFromQuery = searchParams.get("clubId");
-        const singleClub = nextClubs.length === 1 ? nextClubs[0] : null;
-        const nextSelectedClubId =
-          clubIdFromQuery && nextClubs.some((club) => String(club.clubId) === clubIdFromQuery)
-            ? clubIdFromQuery
-            : singleClub
-              ? String(singleClub.clubId)
-              : "";
+  function handleAddField() {
+    setFields((prev) => [...prev, { label: "", required: false }]);
+  }
 
-        setSelectedClubId(nextSelectedClubId);
-      } catch (error) {
-        const message =
-          error instanceof Error
-            ? error.message
-            : "클럽 목록을 불러오지 못했습니다.";
-        toast?.push(message);
-      } finally {
-        setIsLoadingClubs(false);
-      }
-    };
-
-    const today = new Date();
-    const localDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000)
-      .toISOString()
-      .slice(0, 10);
-    setDate(localDate);
-
-    void loadClubs();
-  }, [searchParams, toast]);
-
-  const handleFieldChange = (id: string, next: Partial<DraftField>) => {
-    setFields((current) =>
-      current.map((field) => (field.id === id ? { ...field, ...next } : field)),
+  function handleFieldLabelChange(index: number, label: string) {
+    setFields((prev) =>
+      prev.map((f, i) => (i === index ? { ...f, label } : f)),
     );
-  };
+  }
 
-  const handleFieldRemove = (id: string) => {
-    setFields((current) => current.filter((field) => field.id !== id));
-  };
+  function handleSubmit() {
+    if (!title.trim()) return;
 
-  const handleFieldAdd = (type: EventFormFieldType) => {
-    const nextId = String(Date.now());
-    setFields((current) => [
-      ...current,
+    const startTime =
+      date && time ? new Date(`${date}T${time}`).toISOString() : "";
+
+    mutation.mutate(
       {
-        id: nextId,
-        type,
-        label: "",
-        required: true,
-        optionsText: "",
-      },
-    ]);
-  };
-
-  const validateFields = () => {
-    for (const field of fields) {
-      if (!field.label.trim()) {
-        return "모든 추가 질문에는 라벨이 필요합니다.";
-      }
-
-      if (field.type === "SELECT" && parseOptions(field.optionsText).length === 0) {
-        return "선택형 질문에는 하나 이상의 선택지가 필요합니다.";
-      }
-    }
-
-    return "";
-  };
-
-  const handleSubmit = async () => {
-    if (!selectedClubId) {
-      toast?.push("행사를 생성할 클럽을 선택해주세요.");
-      return;
-    }
-
-    if (!title.trim()) {
-      toast?.push("행사 제목을 입력해주세요.");
-      return;
-    }
-
-    if (!date || !time) {
-      toast?.push("행사 일시를 입력해주세요.");
-      return;
-    }
-
-    const fieldValidationMessage = validateFields();
-    if (fieldValidationMessage) {
-      toast?.push(fieldValidationMessage);
-      return;
-    }
-
-    const formFields: CreateEventFormField[] = fields.map((field) => ({
-      type: field.type,
-      label: field.label.trim(),
-      required: field.required,
-      options: field.type === "SELECT" ? parseOptions(field.optionsText) : [],
-    }));
-
-    setIsSubmitting(true);
-
-    try {
-      const createdEvent = await createEvent({
-        clubId: Number(selectedClubId),
+        clubId,
         title: title.trim(),
-        startTime: buildStartTime(date, time),
-        formFields,
-      });
-
-      toast?.push(`행사를 생성했습니다. Event ID ${createdEvent.eventId}`);
-      navigate(`/event-info?eventId=${createdEvent.eventId}`);
-    } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "행사 생성에 실패했습니다.";
-      toast?.push(message);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+        startTime,
+        formFields: fields
+          .filter((f) => f.label.trim())
+          .map((f) => ({
+            type: "TEXT" as const,
+            label: f.label.trim(),
+            required: f.required,
+            options: [],
+          })),
+      },
+      {
+        onSuccess: () => navigate(-1),
+      },
+    );
+  }
 
   return (
-    <div className="relative h-full bg-[#f7f7f7]">
-      <TopSpace child={<CreateEventHeader title="새 행사 만들기" />} />
+    <div className="bg-surface h-full overflow-y-auto pb-32">
+      <BackHeader title="새 행사 만들기" />
 
-      <div className="h-[calc(100%-60px)] overflow-y-auto px-4 pb-28">
-        <div className="flex flex-col gap-4 pb-6">
-          <section className="rounded-3xl border border-[#e8e8e8] bg-white px-4 py-4 shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
-            <h2 className="text-lg font-bold text-[#111111]">기본 정보</h2>
-
-            <div className="mt-4">
-              <label className="mb-2 block text-xs font-medium text-[#666666]">
-                클럽 선택
-              </label>
-              <select
-                value={selectedClubId}
-                onChange={(event) => setSelectedClubId(event.target.value)}
-                disabled={isLoadingClubs}
-                className="h-12 w-full rounded-2xl border border-[#d5d5d5] bg-white px-4 outline-none focus:border-[#702f95] disabled:bg-[#f5f5f5]"
-              >
-                <option value="">
-                  {isLoadingClubs ? "클럽 불러오는 중" : "클럽을 선택하세요"}
-                </option>
-                {clubs.map((club) => (
-                  <option key={club.clubId} value={club.clubId}>
-                    {club.clubName} ({club.myRole})
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="mt-4">
-              <label className="mb-2 block text-xs font-medium text-[#666666]">
-                행사 제목
+      <main className="px-5 py-6 space-y-6">
+        {/* 기본 정보 */}
+        <section className="space-y-3">
+          <SectionHeader icon="event_note" title="기본 정보" />
+          <div className="bg-surface-container-lowest p-4 rounded-xl shadow-sm space-y-4">
+            <div>
+              <label className="text-xs font-semibold text-on-surface-variant block mb-2">
+                행사 이름
               </label>
               <input
                 type="text"
                 value={title}
-                onChange={(event) => setTitle(event.target.value)}
-                placeholder="예: 2026 상반기 OT"
-                className="h-12 w-full rounded-2xl border border-[#d5d5d5] px-4 outline-none focus:border-[#702f95]"
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="예: 12월 정기 모임"
+                className="w-full bg-surface-container-low border-none rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
               />
             </div>
-
-            <div className="mt-4 grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="mb-2 block text-xs font-medium text-[#666666]">
-                  날짜
+                <label className="text-xs font-semibold text-on-surface-variant block mb-2">
+                  시작 날짜
                 </label>
                 <input
                   type="date"
                   value={date}
-                  onChange={(event) => setDate(event.target.value)}
-                  className="h-12 w-full rounded-2xl border border-[#d5d5d5] px-4 outline-none focus:border-[#702f95]"
+                  onChange={(e) => setDate(e.target.value)}
+                  className="w-full bg-surface-container-low border-none rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
                 />
               </div>
               <div>
-                <label className="mb-2 block text-xs font-medium text-[#666666]">
-                  시간
+                <label className="text-xs font-semibold text-on-surface-variant block mb-2">
+                  시작 시간
                 </label>
                 <input
                   type="time"
                   value={time}
-                  onChange={(event) => setTime(event.target.value)}
-                  className="h-12 w-full rounded-2xl border border-[#d5d5d5] px-4 outline-none focus:border-[#702f95]"
+                  onChange={(e) => setTime(e.target.value)}
+                  className="w-full bg-surface-container-low border-none rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
                 />
               </div>
             </div>
-          </section>
+          </div>
+        </section>
 
-          <section className="rounded-3xl border border-[#e8e8e8] bg-white px-4 py-4 shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
-            <h2 className="text-lg font-bold text-[#111111]">추가 신청 항목</h2>
-            <p className="mt-2 text-sm leading-6 text-[#666666]">
-              `formFields`에 들어가는 추가 질문입니다. 비워두면 기본 질문 없이 생성됩니다.
-            </p>
-
-            <div className="mt-4 flex gap-2">
-              <button
-                type="button"
-                onClick={() => handleFieldAdd("TEXT")}
-                className="rounded-xl border border-[#d5d5d5] px-4 py-2 text-sm font-medium text-[#111111]"
-              >
-                텍스트 질문 추가
-              </button>
-              <button
-                type="button"
-                onClick={() => handleFieldAdd("SELECT")}
-                className="rounded-xl border border-[#d5d5d5] px-4 py-2 text-sm font-medium text-[#111111]"
-              >
-                선택형 질문 추가
+        {/* 장소 */}
+        <section className="space-y-3">
+          <SectionHeader icon="location_on" title="장소" />
+          <div className="bg-surface-container-lowest p-4 rounded-xl shadow-sm">
+            <div className="relative flex items-center">
+              <input
+                type="text"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="장소를 검색하거나 직접 입력하세요"
+                className="w-full bg-surface-container-low border-none rounded-lg pl-4 pr-12 py-3 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+              />
+              <button className="absolute right-3 text-on-surface-variant">
+                <span className="material-symbols-outlined">search</span>
               </button>
             </div>
+            <div className="mt-4 rounded-lg overflow-hidden h-32 bg-surface-container flex items-center justify-center">
+              <span className="material-symbols-outlined text-on-surface-variant text-4xl">
+                map
+              </span>
+            </div>
+          </div>
+        </section>
 
-            <div className="mt-4 flex flex-col gap-3">
-              {fields.length > 0 ? (
-                fields.map((field) => (
-                  <FieldCard
-                    key={field.id}
-                    field={field}
-                    onChange={handleFieldChange}
-                    onRemove={handleFieldRemove}
-                  />
-                ))
-              ) : (
-                <div className="rounded-2xl border border-dashed border-[#d9d9d9] bg-[#fcfcfc] px-4 py-5 text-sm text-[#666666]">
-                  추가 질문이 없습니다.
+        {/* 설정 */}
+        <section className="space-y-3">
+          <SectionHeader icon="settings" title="설정" />
+          <div className="bg-surface-container-lowest p-4 rounded-xl shadow-sm flex items-center justify-between">
+            <div className="flex-1 pr-4">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="material-symbols-outlined text-[#5865F2] text-[18px]">
+                  forum
+                </span>
+                <span className="text-base font-medium text-on-surface">
+                  디스코드 채널 자동 생성
+                </span>
+              </div>
+              <p className="text-xs font-semibold text-on-surface-variant">
+                행사 생성 시 해당 워크스페이스에 전용 채널이 생성됩니다.
+              </p>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={discordChannel}
+                onChange={(e) => setDiscordChannel(e.target.checked)}
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-surface-container-high rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary" />
+            </label>
+          </div>
+        </section>
+
+        {/* 참가자 정보 수집 */}
+        <section className="space-y-3">
+          <SectionHeader icon="assignment_ind" title="참가자 정보 수집" />
+          <div className="space-y-3">
+            {fields.map((field, i) => (
+              <div
+                key={i}
+                className={`bg-surface-container-lowest p-4 rounded-xl shadow-sm flex items-center justify-between ${
+                  field.required ? "border-l-4 border-primary" : ""
+                }`}
+              >
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <span className="material-symbols-outlined text-on-surface-variant shrink-0">
+                    drag_indicator
+                  </span>
+                  {field.label ? (
+                    <span className="text-sm truncate">{field.label}</span>
+                  ) : (
+                    <input
+                      type="text"
+                      autoFocus
+                      placeholder="질문을 입력하세요"
+                      className="bg-transparent border-none text-sm focus:outline-none focus:ring-0 p-0 w-full"
+                      onBlur={(e) =>
+                        handleFieldLabelChange(i, e.target.value)
+                      }
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleFieldLabelChange(
+                            i,
+                            (e.target as HTMLInputElement).value,
+                          );
+                        }
+                      }}
+                    />
+                  )}
                 </div>
-              )}
-            </div>
-          </section>
+                <div className="flex items-center gap-3 shrink-0 ml-2">
+                  <span
+                    className={`text-xs font-semibold px-2 py-1 rounded ${
+                      field.required
+                        ? "text-primary bg-primary/10"
+                        : "text-on-surface-variant bg-surface-container-high"
+                    }`}
+                  >
+                    {field.required ? "필수" : "선택"}
+                  </span>
+                  <button
+                    onClick={() => handleRemoveField(i)}
+                    className="text-outline"
+                  >
+                    <span className="material-symbols-outlined text-[20px]">
+                      close
+                    </span>
+                  </button>
+                </div>
+              </div>
+            ))}
 
-          <section className="rounded-3xl border border-dashed border-[#d9d9d9] bg-white/90 px-4 py-4">
-            <h2 className="text-sm font-semibold text-[#111111]">현재 API 기준 안내</h2>
-            <p className="mt-2 text-sm leading-6 text-[#666666]">
-              생성 API에는 아직 `location`, `endTime`, `description`, `category`가 없습니다.
-              지금 화면에서는 `clubId`, `title`, `startTime`, `formFields`만 전송합니다.
-            </p>
-          </section>
-        </div>
+            <button
+              onClick={handleAddField}
+              className="w-full py-4 border-2 border-dashed border-outline-variant rounded-xl flex items-center justify-center gap-2 text-on-surface-variant hover:bg-surface-container-low transition-colors"
+            >
+              <span className="material-symbols-outlined">add</span>
+              <span className="text-base font-medium">질문 추가하기</span>
+            </button>
+          </div>
+        </section>
+      </main>
+
+      {/* 하단 고정 버튼 */}
+      <div className="fixed bottom-0 left-0 w-full p-5 bg-surface/70 backdrop-blur-xl z-50">
+        <button
+          onClick={handleSubmit}
+          disabled={mutation.isPending}
+          className="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-4 rounded-xl text-xl font-semibold shadow-lg active:scale-[0.98] transition-transform disabled:opacity-50"
+        >
+          {mutation.isPending ? "생성 중..." : "QR코드 생성하기"}
+        </button>
       </div>
+    </div>
+  );
+}
 
-      <div className="absolute bottom-[70px] left-0 right-0 bg-white px-4 py-3 border-t border-[#ededed]">
-        <GradientButton onClick={handleSubmit} disabled={isSubmitting || isLoadingClubs}>
-          {isSubmitting ? "생성 중..." : "행사 생성하기"}
-        </GradientButton>
-      </div>
-
-      <BottomBar activeItem="moim" />
+function SectionHeader({ icon, title }: { icon: string; title: string }) {
+  return (
+    <div className="flex items-center gap-2">
+      <span className="material-symbols-outlined text-primary text-[20px]">
+        {icon}
+      </span>
+      <h2 className="text-xl font-semibold">{title}</h2>
     </div>
   );
 }

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<html class="light" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#fcf9f8",
+                        "surface-container-highest": "#e5e2e1",
+                        "on-surface": "#1b1b1c",
+                        "on-surface-variant": "#544153",
+                        "on-tertiary-container": "#fffbff",
+                        "primary": "#9f00b4",
+                        "on-secondary-fixed-variant": "#7c008d",
+                        "on-primary-fixed": "#36003e",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#7c008d",
+                        "on-background": "#1b1b1c",
+                        "secondary-fixed": "#ffd6fc",
+                        "on-tertiary-fixed-variant": "#222fc2",
+                        "primary-fixed-dim": "#fbaaff",
+                        "on-tertiary-fixed": "#000569",
+                        "error-container": "#ffdad6",
+                        "on-secondary": "#ffffff",
+                        "inverse-on-surface": "#f3f0ef",
+                        "inverse-surface": "#303030",
+                        "outline-variant": "#d9bfd5",
+                        "primary-container": "#c700e2",
+                        "inverse-primary": "#fbaaff",
+                        "on-error": "#ffffff",
+                        "tertiary-container": "#5764f1",
+                        "on-primary-container": "#fffbff",
+                        "surface-container": "#f0eded",
+                        "background": "#fcf9f8",
+                        "surface-container-low": "#f6f3f2",
+                        "outline": "#867085",
+                        "on-primary": "#ffffff",
+                        "surface-tint": "#a300b9",
+                        "secondary-container": "#f278fe",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed-dim": "#bec2ff",
+                        "surface-bright": "#fcf9f8",
+                        "on-secondary-fixed": "#36003e",
+                        "primary-fixed": "#ffd6fc",
+                        "on-secondary-container": "#6d007c",
+                        "surface-container-high": "#eae7e7",
+                        "tertiary": "#3c49d7",
+                        "secondary-fixed-dim": "#fcaaff",
+                        "secondary": "#9b24ac",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-dim": "#dcd9d9",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed": "#e0e0ff",
+                        "surface-variant": "#e5e2e1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "grid-gutter": "16px",
+                        "stack-gap": "12px",
+                        "section-gap": "24px",
+                        "container-padding": "20px"
+                    },
+                    "fontFamily": {
+                        "h1": ["Manrope"],
+                        "h2": ["Manrope"],
+                        "body-lg": ["Manrope"],
+                        "body-md": ["Manrope"],
+                        "label-sm": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "h2": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; -webkit-font-smoothing: antialiased; }
+        .glass-card { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .profile-gradient { background: linear-gradient(135deg, #E101FF 0%, #870199 100%); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-outline-variant/20 shadow-sm flex items-center justify-between px-container-padding h-16">
+<div class="flex items-center gap-unit">
+<span class="material-symbols-outlined text-primary" data-icon="qr_code_scanner">qr_code_scanner</span>
+<h1 class="font-h1 text-h1 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">내 정보</h1>
+</div>
+<button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="settings">settings</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="mt-20 px-container-padding flex flex-col gap-section-gap">
+<!-- Profile Section -->
+<section class="profile-gradient rounded-xl p-container-padding text-white shadow-[0px_4px_20px_0px_rgba(0,0,0,0.04)]">
+<div class="flex items-center gap-grid-gutter mb-6">
+<div class="relative w-20 h-20 flex-shrink-0">
+<img alt="Profile" class="w-full h-full rounded-full object-cover border-4 border-white/20" src="https://lh3.googleusercontent.com/aida/ADBb0uiZ_WOTssSTIaC7diNMptysrBrotdmZ1OLoSAyrogM8ZTsGOPlQUTWWcjwOvyb31Y1wewWj-624RyR4cizQzd0E36XiNWxldnRMtvu8TRgiIDjtEtOpfAhydT09XixNaY2-xNo59ujWwSu0JbqviZRzLaGlwzZgYLkYCcP7IyCM9Pr3YGewYrVln5MNKN46sxBJcvT0rHs_WwfPbjSbshJ8Fu1PeZxkpUsTXtznVpi9IB-qzpsXRWiqlBbTmbIvJ_fCfPdYQDyC"/>
+<div class="absolute bottom-0 right-0 bg-white text-primary w-6 h-6 rounded-full flex items-center justify-center border-2 border-primary-container">
+<span class="material-symbols-outlined text-[14px]" data-icon="edit" data-weight="fill" style="font-variation-settings: 'FILL' 1;">edit</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<span class="font-h2 text-h2">홍길동</span>
+<span class="bg-white/20 px-2 py-0.5 rounded-full font-label-sm text-label-sm border border-white/30">참가자</span>
+</div>
+<p class="font-body-md text-white/80">2024.01 가입</p>
+</div>
+</div>
+<!-- Stats -->
+<div class="grid grid-cols-2 gap-stack-gap">
+<div class="bg-white/10 glass-card rounded-lg p-3 text-center border border-white/10">
+<p class="font-h2 text-h2">12</p>
+<p class="font-label-sm text-label-sm text-white/70">참여한 행사</p>
+</div>
+<div class="bg-white/10 glass-card rounded-lg p-3 text-center border border-white/10">
+<p class="font-h2 text-h2">3</p>
+<p class="font-label-sm text-label-sm text-white/70">예정된 행사</p>
+</div>
+</div>
+</section>
+<!-- Contact Info Section -->
+<section class="bg-surface-container-lowest rounded-xl p-container-padding shadow-[0px_4px_20px_0px_rgba(0,0,0,0.04)] flex flex-col gap-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="mail">mail</span>
+</div>
+<div class="flex flex-col">
+<p class="font-label-sm text-label-sm text-on-surface-variant">이메일</p>
+<p class="font-body-lg text-body-lg">hong@example.com</p>
+</div>
+</div>
+<div class="h-px bg-outline-variant/30 w-full"></div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-tertiary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary" data-icon="call">call</span>
+</div>
+<div class="flex flex-col">
+<p class="font-label-sm text-label-sm text-on-surface-variant">휴대폰 번호</p>
+<p class="font-body-lg text-body-lg">010-1234-5678</p>
+</div>
+</div>
+</section>
+<!-- Menu List -->
+<section class="flex flex-col gap-1">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant px-1 mb-2">지원 및 정보</h3>
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0px_2px_8px_0px_rgba(0,0,0,0.02)]">
+<!-- Menu Item -->
+<button class="w-full flex items-center justify-between p-4 hover:bg-surface-container transition-colors group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="help">help</span>
+<span class="font-body-lg text-body-lg">도움말</span>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</button>
+<div class="mx-4 h-px bg-outline-variant/10"></div>
+<!-- Menu Item -->
+<button class="w-full flex items-center justify-between p-4 hover:bg-surface-container transition-colors group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="info">info</span>
+<span class="font-body-lg text-body-lg">앱 정보</span>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</section>
+<!-- Logout Section -->
+<section class="mt-4 mb-8">
+<button class="w-full py-4 px-container-padding flex items-center justify-center gap-2 text-error font-body-lg hover:bg-error-container/10 transition-colors rounded-xl border border-error/20">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+                로그아웃
+            </button>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl bg-surface/90 backdrop-blur-xl border-t border-outline-variant/30 shadow-[0px_-4px_20px_0px_rgba(0,0,0,0.04)] flex justify-around items-center h-20 pb-safe px-unit">
+<!-- Home -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-primary/5 rounded-full w-16 h-16 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<!-- Meetings -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-primary/5 rounded-full w-16 h-16 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-label-sm text-label-sm">Meetings</span>
+</a>
+<!-- My Page (Active) -->
+<a class="flex flex-col items-center justify-center text-primary font-bold hover:bg-primary/5 rounded-full w-20 h-16 transition-transform duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="person" data-weight="fill" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-sm text-label-sm">My Page</span>
+</a>
+</nav>
+</body></html>

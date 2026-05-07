@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed": "#36003e",
+                        "inverse-primary": "#fbaaff",
+                        "background": "#fcf9f8",
+                        "outline-variant": "#d9bfd5",
+                        "surface-dim": "#dcd9d9",
+                        "secondary": "#9b24ac",
+                        "outline": "#867085",
+                        "secondary-fixed-dim": "#fcaaff",
+                        "on-error": "#ffffff",
+                        "tertiary-container": "#5764f1",
+                        "on-tertiary-fixed": "#000569",
+                        "surface-bright": "#fcf9f8",
+                        "surface-container-highest": "#e5e2e1",
+                        "on-tertiary-fixed-variant": "#222fc2",
+                        "tertiary-fixed": "#e0e0ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "secondary-container": "#f278fe",
+                        "primary-fixed": "#ffd6fc",
+                        "on-surface": "#1b1b1c",
+                        "surface": "#fcf9f8",
+                        "on-secondary-fixed-variant": "#7c008d",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "on-background": "#1b1b1c",
+                        "inverse-on-surface": "#f3f0ef",
+                        "on-secondary-container": "#6d007c",
+                        "primary-fixed-dim": "#fbaaff",
+                        "primary-container": "#c700e2",
+                        "surface-tint": "#a300b9",
+                        "on-primary-container": "#fffbff",
+                        "tertiary-fixed-dim": "#bec2ff",
+                        "secondary-fixed": "#ffd6fc",
+                        "on-surface-variant": "#544153",
+                        "inverse-surface": "#303030",
+                        "surface-container-low": "#f6f3f2",
+                        "surface-container-high": "#eae7e7",
+                        "primary": "#9f00b4",
+                        "surface-variant": "#e5e2e1",
+                        "on-tertiary-container": "#fffbff",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed": "#36003e",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed-variant": "#7c008d",
+                        "surface-container": "#f0eded",
+                        "tertiary": "#3c49d7",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-gap": "12px",
+                        "unit": "4px",
+                        "container-padding": "20px",
+                        "section-gap": "24px",
+                        "grid-gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Manrope"],
+                        "body-lg": ["Manrope"],
+                        "h2": ["Manrope"],
+                        "h1": ["Manrope"],
+                        "body-md": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "500"}],
+                        "h2": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-nav {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen pb-10">
+<!-- TopAppBar -->
+<nav class="sticky top-0 z-50 bg-surface/90 backdrop-blur-md shadow-[0px_4px_20px_rgba(0,0,0,0.04)] flex items-center px-container-padding h-14 w-full">
+<button class="material-symbols-outlined text-primary active:scale-95 transition-transform" data-icon="arrow_back">arrow_back</button>
+</nav><header class="bg-surface px-container-padding pt-6 pb-2">
+<h2 class="font-h1 text-h1 text-on-surface">KUIT</h2>
+<p class="font-body-md text-body-md text-on-surface-variant/70 mt-1">멤버 124명</p>
+</header>
+<!-- Header Section (Community Context) -->
+<!-- Tabs Section -->
+<div class="sticky top-14 z-40 bg-surface flex border-b border-outline-variant/20 px-container-padding">
+<button class="flex-1 py-4 text-center border-b-2 border-primary text-primary font-bold transition-all">
+<span class="font-body-lg text-body-lg">공지</span>
+</button>
+<button class="flex-1 py-4 text-center text-on-surface-variant hover:bg-surface-container-high transition-colors">
+<span class="font-body-lg text-body-lg">행사</span>
+</button>
+<button class="flex-1 py-4 text-center text-on-surface-variant hover:bg-surface-container-high transition-colors">
+<span class="font-body-lg text-body-lg">멤버</span>
+</button>
+</div>
+<!-- Content: Announcement Cards -->
+<main class="px-container-padding pt-section-gap space-y-stack-gap">
+<!-- Announcement Card 1 -->
+<article class="bg-surface-container-lowest rounded-xl p-4 shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10 active:scale-[0.98] transition-transform">
+<div class="flex items-center gap-3 mb-3">
+<div>
+<div class="flex items-center gap-1.5">
+<span class="font-body-md text-body-md font-bold text-on-surface">정윤아</span>
+<span class="px-2 py-0.5 bg-secondary-container/20 text-secondary text-[10px] font-bold rounded-full uppercase tracking-wider">운영진</span>
+</div>
+<p class="text-[11px] text-on-surface-variant/60">방금 전</p>
+</div>
+<button class="ml-auto material-symbols-outlined text-on-surface-variant text-body-lg" data-icon="more_horiz">more_horiz</button>
+</div>
+<h3 class="font-h2 text-h2 text-on-surface mb-2">KUIT 6기 데모데이🍀</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-3 mb-4">
+                안녕하세요! 드디어 기다리고 기다리던 6기 데모데이가 다가왔습니다. 우리들의 노력이 결실을 맺는 소중한 자리에 모두 함께해주세요.
+            </p>
+</article>
+<!-- Announcement Card 2 -->
+<article class="bg-surface-container-lowest rounded-xl p-4 shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10 active:scale-[0.98] transition-transform">
+<div class="flex items-center gap-3 mb-3">
+<div>
+<div class="flex items-center gap-1.5">
+<span class="font-body-md text-body-md font-bold text-on-surface">김민수</span>
+<span class="px-2 py-0.5 bg-secondary-container/20 text-secondary text-[10px] font-bold rounded-full uppercase tracking-wider">운영진</span>
+</div>
+<p class="text-[11px] text-on-surface-variant/60">2시간 전</p>
+</div>
+<button class="ml-auto material-symbols-outlined text-on-surface-variant text-body-lg" data-icon="more_horiz">more_horiz</button>
+</div>
+<h3 class="font-h2 text-h2 text-on-surface mb-2">중간 회고 모임 공지</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                이번 프로젝트의 반환점을 돌아보며 서로의 진행 상황을 공유하고 피드백을 주고받는 시간을 가지려 합니다.
+            </p>
+</article>
+</main>
+<!-- FAB for New Post (Contextual for Notice Tab) -->
+<button class="fixed right-6 w-14 h-14 bg-gradient-to-br from-primary to-secondary text-on-primary rounded-full shadow-lg flex items-center justify-center active:scale-90 transition-transform bottom-6">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+<!-- BottomNavBar -->
+</body></html>

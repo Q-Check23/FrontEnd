@@ -22,7 +22,9 @@ body {
   height: 844px;
   background: #ffffff;
   border-radius: 24px;
-  overflow: hidden; /* 프레임 밖으로 안 나가게 */
+  overflow: hidden;
+  position: relative;
+  transform: translateZ(0); /* fixed 요소가 #root 기준으로 배치되도록 */
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
 }
 

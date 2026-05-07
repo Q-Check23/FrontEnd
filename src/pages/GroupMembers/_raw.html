@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-pill {
+            background: linear-gradient(135deg, #9f00b4 0%, #c700e2 100%);
+        }
+        .glass-header {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary": "#ffffff",
+                        "secondary": "#9b24ac",
+                        "inverse-on-surface": "#f3f0ef",
+                        "on-tertiary-fixed": "#000569",
+                        "inverse-primary": "#fbaaff",
+                        "on-secondary-fixed-variant": "#7c008d",
+                        "tertiary-container": "#5764f1",
+                        "secondary-container": "#f278fe",
+                        "on-surface": "#1b1b1c",
+                        "surface-container-low": "#f6f3f2",
+                        "tertiary-fixed": "#e0e0ff",
+                        "on-tertiary-container": "#fffbff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed-variant": "#222fc2",
+                        "tertiary-fixed-dim": "#bec2ff",
+                        "outline": "#867085",
+                        "surface-container-high": "#eae7e7",
+                        "primary-container": "#c700e2",
+                        "on-primary-fixed": "#36003e",
+                        "surface-tint": "#a300b9",
+                        "secondary-fixed": "#ffd6fc",
+                        "on-background": "#1b1b1c",
+                        "surface-container-highest": "#e5e2e1",
+                        "tertiary": "#3c49d7",
+                        "on-primary-container": "#fffbff",
+                        "background": "#fcf9f8",
+                        "on-secondary-fixed": "#36003e",
+                        "outline-variant": "#d9bfd5",
+                        "inverse-surface": "#303030",
+                        "error": "#ba1a1a",
+                        "on-secondary": "#ffffff",
+                        "surface-container": "#f0eded",
+                        "surface": "#fcf9f8",
+                        "on-secondary-container": "#6d007c",
+                        "on-primary-fixed-variant": "#7c008d",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#e5e2e1",
+                        "on-tertiary": "#ffffff",
+                        "on-surface-variant": "#544153",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#fbaaff",
+                        "on-error": "#ffffff",
+                        "primary": "#9f00b4",
+                        "primary-fixed": "#ffd6fc",
+                        "surface-bright": "#fcf9f8",
+                        "surface-dim": "#dcd9d9",
+                        "secondary-fixed-dim": "#fcaaff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-padding": "20px",
+                        "stack-gap": "12px",
+                        "grid-gutter": "16px",
+                        "section-gap": "24px",
+                        "unit": "4px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Manrope"],
+                        "label-sm": ["Manrope"],
+                        "body-md": ["Manrope"],
+                        "h2": ["Manrope"],
+                        "h1": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "500"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+                        "h2": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 bg-surface/80 glass-header flex items-center px-container-padding h-20 w-full shadow-[0px_1px_0px_rgba(0,0,0,0.05)]">
+<button class="material-symbols-outlined text-on-surface active:scale-95 transition-transform p-1">arrow_back</button>
+<div class="ml-4 flex flex-col justify-center">
+<h1 class="font-h2 text-h2 text-on-surface leading-tight">KUIT</h1>
+<p class="text-label-sm text-on-surface-variant">멤버 124명</p>
+</div>
+</header>
+<main class="pb-20">
+<!-- Group Identity Summary -->
+<!-- Sticky Tabs -->
+<div class="sticky top-20 z-40 bg-surface/80 glass-header px-container-padding border-b border-outline-variant/30 flex gap-8">
+<button class="py-3 font-body-md text-on-surface-variant transition-colors relative">
+        공지
+    </button>
+<button class="py-3 font-body-md text-on-surface-variant transition-colors relative">
+        행사
+    </button>
+<button class="py-3 font-h2 text-body-lg text-primary transition-colors relative font-bold">
+        멤버
+        <span class="absolute bottom-0 left-0 w-full h-[3px] bg-primary rounded-t-full"></span>
+</button>
+</div>
+<!-- Search & Filter Area -->
+<div class="px-container-padding pt-6 pb-2 flex items-center justify-between">
+<div class="flex items-center gap-2 bg-surface-container-low px-4 py-2 rounded-full flex-1 mr-3 border border-outline-variant/20">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md w-full p-0" placeholder="멤버 검색" type="text"/>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant bg-surface-container px-3 py-2 rounded-xl active:scale-95 transition-transform">filter_list</button>
+</div>
+<!-- Member List -->
+<section class="px-container-padding py-4 flex flex-col gap-3">
+<!-- Member Item: Admin -->
+<div class="bg-surface-container-lowest rounded-xl p-4 flex items-center gap-4 shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10 active:scale-[0.98] transition-transform">
+<div class="relative w-12 h-12 rounded-full bg-primary-container/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-[28px]" data-weight="fill">person</span>
+<div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-[#4CAF50] border-2 border-white rounded-full"></div>
+</div>
+<div class="grow">
+<div class="flex items-center gap-2">
+<span class="font-h2 text-h2 text-on-surface">김민우</span>
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider">운영진</span>
+</div>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-0.5">2021.03 가입</p>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant">more_vert</button>
+</div>
+<!-- Member Item: Admin -->
+<div class="bg-surface-container-lowest rounded-xl p-4 flex items-center gap-4 shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10 active:scale-[0.98] transition-transform">
+<div class="relative w-12 h-12 rounded-full bg-secondary-container/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary text-[28px]" data-weight="fill">person</span>
+<div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-[#4CAF50] border-2 border-white rounded-full"></div>
+</div>
+<div class="grow">
+<div class="flex items-center gap-2">
+<span class="font-h2 text-h2 text-on-surface">이지수</span>
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider">운영진</span>
+</div>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-0.5">2021.05 가입</p>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant">more_vert</button>
+</div>
+<!-- Member Item: Regular -->
+<div class="bg-surface-container-lowest rounded-xl p-4 flex items-center gap-4 shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10 active:scale-[0.98] transition-transform">
+<div class="relative w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-surface-variant text-[28px]">person</span>
+<div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-[#4CAF50] border-2 border-white rounded-full"></div>
+</div>
+<div class="grow">
+<span class="font-h2 text-h2 text-on-surface">박준현</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-0.5">2022.01 가입</p>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant">more_vert</button>
+</div>
+<!-- Member Item: Regular -->
+<div class="bg-surface-container-lowest rounded-xl p-4 flex items-center gap-4 shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10 active:scale-[0.98] transition-transform">
+<div class="relative w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-surface-variant text-[28px]">person</span>
+<div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-[#4CAF50] border-2 border-white rounded-full"></div>
+</div>
+<div class="grow">
+<span class="font-h2 text-h2 text-on-surface">최아름</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-0.5">2022.03 가입</p>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant">more_vert</button>
+</div>
+<!-- Member Item: Regular -->
+<div class="bg-surface-container-lowest rounded-xl p-4 flex items-center gap-4 shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10 active:scale-[0.98] transition-transform">
+<div class="relative w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-surface-variant text-[28px]">person</span>
+<div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-[#4CAF50] border-2 border-white rounded-full"></div>
+</div>
+<div class="grow">
+<span class="font-h2 text-h2 text-on-surface">강동훈</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-0.5">2022.08 가입</p>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant">more_vert</button>
+</div>
+<!-- Member Item: Regular -->
+<div class="bg-surface-container-lowest rounded-xl p-4 flex items-center gap-4 shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10 active:scale-[0.98] transition-transform">
+<div class="relative w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-surface-variant text-[28px]">person</span>
+<div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-[#4CAF50] border-2 border-white rounded-full"></div>
+</div>
+<div class="grow">
+<span class="font-h2 text-h2 text-on-surface">윤지환</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-0.5">2023.01 가입</p>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant">more_vert</button>
+</div>
+<!-- Member Item: Regular -->
+<div class="bg-surface-container-lowest rounded-xl p-4 flex items-center gap-4 shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10 active:scale-[0.98] transition-transform">
+<div class="relative w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-surface-variant text-[28px]">person</span>
+<div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-[#4CAF50] border-2 border-white rounded-full"></div>
+</div>
+<div class="grow">
+<span class="font-h2 text-h2 text-on-surface">정서연</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-0.5">2023.04 가입</p>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant">more_vert</button>
+</div>
+</section>
+<!-- Discord Integration Hint -->
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-6 right-6 w-14 h-14 rounded-full active-pill text-white shadow-lg flex items-center justify-center z-50 active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[28px]" data-weight="fill">person_add</span>
+</button>
+</body></html>
