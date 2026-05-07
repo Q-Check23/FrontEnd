@@ -100,3 +100,17 @@ export function updateClubMemberRole(
     body,
   });
 }
+
+export function leaveClub(clubId: number) {
+  return apiRequest<void>(`/clubs/${clubId}/members/me`, {
+    method: "DELETE",
+    auth: { type: "dev-user" },
+  });
+}
+
+export function removeClubMember(clubId: number, memberId: number) {
+  return apiRequest<void>(`/clubs/${clubId}/members/${memberId}`, {
+    method: "DELETE",
+    auth: { type: "dev-user" },
+  });
+}
