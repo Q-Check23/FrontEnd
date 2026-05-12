@@ -29,7 +29,7 @@ function mapProfile(response: MyProfileResponse): MyProfile {
 }
 
 export async function getMyProfile() {
-  const response = await apiRequest<MyProfileResponse>("/api/users/me", {
+  const response = await apiRequest<MyProfileResponse>("/users/me", {
     method: "GET",
     auth: { type: "dev-user" },
   });
@@ -38,11 +38,33 @@ export async function getMyProfile() {
 }
 
 export async function updateMyProfile(body: UpdateMyProfileRequest) {
-  const response = await apiRequest<MyProfileResponse>("/api/users/me", {
+  const response = await apiRequest<MyProfileResponse>("/users/me", {
     method: "PUT",
     auth: { type: "dev-user" },
     body,
   });
 
   return mapProfile(response);
+}
+
+export interface UserSearchResult {
+  userId: number;
+  username: string;
+  realName: string | null;
+}
+
+export interface SearchUsersParams {
+  nickname?: string;
+  email?: string;
+}
+
+export function searchUsers(params: SearchUsersParams) {
+  return apiRequest<UserSearchResult[]>("/users/search", {
+    method: "GET",
+    auth: { type: "dev-user" },
+    query: {
+      nickname: params.nickname,
+      email: params.email,
+    },
+  });
 }

@@ -1,5 +1,7 @@
 import { apiRequest } from "./client";
 
+export type ClubRole = "OWNER" | "ADMIN" | "MEMBER";
+
 interface ClubSummaryResponse {
   clubId: number;
   clubName: string | null;
@@ -12,6 +14,34 @@ export interface ClubSummary {
   clubName: string;
   clubDescription: string;
   myRole: string;
+}
+
+export interface CreateClubRequest {
+  name: string;
+  description: string;
+  discordGuildId: string;
+  coverImageUrl: string;
+}
+
+export interface ClubResponse {
+  id: number;
+  name: string;
+  description: string;
+}
+
+export interface ClubMember {
+  memberId: number;
+  userId: number;
+  username: string;
+  role: ClubRole;
+}
+
+export interface AddClubMemberRequest {
+  userId: number;
+}
+
+export interface UpdateClubMemberRoleRequest {
+  role: ClubRole;
 }
 
 function normalizeText(value: string | null | undefined) {
@@ -28,10 +58,59 @@ function mapClubSummary(club: ClubSummaryResponse): ClubSummary {
 }
 
 export async function getMyClubs() {
-  const response = await apiRequest<ClubSummaryResponse[]>("/api/clubs", {
+  const response = await apiRequest<ClubSummaryResponse[]>("/clubs", {
     method: "GET",
     auth: { type: "dev-user" },
   });
 
   return response.map(mapClubSummary);
+}
+
+export function createClub(body: CreateClubRequest) {
+  return apiRequest<ClubResponse>("/clubs", {
+    method: "POST",
+    auth: { type: "dev-user" },
+    body,
+  });
+}
+
+export function getClubMembers(clubId: number) {
+  return apiRequest<ClubMember[]>(`/clubs/${clubId}/members`, {
+    method: "GET",
+    auth: { type: "dev-user" },
+  });
+}
+
+export function addClubMember(clubId: number, body: AddClubMemberRequest) {
+  return apiRequest<void>(`/clubs/${clubId}/members`, {
+    method: "POST",
+    auth: { type: "dev-user" },
+    body,
+  });
+}
+
+export function updateClubMemberRole(
+  clubId: number,
+  memberId: number,
+  body: UpdateClubMemberRoleRequest,
+) {
+  return apiRequest<void>(`/clubs/${clubId}/members/${memberId}/role`, {
+    method: "PUT",
+    auth: { type: "dev-user" },
+    body,
+  });
+}
+
+export function leaveClub(clubId: number) {
+  return apiRequest<void>(`/clubs/${clubId}/members/me`, {
+    method: "DELETE",
+    auth: { type: "dev-user" },
+  });
+}
+
+export function removeClubMember(clubId: number, memberId: number) {
+  return apiRequest<void>(`/clubs/${clubId}/members/${memberId}`, {
+    method: "DELETE",
+    auth: { type: "dev-user" },
+  });
 }

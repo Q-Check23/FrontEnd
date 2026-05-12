@@ -66,7 +66,7 @@ export async function getMonthlyCalendar({
   year: number;
   month: number;
 }) {
-  const response = await apiRequest<CalendarClubGroupResponse[]>("/api/calendar", {
+  const response = await apiRequest<CalendarClubGroupResponse[]>("/calendar", {
     method: "GET",
     auth: { type: "dev-user" },
     query: {
@@ -79,7 +79,7 @@ export async function getMonthlyCalendar({
 }
 
 export async function searchCalendarEvents(query: string) {
-  const response = await apiRequest<CalendarEventResponse[]>("/api/calendar/search", {
+  const response = await apiRequest<CalendarEventResponse[]>("/calendar/search", {
     method: "GET",
     auth: { type: "dev-user" },
     query: {
@@ -101,7 +101,7 @@ export async function filterCalendarEvents({
   eventName?: string;
   clubName?: string;
 }) {
-  const response = await apiRequest<CalendarEventResponse[]>("/api/calendar/filter", {
+  const response = await apiRequest<CalendarEventResponse[]>("/calendar/filter", {
     method: "GET",
     auth: { type: "dev-user" },
     query: {

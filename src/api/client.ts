@@ -16,23 +16,27 @@ export class ApiError extends Error {
   status: number;
   code: string;
   timestamp: string | undefined;
+  requestId: string | undefined;
 
   constructor({
     status,
     code,
     message,
     timestamp,
+    requestId,
   }: {
     status: number;
     code: string;
     message: string;
-    timestamp?: string;
+    timestamp?: string | undefined;
+    requestId?: string | undefined;
   }) {
     super(message);
     this.name = "ApiError";
     this.status = status;
     this.code = code;
     this.timestamp = timestamp;
+    this.requestId = requestId;
   }
 }
 
@@ -49,13 +53,15 @@ interface ApiRequestOptions
   query?: Record<string, QueryValue>;
 }
 
-const API_BASE_URL =
+export const API_ORIGIN =
   import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "") ?? DEFAULT_BASE_URL;
+const API_BASE_URL = `${API_ORIGIN}/api`;
 
 const DEV_USER_ID = import.meta.env.VITE_DEV_USER_ID ?? DEFAULT_DEV_USER_ID;
 
 function buildUrl(path: string, query?: Record<string, QueryValue>) {
-  const url = new URL(path, `${API_BASE_URL}/`);
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  const url = new URL(`${API_BASE_URL}${normalizedPath}`);
 
   if (!query) {
     return url.toString();
@@ -146,6 +152,7 @@ export async function apiRequest<T>(
 
   try {
     response = await fetch(requestUrl, {
+      credentials: "include",
       ...init,
       headers: buildHeaders({ auth, headers, body }),
       ...(requestBody !== undefined ? { body: requestBody } : {}),
@@ -157,6 +164,8 @@ export async function apiRequest<T>(
       message: "서버에 연결할 수 없습니다.",
     });
   }
+
+  const requestId = response.headers.get("X-Request-Id") ?? undefined;
 
   let envelope: ApiEnvelope<T> | null = null;
 
@@ -173,6 +182,7 @@ export async function apiRequest<T>(
         code: envelope.code,
         message: envelope.message,
         timestamp: envelope.timestamp,
+        requestId,
       });
     }
 
@@ -180,6 +190,7 @@ export async function apiRequest<T>(
       status: response.status,
       code: "HTTP_ERROR",
       message: `요청에 실패했습니다. (${response.status})`,
+      requestId,
     });
   }
 
@@ -188,6 +199,7 @@ export async function apiRequest<T>(
       status: response.status,
       code: "INVALID_RESPONSE",
       message: "응답 형식을 해석할 수 없습니다.",
+      requestId,
     });
   }
 
@@ -197,6 +209,7 @@ export async function apiRequest<T>(
       code: envelope.code,
       message: envelope.message,
       timestamp: envelope.timestamp,
+      requestId,
     });
   }
 

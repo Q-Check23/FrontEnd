@@ -29,7 +29,7 @@ function mapCheckInResponse(response: CheckInResponse): AttendanceCheckInResult 
 }
 
 export async function checkInAttendance(body: AttendanceCheckInRequest) {
-  const response = await apiRequest<CheckInResponse>("/api/attendance/check-in", {
+  const response = await apiRequest<CheckInResponse>("/attendance/check-in", {
     method: "POST",
     auth: { type: "dev-user" },
     body,
