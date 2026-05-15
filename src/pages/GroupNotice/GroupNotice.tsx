@@ -2,13 +2,21 @@ import { useSearchParams } from "react-router-dom";
 import BackHeader from "../../components/BackHeader";
 import GroupTabs from "../../components/GroupTabs";
 import NoticeCard from "./components/NoticeCard";
+import { useClubMembers, useMyClubs } from "../../hooks";
 
 export default function GroupNotice() {
   const [searchParams] = useSearchParams();
-  const isAdmin = searchParams.get("role") === "ADMIN";
-  // TODO: API 연동 - 모임 정보 & 공지 목록 조회
-  const clubName = "KUIT";
-  const memberCount = 124;
+  const clubId = Number(searchParams.get("clubId"));
+  const role = searchParams.get("role");
+  const isAdmin = role === "ADMIN" || role === "OWNER";
+
+  const { data: clubs = [] } = useMyClubs();
+  const { data: members = [] } = useClubMembers(clubId);
+  const currentClub = clubs.find((club) => club.clubId === clubId);
+  const clubName = currentClub?.clubName ?? "";
+  const memberCount = members.length;
+
+  // TODO: API 연동 - 공지 목록 조회 (백엔드 공지 API 추가 대기 중)
 
   return (
     <div className="bg-surface h-full overflow-y-auto pb-24">

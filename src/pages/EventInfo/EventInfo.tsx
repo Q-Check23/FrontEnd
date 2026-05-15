@@ -1,5 +1,5 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useEventDetail } from "../../hooks";
+import { useEventDetail, useEventRegistrations } from "../../hooks";
 import BackHeader from "../../components/BackHeader";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ErrorFallback from "../../components/ErrorFallback";
@@ -16,10 +16,9 @@ export default function EventInfo() {
   const [searchParams] = useSearchParams();
   const eventId = Number(searchParams.get("eventId"));
   const { data: event, isLoading, isError, refetch } = useEventDetail(eventId);
+  const { data: registrations = [] } = useEventRegistrations(eventId);
   const showRegistration = isBeforeRegistrationCutoff(event?.startTime);
-
-  // TODO: API 연동 - 참가 인원 수 조회
-  const participantCount = 42;
+  const participantCount = registrations.length;
 
   if (isLoading) {
     return (
