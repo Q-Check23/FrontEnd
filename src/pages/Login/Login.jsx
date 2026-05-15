@@ -1,24 +1,41 @@
-import { useState } from "react";
-import { checkNicknameAvailability } from "../../api/auth";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { checkNicknameAvailability, signup } from "../../api/auth";
 import { useToastStore } from "../../stores/useToastStore";
+import { useUserStore } from "../../stores/useUserStore";
+import { SIGNUP_TOKEN_STORAGE_KEY } from "../AuthCallback/AuthCallback";
 
 export default function Login() {
+  const navigate = useNavigate();
+  const [signupToken, setSignupToken] = useState("");
   const [name, setName] = useState("");
   const [nickname, setNickname] = useState("");
   const [emailId, setEmailId] = useState("");
   const [domain, setDomain] = useState("gmail.com");
   const [isCheckingNickname, setIsCheckingNickname] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [checkedNickname, setCheckedNickname] = useState("");
   const [nicknameStatus, setNicknameStatus] = useState("idle");
   const [nicknameMessage, setNicknameMessage] = useState("");
   const toast = useToastStore();
+  const setAccessToken = useUserStore((state) => state.setAccessToken);
+
+  useEffect(() => {
+    const token = sessionStorage.getItem(SIGNUP_TOKEN_STORAGE_KEY);
+    if (!token) {
+      toast?.push("Discord 로그인 이후에 회원가입을 진행해주세요.");
+      navigate("/login-landing", { replace: true });
+      return;
+    }
+    setSignupToken(token);
+  }, [navigate, toast]);
 
   const domains = ["직접입력", "gmail.com", "naver.com", "daum.net", "kakao.com"];
 
   const isCustomDomain = domain === "직접입력";
   const [customDomain, setCustomDomain] = useState("");
 
-  const finalEmail = `${emailId}@${isCustomDomain? customDomain : domain}`;
+  const finalEmail = `${emailId}@${isCustomDomain ? customDomain : domain}`;
 
   const isFormValid =
     name.trim().length > 0 &&
@@ -74,7 +91,7 @@ export default function Login() {
     }
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
     if (!isFormValid) {
@@ -86,8 +103,32 @@ export default function Login() {
       return;
     }
 
-    toast?.push("Discord OAuth 연동 전까지는 회원가입 완료를 진행할 수 없습니다.");
-    console.log({ name, nickname, finalEmail });
+    if (!signupToken) {
+      toast?.push("Discord 로그인 이후에 회원가입을 진행해주세요.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const response = await signup(
+        {
+          name: name.trim(),
+          nickname: nickname.trim(),
+          email: finalEmail,
+        },
+        signupToken,
+      );
+      setAccessToken(response.accessToken);
+      sessionStorage.removeItem(SIGNUP_TOKEN_STORAGE_KEY);
+      toast?.push("회원가입이 완료되었습니다.");
+      navigate("/home", { replace: true });
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "회원가입에 실패했습니다.";
+      toast?.push(message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const nicknameMessageColor =
@@ -99,28 +140,30 @@ export default function Login() {
 
   return (
     <div className="h-full w-full flex flex-col items-center justify-start gap-16">
-        <div className="self-start mt-10 ml-10">
-          <h1 className="text-2xl font-bold">회원가입</h1>
-          <p className="mt-2 text-sm text-gray-500">
-            현재는 닉네임 중복 확인만 먼저 연동되어 있습니다.
-          </p>
-        </div>
-      
+      <div className="self-start mt-10 ml-10">
+        <h1 className="text-2xl font-bold">회원가입</h1>
+        <p className="mt-2 text-sm text-gray-500">
+          Discord 인증 후 추가 정보를 입력해주세요.
+        </p>
+      </div>
+
       <div className="h-full w-full flex flex-col p-5">
         <form onSubmit={onSubmit} className="flex flex-col gap-5">
           {/* 이름 */}
           <div>
             <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="성명"
-            className="w-full h-11 rounded-xl border border-gray-200 outline-none focus:border-gray-400 p-5"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="성명"
+              className="w-full h-11 rounded-xl border border-gray-200 outline-none focus:border-gray-400 p-5"
             />
-            <p className="text-xs text-gray-500 text-left pl-3 pt-2">정산시 사용되니 실명으로 입력해주세요.</p>
+            <p className="text-xs text-gray-500 text-left pl-3 pt-2">
+              정산시 사용되니 실명으로 입력해주세요.
+            </p>
           </div>
 
           {/* 닉네임 */}
-           <div>
+          <div>
             <div className="flex items-center gap-2">
               <input
                 value={nickname}
@@ -167,22 +210,29 @@ export default function Login() {
           </div>
 
           {/* 도메인 직접 입력인 경우 */}
-            {isCustomDomain && (
-              <input value={customDomain}
+          {isCustomDomain && (
+            <input
+              value={customDomain}
               onChange={(e) => setCustomDomain(e.target.value)}
               placeholder="도메인 직접 입력"
-              className="w-full h-11 rounded-xl border border-gray-200 outline-none focus:border-gray-400 p-5"/>
-              
-            )}
+              className="w-full h-11 rounded-xl border border-gray-200 outline-none focus:border-gray-400 p-5"
+            />
+          )}
           {/* 가입 버튼 */}
-          <button type="submit"
-          disabled = {!isFormValid}
-          className={["w-full h-11 rounded-xl border outline-none", isFormValid ? "bg-gray-900 text-white cursor-pointer" : "bg-gray-200 text-gray-400 cursor-not-allowed"].join(" ")}>
-            OAuth 연동 후 가입 가능
+          <button
+            type="submit"
+            disabled={!isFormValid || !isNicknameAvailable || isSubmitting}
+            className={[
+              "w-full h-11 rounded-xl border outline-none",
+              isFormValid && isNicknameAvailable && !isSubmitting
+                ? "bg-gray-900 text-white cursor-pointer"
+                : "bg-gray-200 text-gray-400 cursor-not-allowed",
+            ].join(" ")}
+          >
+            {isSubmitting ? "가입 중..." : "회원가입 완료"}
           </button>
         </form>
       </div>
     </div>
-    
   );
 }

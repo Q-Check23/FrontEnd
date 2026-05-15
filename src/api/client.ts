@@ -1,3 +1,5 @@
+import { useUserStore } from "../stores/useUserStore";
+
 const DEFAULT_BASE_URL = "http://localhost:8080";
 const DEFAULT_DEV_USER_ID = "1";
 
@@ -51,6 +53,7 @@ interface ApiRequestOptions
   body?: unknown;
   headers?: HeadersInit;
   query?: Record<string, QueryValue>;
+  skipAuthRefresh?: boolean;
 }
 
 export const API_ORIGIN =
@@ -113,7 +116,12 @@ function buildHeaders({
   }
 
   if (auth.type === "dev-user") {
-    finalHeaders.set("X-USER-ID", DEV_USER_ID);
+    const storeToken = useUserStore.getState().accessToken;
+    if (storeToken) {
+      finalHeaders.set("Authorization", `Bearer ${storeToken}`);
+    } else {
+      finalHeaders.set("X-USER-ID", DEV_USER_ID);
+    }
   }
 
   if (auth.type === "bearer") {
@@ -135,6 +143,30 @@ function serializeBody(body?: unknown) {
   return JSON.stringify(body);
 }
 
+let refreshInflight: Promise<boolean> | null = null;
+
+async function refreshAuthToken(): Promise<boolean> {
+  if (refreshInflight) return refreshInflight;
+
+  refreshInflight = (async () => {
+    try {
+      const data = await apiRequest<{ userId: number; accessToken: string }>(
+        "/auth/refresh",
+        { method: "POST", skipAuthRefresh: true },
+      );
+      useUserStore.getState().setAccessToken(data.accessToken);
+      return true;
+    } catch {
+      useUserStore.getState().clear();
+      return false;
+    } finally {
+      refreshInflight = null;
+    }
+  })();
+
+  return refreshInflight;
+}
+
 export async function apiRequest<T>(
   path: string,
   {
@@ -142,9 +174,10 @@ export async function apiRequest<T>(
     body,
     headers,
     query,
+    skipAuthRefresh = false,
     ...init
   }: ApiRequestOptions = {},
-) {
+): Promise<T> {
   const requestUrl = buildUrl(path, query);
   const requestBody = serializeBody(body);
 
@@ -163,6 +196,26 @@ export async function apiRequest<T>(
       code: "NETWORK_ERROR",
       message: "서버에 연결할 수 없습니다.",
     });
+  }
+
+  if (
+    response.status === 401 &&
+    auth.type === "dev-user" &&
+    !skipAuthRefresh &&
+    useUserStore.getState().accessToken !== null
+  ) {
+    const refreshed = await refreshAuthToken();
+    if (refreshed) {
+      const retryOptions: ApiRequestOptions = {
+        auth,
+        skipAuthRefresh: true,
+        ...init,
+      };
+      if (body !== undefined) retryOptions.body = body;
+      if (headers !== undefined) retryOptions.headers = headers;
+      if (query !== undefined) retryOptions.query = query;
+      return apiRequest<T>(path, retryOptions);
+    }
   }
 
   const requestId = response.headers.get("X-Request-Id") ?? undefined;

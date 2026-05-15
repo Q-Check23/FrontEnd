@@ -19,6 +19,9 @@ import EventInfo from "./pages/EventInfo/EventInfo";
 import QRCheckIn from "./pages/QRCheckIn/QRCheckIn";
 import EventParticipants from "./pages/EventParticipants/EventParticipants";
 import CreateEvent from "./pages/CreateEvent/CreateEvent";
+import CreateClub from "./pages/CreateClub/CreateClub";
+import EditEvent from "./pages/EditEvent/EditEvent";
+import AuthCallback from "./pages/AuthCallback/AuthCallback";
 import Register from "./pages/Register/Register";
 
 import Layout from "./components/Layout"
@@ -41,11 +44,14 @@ export default function App() {
             <Route path="/qrcheck-in" element={<QRCheckIn />} />
             <Route path="/participants" element={<EventParticipants />} />
             <Route path="/create-event" element={<CreateEvent />} />
+            <Route path="/create-club" element={<CreateClub />} />
+            <Route path="/edit-event" element={<EditEvent />} />
             <Route path="/register" element={<Register />} />
 
-            {/*<Route path="/" element={<Landing />} />*/}
-            {/*<Route path="/login-landing" element={<Login_Landing />} />*/}
-            {/*<Route path="/login" element={<Login />} />*/}
+            <Route path="/landing" element={<Landing />} />
+            <Route path="/login-landing" element={<Login_Landing />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
 
             {/* BottomBar 있는 페이지 */}
             <Route element={<Layout />}>

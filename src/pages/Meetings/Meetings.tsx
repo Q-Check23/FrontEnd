@@ -49,6 +49,19 @@ export default function Meeting() {
           </div>
         </section>
 
+        {/* FAB - 모임 생성 */}
+        <button
+          onClick={() => navigate("/create-club")}
+          className="fixed bottom-24 right-6 w-14 h-14 rounded-full bg-gradient-to-br from-primary to-primary-container text-white shadow-lg flex items-center justify-center z-50 active:scale-90 transition-transform"
+        >
+          <span
+            className="material-symbols-outlined text-[28px]"
+            style={{ fontVariationSettings: "'FILL' 1" }}
+          >
+            add
+          </span>
+        </button>
+
         {/* 모임 목록 */}
         <div className="flex flex-col gap-5 pb-24">
           {isLoading ? (

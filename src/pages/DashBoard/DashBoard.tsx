@@ -1,5 +1,5 @@
-import { useSearchParams } from "react-router-dom";
-import { useEventDetail } from "../../hooks";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useEventDetail, useEventRegistrations } from "../../hooks";
 import BackHeader from "../../components/BackHeader";
 import EventManageTabs from "../../components/EventManageTabs";
 import LoadingSpinner from "../../components/LoadingSpinner";
@@ -7,13 +7,17 @@ import ErrorFallback from "../../components/ErrorFallback";
 
 export default function DashBoard() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const eventId = Number(searchParams.get("eventId"));
   const { data: event, isLoading, isError, refetch } = useEventDetail(eventId);
+  const { data: registrations = [] } = useEventRegistrations(eventId);
 
-  // 별도 API 없으므로 하드코딩 유지
+  const checkedInCount = registrations.filter(
+    (r) => r.status === "CHECKED_IN",
+  ).length;
   const dashStats = {
-    totalRegistrations: "-" as string | number,
-    checkedIn: "-" as string | number,
+    totalRegistrations: registrations.length,
+    checkedIn: checkedInCount,
     lastCheckIn: "-",
   };
 
@@ -131,21 +135,24 @@ export default function DashBoard() {
               label="설명:"
               value={event?.title ?? "-"}
               icon="edit"
+              onClick={() => navigate(`/edit-event?eventId=${eventId}`)}
             />
             <InfoRow
               label="장소:"
               value={event?.location ?? "-"}
-              icon="map"
+              icon="edit"
               valueIcon="location_on"
+              onClick={() => navigate(`/edit-event?eventId=${eventId}`)}
             />
             <InfoRow
               label="시간:"
               value={event?.startTime ? formatDateTime(event.startTime) : "-"}
-              icon="calendar_today"
+              icon="edit"
+              onClick={() => navigate(`/edit-event?eventId=${eventId}`)}
             />
             <InfoRow
               label="인원 수:"
-              value="-"
+              value={`${registrations.length}명`}
               icon="group"
               isLast
             />
@@ -162,12 +169,14 @@ function InfoRow({
   icon,
   valueIcon,
   isLast,
+  onClick,
 }: {
   label: string;
   value: string;
   icon: string;
   valueIcon?: string;
   isLast?: boolean;
+  onClick?: () => void;
 }) {
   return (
     <div
@@ -186,7 +195,10 @@ function InfoRow({
         )}
         {value}
       </div>
-      <button className="material-symbols-outlined text-outline text-[20px] ml-2">
+      <button
+        onClick={onClick}
+        className="material-symbols-outlined text-outline text-[20px] ml-2 active:scale-95 transition-transform"
+      >
         {icon}
       </button>
     </div>

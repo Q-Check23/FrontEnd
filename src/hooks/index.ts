@@ -16,6 +16,11 @@ export { useUpdateEvent } from "./mutations/useUpdateEvent";
 export { useCheckIn } from "./mutations/useCheckIn";
 export { useCreateRegistration } from "./mutations/useCreateRegistration";
 export { useUpdateProfile } from "./mutations/useUpdateProfile";
+export { useUpdateClubMemberRole } from "./mutations/useUpdateClubMemberRole";
+export { useRemoveClubMember } from "./mutations/useRemoveClubMember";
+export { useLeaveClub } from "./mutations/useLeaveClub";
+export { useAddClubMember } from "./mutations/useAddClubMember";
+export { useCreateClub } from "./mutations/useCreateClub";
 
 // Utility hooks
 export { useDebouncedValue } from "./useDebouncedValue";

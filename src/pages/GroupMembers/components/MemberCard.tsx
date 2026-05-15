@@ -3,6 +3,8 @@ import type { ClubRole } from "../../../api/clubs";
 interface MemberCardProps {
   username: string;
   role: ClubRole;
+  hasMenu: boolean;
+  onMenuClick: () => void;
 }
 
 const ROLE_LABEL: Record<ClubRole, string> = {
@@ -11,7 +13,12 @@ const ROLE_LABEL: Record<ClubRole, string> = {
   MEMBER: "멤버",
 };
 
-export default function MemberCard({ username, role }: MemberCardProps) {
+export default function MemberCard({
+  username,
+  role,
+  hasMenu,
+  onMenuClick,
+}: MemberCardProps) {
   const isStaff = role === "OWNER" || role === "ADMIN";
 
   return (
@@ -36,9 +43,14 @@ export default function MemberCard({ username, role }: MemberCardProps) {
           )}
         </div>
       </div>
-      <button className="material-symbols-outlined text-on-surface-variant">
-        more_vert
-      </button>
+      {hasMenu && (
+        <button
+          onClick={onMenuClick}
+          className="material-symbols-outlined text-on-surface-variant p-1 active:scale-95 transition-transform"
+        >
+          more_vert
+        </button>
+      )}
     </div>
   );
 }
