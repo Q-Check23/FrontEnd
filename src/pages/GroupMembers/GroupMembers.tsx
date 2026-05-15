@@ -2,36 +2,33 @@ import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import BackHeader from "../../components/BackHeader";
 import GroupTabs from "../../components/GroupTabs";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import ErrorFallback from "../../components/ErrorFallback";
 import MemberCard from "./components/MemberCard";
+import { useClubMembers, useMyClubs } from "../../hooks";
 
 export default function GroupMembers() {
   const [searchParams] = useSearchParams();
-  const isAdmin = searchParams.get("role") === "ADMIN";
+  const clubId = Number(searchParams.get("clubId"));
+  const role = searchParams.get("role") ?? "";
+  const isAdmin = role === "ADMIN" || role === "OWNER";
   const [query, setQuery] = useState("");
 
-  // TODO: API 연동 - 모임 정보 & 멤버 목록 조회
-  const clubName = "KUIT";
-  const memberCount = 124;
+  const { data: members = [], isLoading, isError, refetch } = useClubMembers(clubId);
+  const { data: clubs = [] } = useMyClubs();
 
-  const members = [
-    { name: "김민우", isAdmin: true, joinedAt: "2021.03" },
-    { name: "이지수", isAdmin: true, joinedAt: "2021.05" },
-    { name: "박준현", isAdmin: false, joinedAt: "2022.01" },
-    { name: "최아름", isAdmin: false, joinedAt: "2022.03" },
-    { name: "강동훈", isAdmin: false, joinedAt: "2022.08" },
-    { name: "윤지환", isAdmin: false, joinedAt: "2023.01" },
-    { name: "정서연", isAdmin: false, joinedAt: "2023.04" },
-  ];
+  const currentClub = clubs.find((club) => club.clubId === clubId);
+  const clubName = currentClub?.clubName ?? "";
 
   const filtered = query.trim()
-    ? members.filter((m) =>
-        m.name.toLowerCase().includes(query.trim().toLowerCase()),
+    ? members.filter((member) =>
+        member.username.toLowerCase().includes(query.trim().toLowerCase()),
       )
     : members;
 
   return (
     <div className="bg-surface h-full overflow-y-auto">
-      <BackHeader title={clubName} subtitle={`멤버 ${memberCount}명`} />
+      <BackHeader title={clubName} subtitle={`멤버 ${members.length}명`} />
       <GroupTabs activeTab="members" />
 
       <main className="pb-24">
@@ -56,17 +53,20 @@ export default function GroupMembers() {
 
         {/* 멤버 목록 */}
         <section className="px-5 py-4 flex flex-col gap-3">
-          {filtered.length === 0 ? (
+          {isLoading ? (
+            <LoadingSpinner />
+          ) : isError ? (
+            <ErrorFallback onRetry={refetch} />
+          ) : filtered.length === 0 ? (
             <p className="text-sm text-on-surface-variant py-8 text-center">
-              멤버가 없습니다
+              {query.trim() ? "검색 결과가 없습니다" : "멤버가 없습니다"}
             </p>
           ) : (
-            filtered.map((member, i) => (
+            filtered.map((member) => (
               <MemberCard
-                key={i}
-                name={member.name}
-                isAdmin={member.isAdmin}
-                joinedAt={member.joinedAt}
+                key={member.memberId}
+                username={member.username}
+                role={member.role}
               />
             ))
           )}

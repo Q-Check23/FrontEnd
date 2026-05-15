@@ -5,7 +5,7 @@
  */
 
 import type { CalendarClubGroup } from "../api/calendar";
-import type { ClubSummary } from "../api/clubs";
+import type { ClubMember, ClubSummary } from "../api/clubs";
 import type {
   EventDetail,
   EventListPage,
