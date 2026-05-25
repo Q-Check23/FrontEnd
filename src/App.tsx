@@ -25,6 +25,7 @@ import AuthCallback from "./pages/AuthCallback/AuthCallback";
 import Register from "./pages/Register/Register";
 
 import Layout from "./components/Layout"
+import ProtectedRoute from "./components/ProtectedRoute"
 import ToastContainer from "./components/ToastContainer"
 
 export default function App() {
@@ -35,30 +36,34 @@ export default function App() {
 
           <Routes>
 
-            <Route path="/dashboard" element={<DashBoard/>}></Route>
-            <Route path="/qr-info" element={<QRInfo/>}></Route>
-            <Route path="/group-notice" element={<GroupNotice />} />
-            <Route path="/group-events" element={<GroupEvents />} />
-            <Route path="/group-members" element={<GroupMembers />} />
-            <Route path="/event-info" element={<EventInfo />} />
-            <Route path="/qrcheck-in" element={<QRCheckIn />} />
-            <Route path="/participants" element={<EventParticipants />} />
-            <Route path="/create-event" element={<CreateEvent />} />
-            <Route path="/create-club" element={<CreateClub />} />
-            <Route path="/edit-event" element={<EditEvent />} />
-            <Route path="/register" element={<Register />} />
-
+            {/* 공개 라우트 */}
             <Route path="/landing" element={<Landing />} />
             <Route path="/login-landing" element={<Login_Landing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
+            <Route path="/register" element={<Register />} />
 
-            {/* BottomBar 있는 페이지 */}
-            <Route element={<Layout />}>
-              <Route path="/" element={<Home />} />
-              <Route path="/home" element={<Home />} />
-              <Route path="/meeting" element={<Meeting />} />
-              <Route path="/profile" element={<Profile />} />
+            {/* 보호 라우트 */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/dashboard" element={<DashBoard/>} />
+              <Route path="/qr-info" element={<QRInfo/>} />
+              <Route path="/group-notice" element={<GroupNotice />} />
+              <Route path="/group-events" element={<GroupEvents />} />
+              <Route path="/group-members" element={<GroupMembers />} />
+              <Route path="/event-info" element={<EventInfo />} />
+              <Route path="/qrcheck-in" element={<QRCheckIn />} />
+              <Route path="/participants" element={<EventParticipants />} />
+              <Route path="/create-event" element={<CreateEvent />} />
+              <Route path="/create-club" element={<CreateClub />} />
+              <Route path="/edit-event" element={<EditEvent />} />
+
+              {/* BottomBar 있는 페이지 */}
+              <Route element={<Layout />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/home" element={<Home />} />
+                <Route path="/meeting" element={<Meeting />} />
+                <Route path="/profile" element={<Profile />} />
+              </Route>
             </Route>
 
           </Routes>
