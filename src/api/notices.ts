@@ -2,11 +2,10 @@ import { apiRequest } from "./client";
 
 export interface Notice {
   noticeId: number;
-  clubId: number;
   title: string;
   content: string;
   authorName: string;
-  isAdmin: boolean;
+  authorRole: "OWNER" | "ADMIN" | "MEMBER";
   createdAt: string;
 }
 

@@ -43,7 +43,7 @@ export default function GroupNotice() {
             <NoticeCard
               key={notice.noticeId}
               author={notice.authorName}
-              isAdmin={notice.isAdmin}
+              isAdmin={notice.authorRole !== "MEMBER"}
               timeAgo={formatTimeAgo(notice.createdAt)}
               title={notice.title}
               content={notice.content}
