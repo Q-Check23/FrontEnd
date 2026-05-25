@@ -23,6 +23,9 @@ export const queryKeys = {
     my: () => ["clubs", "my"] as const,
     members: (clubId: number) => ["clubs", clubId, "members"] as const,
   },
+  notices: {
+    list: (clubId: number) => ["notices", clubId] as const,
+  },
   users: {
     me: () => ["users", "me"] as const,
   },

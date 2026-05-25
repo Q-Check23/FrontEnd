@@ -9,6 +9,7 @@ export { useMyProfile } from "./queries/useMyProfile";
 export { useMyClubs } from "./queries/useMyClubs";
 export { useClubMembers } from "./queries/useClubMembers";
 export { useMyEventRegistration } from "./queries/useMyEventRegistration";
+export { useNotices } from "./queries/useNotices";
 
 // Mutation hooks
 export { useCreateEvent } from "./mutations/useCreateEvent";
