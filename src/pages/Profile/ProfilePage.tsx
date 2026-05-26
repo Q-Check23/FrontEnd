@@ -1,13 +1,20 @@
 import { useNavigate } from "react-router-dom";
-import { useMyProfile } from "../../hooks";
+import { useMyProfile, useLogout } from "../../hooks";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ErrorFallback from "../../components/ErrorFallback";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
   const { data: profile, isLoading, isError, refetch } = useMyProfile();
+  const logoutMutation = useLogout();
 
   const displayName = profile?.realName || profile?.username || "사용자";
+
+  function handleLogout() {
+    logoutMutation.mutate(undefined, {
+      onSettled: () => navigate("/landing", { replace: true }),
+    });
+  }
 
   if (isLoading) {
     return (
@@ -133,9 +140,13 @@ export default function ProfilePage() {
 
         {/* 로그아웃 */}
         <section className="mt-4 mb-8">
-          <button className="w-full py-4 px-5 flex items-center justify-center gap-2 text-[#ba1a1a] text-base font-medium hover:bg-[#ffdad6]/10 transition-colors rounded-xl border border-[#ba1a1a]/20">
+          <button
+            onClick={handleLogout}
+            disabled={logoutMutation.isPending}
+            className="w-full py-4 px-5 flex items-center justify-center gap-2 text-[#ba1a1a] text-base font-medium hover:bg-[#ffdad6]/10 transition-colors rounded-xl border border-[#ba1a1a]/20 disabled:opacity-50"
+          >
             <span className="material-symbols-outlined">logout</span>
-            로그아웃
+            {logoutMutation.isPending ? "로그아웃 중..." : "로그아웃"}
           </button>
         </section>
       </main>

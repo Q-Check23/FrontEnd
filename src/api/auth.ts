@@ -44,3 +44,10 @@ export function refreshAccessToken() {
     method: "POST",
   });
 }
+
+export function logout() {
+  return apiRequest<void>("/auth/logout", {
+    method: "POST",
+    auth: { type: "dev-user" },
+  });
+}
