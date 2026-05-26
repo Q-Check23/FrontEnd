@@ -79,7 +79,7 @@ export default function QRCheckIn() {
     scanner
       .start(
         { facingMode: "environment" },
-        { fps: 10, qrbox: { width: 250, height: 250 } },
+        { fps: 10, qrbox: { width: 250, height: 250 }, disableFlip: false },
         (decodedText) => handleCheckInRef.current(decodedText),
         () => {}, // QR 미감지 시 무시
       )
@@ -107,9 +107,36 @@ export default function QRCheckIn() {
       {/* Camera Preview - html5-qrcode가 여기에 비디오를 렌더링 */}
       <div
         id="qr-reader"
-        className="fixed inset-0 w-full h-full z-0"
-        style={{ background: "black" }}
+        className="fixed inset-0 z-0"
       />
+      {/* html5-qrcode 기본 UI 숨기고 비디오만 풀스크린 표시 */}
+      <style>{`
+        #qr-reader {
+          border: none !important;
+          width: 100% !important;
+          height: 100% !important;
+        }
+        #qr-reader video {
+          width: 100vw !important;
+          height: 100vh !important;
+          object-fit: cover !important;
+          position: fixed !important;
+          top: 0 !important;
+          left: 0 !important;
+        }
+        #qr-reader img[alt="Info icon"],
+        #qr-reader img[alt="Camera based scan"],
+        #qr-reader span,
+        #qr-reader br {
+          display: none !important;
+        }
+        #qr-shaded-region {
+          display: none !important;
+        }
+        #qr-reader > div:not(:has(video)) {
+          display: none !important;
+        }
+      `}</style>
 
       {/* UI Overlay */}
       <div className="relative z-10 flex flex-col h-screen pointer-events-none">
