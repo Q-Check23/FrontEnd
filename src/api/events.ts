@@ -80,6 +80,7 @@ interface EventDetailResponse {
   description: string | null;
   startTime: string | null;
   location: string | null;
+  discordChannelId: string | null;
   isActive: boolean | null;
   formFields: EventFormFieldResponse[] | null;
 }
@@ -91,6 +92,7 @@ export interface EventDetail {
   description: string;
   startTime: string;
   location: string;
+  discordChannelId: string;
   isActive: boolean;
   formFields: Array<{
     id: number;
@@ -188,6 +190,7 @@ function mapEventDetail(response: EventDetailResponse): EventDetail {
     description: normalizeText(response.description),
     startTime: normalizeText(response.startTime),
     location: normalizeText(response.location),
+    discordChannelId: normalizeText(response.discordChannelId),
     isActive: Boolean(response.isActive),
     formFields: (response.formFields ?? []).map((field) => ({
       id: field.id,
