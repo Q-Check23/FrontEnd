@@ -28,6 +28,7 @@ export { useAddClubMember } from "./mutations/useAddClubMember";
 export { useCreateClub } from "./mutations/useCreateClub";
 export { useUpdateClub } from "./mutations/useUpdateClub";
 export { useDeleteClub } from "./mutations/useDeleteClub";
+export { useDeleteEvent } from "./mutations/useDeleteEvent";
 
 // Utility hooks
 export { useDebouncedValue } from "./useDebouncedValue";

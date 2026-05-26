@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import BackHeader from "../../components/BackHeader";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ErrorFallback from "../../components/ErrorFallback";
-import { useEventDetail, useUpdateEvent } from "../../hooks";
+import { useEventDetail, useUpdateEvent, useDeleteEvent } from "../../hooks";
 import { useToastStore } from "../../stores/useToastStore";
 
 function splitDateTime(iso: string) {
@@ -25,6 +25,7 @@ export default function EditEvent() {
 
   const { data: event, isLoading, isError, refetch } = useEventDetail(eventId);
   const mutation = useUpdateEvent(eventId);
+  const deleteMutation = useDeleteEvent();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -63,6 +64,21 @@ export default function EditEvent() {
   }
 
   const isValid = title.trim().length > 0 && date && time && location.trim().length > 0;
+
+  function handleDelete() {
+    if (!window.confirm("정말 이 행사를 삭제하시겠습니까?")) return;
+    deleteMutation.mutate(eventId, {
+      onSuccess: () => {
+        pushToast("행사를 삭제했어요");
+        navigate(-1);
+      },
+      onError: (error) => {
+        pushToast(
+          error instanceof Error ? error.message : "삭제에 실패했어요",
+        );
+      },
+    });
+  }
 
   function handleSubmit() {
     if (!isValid) return;
@@ -190,13 +206,20 @@ export default function EditEvent() {
         </section>
       </main>
 
-      <div className="fixed bottom-0 left-0 w-full p-5 bg-surface/70 backdrop-blur-xl z-50">
+      <div className="fixed bottom-0 left-0 w-full p-5 bg-surface/70 backdrop-blur-xl z-50 space-y-3">
         <button
           onClick={handleSubmit}
           disabled={!isValid || mutation.isPending}
           className="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-4 rounded-xl text-xl font-semibold shadow-lg active:scale-[0.98] transition-transform disabled:opacity-50"
         >
           {mutation.isPending ? "저장 중..." : "저장하기"}
+        </button>
+        <button
+          onClick={handleDelete}
+          disabled={deleteMutation.isPending}
+          className="w-full border-2 border-red-500 text-red-500 py-3 rounded-xl text-base font-semibold active:scale-[0.98] transition-transform disabled:opacity-50"
+        >
+          {deleteMutation.isPending ? "삭제 중..." : "행사 삭제"}
         </button>
       </div>
     </div>

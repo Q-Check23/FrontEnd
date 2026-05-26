@@ -313,6 +313,13 @@ export async function getMyEventRegistration(eventId: number) {
   return mapMyEventRegistration(response);
 }
 
+export async function deleteEvent(eventId: number) {
+  await apiRequest<void>(`/events/${eventId}`, {
+    method: "DELETE",
+    auth: { type: "dev-user" },
+  });
+}
+
 export async function createEventRegistration(
   eventId: number,
   body: CreateEventRegistrationRequest,
