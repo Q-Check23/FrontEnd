@@ -49,12 +49,14 @@ export interface CreateEventFormField {
 export interface CreateEventRequest {
   clubId: number;
   title: string;
+  description: string;
   startTime: string;
   formFields: CreateEventFormField[];
 }
 
 export interface UpdateEventRequest {
   title: string;
+  description: string;
   startTime: string;
   location: string;
   isActive: boolean;
@@ -72,6 +74,7 @@ interface EventDetailResponse {
   eventId: number;
   clubId: number;
   title: string | null;
+  description: string | null;
   startTime: string | null;
   location: string | null;
   isActive: boolean | null;
@@ -82,6 +85,7 @@ export interface EventDetail {
   eventId: number;
   clubId: number;
   title: string;
+  description: string;
   startTime: string;
   location: string;
   isActive: boolean;
@@ -178,6 +182,7 @@ function mapEventDetail(response: EventDetailResponse): EventDetail {
     eventId: response.eventId,
     clubId: response.clubId,
     title: normalizeText(response.title) || `이벤트 ${response.eventId}`,
+    description: normalizeText(response.description),
     startTime: normalizeText(response.startTime),
     location: normalizeText(response.location),
     isActive: Boolean(response.isActive),

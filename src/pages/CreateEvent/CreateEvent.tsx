@@ -14,6 +14,7 @@ export default function CreateEvent() {
   const clubId = Number(searchParams.get("clubId") ?? "0");
 
   const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [location, setLocation] = useState("");
@@ -49,6 +50,7 @@ export default function CreateEvent() {
       {
         clubId,
         title: title.trim(),
+        description: description.trim(),
         startTime,
         formFields: fields
           .filter((f) => f.label.trim())
@@ -84,6 +86,18 @@ export default function CreateEvent() {
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="예: 12월 정기 모임"
                 className="w-full bg-surface-container-low border-none rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-on-surface-variant block mb-2">
+                상세 내용
+              </label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="행사에 대한 설명을 입력하세요"
+                rows={4}
+                className="w-full bg-surface-container-low border-none rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:outline-none resize-none"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">

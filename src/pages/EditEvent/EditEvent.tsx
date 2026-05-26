@@ -27,6 +27,7 @@ export default function EditEvent() {
   const mutation = useUpdateEvent(eventId);
 
   const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [location, setLocation] = useState("");
@@ -35,6 +36,7 @@ export default function EditEvent() {
   useEffect(() => {
     if (!event) return;
     setTitle(event.title);
+    setDescription(event.description);
     const { date, time } = splitDateTime(event.startTime);
     setDate(date);
     setTime(time);
@@ -68,6 +70,7 @@ export default function EditEvent() {
     mutation.mutate(
       {
         title: title.trim(),
+        description: description.trim(),
         startTime,
         location: location.trim(),
         isActive,
@@ -108,6 +111,18 @@ export default function EditEvent() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 className="w-full bg-surface-container-low border-none rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-on-surface-variant block mb-2">
+                상세 내용
+              </label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="행사에 대한 설명을 입력하세요"
+                rows={4}
+                className="w-full bg-surface-container-low border-none rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:outline-none resize-none"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">

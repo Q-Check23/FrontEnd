@@ -94,54 +94,16 @@ export default function EventInfo() {
         </section>
 
         {/* Details Section */}
-        <section className="px-5 mt-6 space-y-3">
-          <div className="bg-surface-container-lowest rounded-xl p-5 shadow-[0px_4px_20px_rgba(0,0,0,0.04)]">
-            <h3 className="text-xl font-semibold mb-3">상세 내용</h3>
-            <p className="text-sm text-on-surface-variant leading-relaxed mb-6">
-              KUIT의 한 학기를 마무리하는 정기 데모데이입니다. 각 팀별 프로젝트
-              결과물을 공유하고, 현직자 멘토들과의 심도 있는 네트워킹 시간이
-              준비되어 있습니다.
-            </p>
-            <h4 className="text-xs font-semibold text-primary mb-3">준비물</h4>
-            <ul className="space-y-2 text-sm text-on-surface-variant">
-              <li className="flex items-start gap-2">
-                <span className="text-primary">•</span>
-                <span>개인 노트북 및 충전기</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-primary">•</span>
-                <span>팀별 발표 자료 (USB 지참 권장)</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-primary">•</span>
-                <span>명함 또는 링크드인 QR</span>
-              </li>
-            </ul>
-          </div>
-
-          {/* Host Info */}
-          <div className="bg-surface-container-low rounded-xl p-4 flex items-center justify-between border border-outline-variant/30">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center">
-                <span className="material-symbols-outlined text-on-surface-variant">
-                  groups
-                </span>
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-on-surface-variant">
-                  주최
-                </p>
-                <p className="text-sm font-bold">KUIT 운영진</p>
-              </div>
+        {event?.description && (
+          <section className="px-5 mt-6">
+            <div className="bg-surface-container-lowest rounded-xl p-5 shadow-[0px_4px_20px_rgba(0,0,0,0.04)]">
+              <h3 className="text-xl font-semibold mb-3">상세 내용</h3>
+              <p className="text-sm text-on-surface-variant leading-relaxed whitespace-pre-line">
+                {event.description}
+              </p>
             </div>
-            <button className="text-primary text-xs font-semibold flex items-center gap-1 hover:underline">
-              프로필 보기
-              <span className="material-symbols-outlined text-[16px]">
-                chevron_right
-              </span>
-            </button>
-          </div>
-        </section>
+          </section>
+        )}
       </main>
 
       {/* Bottom Actions */}
