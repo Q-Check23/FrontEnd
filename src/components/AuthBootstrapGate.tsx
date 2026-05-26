@@ -3,7 +3,12 @@ import { useAuthBootstrap } from "../hooks/useAuthBootstrap";
 import { useUserStore } from "../stores/useUserStore";
 import LoadingSpinner from "./LoadingSpinner";
 
-const BYPASS_PATHS = new Set(["/auth/callback"]);
+const BYPASS_PATHS = new Set([
+  "/auth/callback",
+  "/landing",
+  "/login",
+  "/login-landing",
+]);
 
 export default function AuthBootstrapGate({
   children,
