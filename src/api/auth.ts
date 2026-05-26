@@ -1,6 +1,6 @@
 import { API_ORIGIN, apiRequest } from "./client";
 
-export interface NicknameCheckResponse {
+export interface UsernameCheckResponse {
   available: boolean;
 }
 
@@ -11,7 +11,7 @@ export interface AuthCodeResponse {
 
 export interface SignupRequest {
   name: string;
-  nickname: string;
+  username: string;
   email: string;
 }
 
@@ -20,10 +20,10 @@ export interface AuthTokenResponse {
   accessToken: string;
 }
 
-export function checkNicknameAvailability(nickname: string) {
-  return apiRequest<NicknameCheckResponse>("/auth/nickname/check", {
+export function checkUsernameAvailability(username: string) {
+  return apiRequest<UsernameCheckResponse>("/auth/username/check", {
     method: "GET",
-    query: { nickname },
+    query: { username },
   });
 }
 

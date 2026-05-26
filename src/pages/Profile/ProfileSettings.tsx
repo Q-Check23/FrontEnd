@@ -67,13 +67,13 @@ export default function ProfileSettings() {
           </div>
           <div>
             <label className="text-xs font-semibold text-on-surface-variant block mb-2">
-              닉네임
+              아이디
             </label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="닉네임을 입력하세요"
+              placeholder="아이디를 입력하세요"
               className="w-full bg-surface-container-low border-none rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
             />
           </div>

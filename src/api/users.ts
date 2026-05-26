@@ -62,7 +62,7 @@ export interface UserSearchResult {
 }
 
 export interface SearchUsersParams {
-  nickname?: string;
+  username?: string;
   email?: string;
 }
 
@@ -71,7 +71,7 @@ export function searchUsers(params: SearchUsersParams) {
     method: "GET",
     auth: { type: "dev-user" },
     query: {
-      nickname: params.nickname,
+      username: params.username,
       email: params.email,
     },
   });

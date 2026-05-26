@@ -42,7 +42,7 @@ export default function AddMemberSheet({
       setIsSearching(true);
       setErrorMessage(null);
       try {
-        const data = await searchUsers({ nickname: trimmed });
+        const data = await searchUsers({ username: trimmed });
         setResults(data);
       } catch (error) {
         setErrorMessage(
@@ -79,7 +79,7 @@ export default function AddMemberSheet({
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="닉네임으로 검색"
+            placeholder="아이디로 검색"
             className="bg-transparent border-none focus:outline-none focus:ring-0 text-sm w-full p-0"
           />
         </div>
@@ -93,7 +93,7 @@ export default function AddMemberSheet({
             </li>
           ) : query.trim().length === 0 ? (
             <li className="text-sm text-on-surface-variant py-6 text-center">
-              닉네임을 입력해 사용자를 검색하세요
+              아이디를 입력해 사용자를 검색하세요
             </li>
           ) : results.length === 0 ? (
             <li className="text-sm text-on-surface-variant py-6 text-center">

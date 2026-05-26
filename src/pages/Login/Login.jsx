@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { checkNicknameAvailability, signup } from "../../api/auth";
+import { checkUsernameAvailability, signup } from "../../api/auth";
 import { useToastStore } from "../../stores/useToastStore";
 import { useUserStore } from "../../stores/useUserStore";
 import { SIGNUP_TOKEN_STORAGE_KEY } from "../AuthCallback/AuthCallback";
@@ -9,14 +9,14 @@ export default function Login() {
   const navigate = useNavigate();
   const [signupToken, setSignupToken] = useState("");
   const [name, setName] = useState("");
-  const [nickname, setNickname] = useState("");
+  const [username, setUsername] = useState("");
   const [emailId, setEmailId] = useState("");
   const [domain, setDomain] = useState("gmail.com");
-  const [isCheckingNickname, setIsCheckingNickname] = useState(false);
+  const [isCheckingUsername, setIsCheckingUsername] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [checkedNickname, setCheckedNickname] = useState("");
-  const [nicknameStatus, setNicknameStatus] = useState("idle");
-  const [nicknameMessage, setNicknameMessage] = useState("");
+  const [checkedUsername, setCheckedUsername] = useState("");
+  const [usernameStatus, setUsernameStatus] = useState("idle");
+  const [usernameMessage, setUsernameMessage] = useState("");
   const toast = useToastStore();
   const setAccessToken = useUserStore((state) => state.setAccessToken);
 
@@ -39,55 +39,55 @@ export default function Login() {
 
   const isFormValid =
     name.trim().length > 0 &&
-    nickname.trim().length > 0 &&
+    username.trim().length > 0 &&
     emailId.trim().length > 0 &&
     (isCustomDomain ? customDomain.trim().length > 0 : true);
 
-  const isNicknameAvailable =
-    nicknameStatus === "available" && checkedNickname === nickname.trim();
+  const isUsernameAvailable =
+    usernameStatus === "available" && checkedUsername === username.trim();
 
-  const resetNicknameCheck = (nextNickname) => {
-    setNickname(nextNickname);
-    if (nextNickname.trim() !== checkedNickname) {
-      setNicknameStatus("idle");
-      setNicknameMessage("");
+  const resetUsernameCheck = (nextUsername) => {
+    setUsername(nextUsername);
+    if (nextUsername.trim() !== checkedUsername) {
+      setUsernameStatus("idle");
+      setUsernameMessage("");
     }
   };
 
-  const handleNicknameCheck = async () => {
-    const trimmedNickname = nickname.trim();
+  const handleUsernameCheck = async () => {
+    const trimmedUsername = username.trim();
 
-    if (!trimmedNickname) {
-      setNicknameStatus("error");
-      setNicknameMessage("닉네임을 먼저 입력해주세요.");
+    if (!trimmedUsername) {
+      setUsernameStatus("error");
+      setUsernameMessage("아이디를 먼저 입력해주세요.");
       return;
     }
 
-    setIsCheckingNickname(true);
-    setNicknameStatus("idle");
-    setNicknameMessage("");
+    setIsCheckingUsername(true);
+    setUsernameStatus("idle");
+    setUsernameMessage("");
 
     try {
-      const response = await checkNicknameAvailability(trimmedNickname);
-      setCheckedNickname(trimmedNickname);
+      const response = await checkUsernameAvailability(trimmedUsername);
+      setCheckedUsername(trimmedUsername);
 
       if (response.available) {
-        setNicknameStatus("available");
-        setNicknameMessage("사용 가능한 닉네임입니다.");
-        toast?.push("닉네임을 사용할 수 있습니다.");
+        setUsernameStatus("available");
+        setUsernameMessage("사용 가능한 아이디입니다.");
+        toast?.push("아이디를 사용할 수 있습니다.");
         return;
       }
 
-      setNicknameStatus("taken");
-      setNicknameMessage("이미 사용 중인 닉네임입니다.");
+      setUsernameStatus("taken");
+      setUsernameMessage("이미 사용 중인 아이디입니다.");
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : "닉네임 확인에 실패했습니다.";
-      setNicknameStatus("error");
-      setNicknameMessage(message);
+        error instanceof Error ? error.message : "아이디 확인에 실패했습니다.";
+      setUsernameStatus("error");
+      setUsernameMessage(message);
       toast?.push(message);
     } finally {
-      setIsCheckingNickname(false);
+      setIsCheckingUsername(false);
     }
   };
 
@@ -98,8 +98,8 @@ export default function Login() {
       return;
     }
 
-    if (!isNicknameAvailable) {
-      toast?.push("회원가입 전 닉네임 중복 확인이 필요합니다.");
+    if (!isUsernameAvailable) {
+      toast?.push("회원가입 전 아이디 중복 확인이 필요합니다.");
       return;
     }
 
@@ -113,7 +113,7 @@ export default function Login() {
       const response = await signup(
         {
           name: name.trim(),
-          nickname: nickname.trim(),
+          username: username.trim(),
           email: finalEmail,
         },
         signupToken,
@@ -131,10 +131,10 @@ export default function Login() {
     }
   };
 
-  const nicknameMessageColor =
-    nicknameStatus === "available"
+  const usernameMessageColor =
+    usernameStatus === "available"
       ? "text-[#009a49]"
-      : nicknameStatus === "taken" || nicknameStatus === "error"
+      : usernameStatus === "taken" || usernameStatus === "error"
         ? "text-[#d93025]"
         : "text-gray-500";
 
@@ -162,26 +162,26 @@ export default function Login() {
             </p>
           </div>
 
-          {/* 닉네임 */}
+          {/* 아이디 */}
           <div>
             <div className="flex items-center gap-2">
               <input
-                value={nickname}
-                onChange={(e) => resetNicknameCheck(e.target.value)}
-                placeholder="닉네임"
+                value={username}
+                onChange={(e) => resetUsernameCheck(e.target.value)}
+                placeholder="아이디"
                 className="flex-1 h-11 rounded-xl border border-gray-200 outline-none focus:border-gray-400 px-5"
               />
               <button
                 type="button"
-                onClick={handleNicknameCheck}
-                disabled={isCheckingNickname}
+                onClick={handleUsernameCheck}
+                disabled={isCheckingUsername}
                 className="shrink-0 h-11 rounded-xl border border-gray-900 px-4 text-sm font-medium text-gray-900 disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-400"
               >
-                {isCheckingNickname ? "확인 중" : "중복 확인"}
+                {isCheckingUsername ? "확인 중" : "중복 확인"}
               </button>
             </div>
-            <p className={`text-xs text-left pl-3 pt-2 ${nicknameMessageColor}`}>
-              {nicknameMessage || "회원가입 전 닉네임 중복 확인을 진행해주세요."}
+            <p className={`text-xs text-left pl-3 pt-2 ${usernameMessageColor}`}>
+              {usernameMessage || "회원가입 전 아이디 중복 확인을 진행해주세요."}
             </p>
           </div>
 
@@ -221,10 +221,10 @@ export default function Login() {
           {/* 가입 버튼 */}
           <button
             type="submit"
-            disabled={!isFormValid || !isNicknameAvailable || isSubmitting}
+            disabled={!isFormValid || !isUsernameAvailable || isSubmitting}
             className={[
               "w-full h-11 rounded-xl border outline-none",
-              isFormValid && isNicknameAvailable && !isSubmitting
+              isFormValid && isUsernameAvailable && !isSubmitting
                 ? "bg-gray-900 text-white cursor-pointer"
                 : "bg-gray-200 text-gray-400 cursor-not-allowed",
             ].join(" ")}
