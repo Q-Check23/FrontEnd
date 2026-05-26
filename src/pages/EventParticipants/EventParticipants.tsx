@@ -7,7 +7,7 @@ import EventManageTabs from "../../components/EventManageTabs";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ErrorFallback from "../../components/ErrorFallback";
 
-type StatusFilter = "all" | "CHECKED_IN" | "REGISTERED" | "ABSENT";
+type StatusFilter = "all" | "CHECKED_IN" | "REGISTERED" | "CANCELED";
 
 export default function EventParticipants() {
   const [searchParams] = useSearchParams();
@@ -73,7 +73,7 @@ export default function EventParticipants() {
               { key: "all", label: "전체" },
               { key: "CHECKED_IN", label: "참여" },
               { key: "REGISTERED", label: "대기" },
-              { key: "ABSENT", label: "불참" },
+              { key: "CANCELED", label: "불참" },
             ] as const
           ).map((chip) => (
             <button
@@ -117,7 +117,7 @@ function ParticipantCard({
   registration: EventRegistration;
 }) {
   const status = getStatusDisplay(registration.status);
-  const isAbsent = registration.status === "ABSENT";
+  const isAbsent = registration.status === "CANCELED";
 
   return (
     <div
@@ -173,7 +173,7 @@ function getStatusDisplay(status: string) {
         iconFill: false,
         className: "bg-amber-100 text-amber-700",
       };
-    case "ABSENT":
+    case "CANCELED":
       return {
         label: "불참",
         icon: "cancel",
