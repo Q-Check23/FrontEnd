@@ -320,6 +320,13 @@ export async function deleteEvent(eventId: number) {
   });
 }
 
+export async function cancelMyRegistration(eventId: number) {
+  await apiRequest<void>(`/events/${eventId}/registrations/me/cancel`, {
+    method: "PATCH",
+    auth: { type: "dev-user" },
+  });
+}
+
 export async function createEventRegistration(
   eventId: number,
   body: CreateEventRegistrationRequest,

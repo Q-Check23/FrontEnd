@@ -20,6 +20,7 @@ export { useUpdateEvent } from "./mutations/useUpdateEvent";
 export { useCheckIn } from "./mutations/useCheckIn";
 export { useSelfCheckIn } from "./mutations/useSelfCheckIn";
 export { useCreateRegistration } from "./mutations/useCreateRegistration";
+export { useCancelRegistration } from "./mutations/useCancelRegistration";
 export { useUpdateProfile } from "./mutations/useUpdateProfile";
 export { useLogout } from "./mutations/useLogout";
 export { useUpdateClubMemberRole } from "./mutations/useUpdateClubMemberRole";

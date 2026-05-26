@@ -1,5 +1,6 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useEventDetail, useEventRegistrations, useMyEventRegistration } from "../../hooks";
+import { useEventDetail, useEventRegistrations, useMyEventRegistration, useCancelRegistration } from "../../hooks";
+import { useToastStore } from "../../stores/useToastStore";
 import BackHeader from "../../components/BackHeader";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ErrorFallback from "../../components/ErrorFallback";
@@ -17,9 +18,11 @@ export default function EventInfo() {
   const eventId = Number(searchParams.get("eventId"));
   const { data: event, isLoading, isError, refetch } = useEventDetail(eventId);
   const { data: registrations = [] } = useEventRegistrations(eventId);
-  const { data: myRegistration } = useMyEventRegistration(eventId);
+  const { data: myRegistration, refetch: refetchMyRegistration } = useMyEventRegistration(eventId);
+  const cancelMutation = useCancelRegistration(eventId);
+  const pushToast = useToastStore((state) => state.push);
 
-  const isRegistered = myRegistration != null && myRegistration.status !== "CANCELLED";
+  const isRegistered = myRegistration != null && myRegistration.status !== "CANCELED";
   const beforeCutoff = isBeforeRegistrationCutoff(event?.startTime);
   const participantCount = registrations.length;
 
@@ -83,13 +86,22 @@ export default function EventInfo() {
       return (
         <button
           onClick={() => {
-            // TODO: DELETE /events/{eventId}/registrations/me API 연동
-            alert("등록 취소 기능은 준비 중입니다.");
+            if (!window.confirm("등록을 취소하시겠습니까?")) return;
+            cancelMutation.mutate(undefined, {
+              onSuccess: () => {
+                pushToast("등록이 취소되었어요");
+                refetchMyRegistration();
+              },
+              onError: (error) => {
+                pushToast(error instanceof Error ? error.message : "취소에 실패했어요");
+              },
+            });
           }}
-          className="flex-[2] h-14 border-2 border-primary text-primary rounded-xl text-xl font-semibold active:scale-95 transition-all flex items-center justify-center gap-2"
+          disabled={cancelMutation.isPending}
+          className="flex-[2] h-14 border-2 border-primary text-primary rounded-xl text-xl font-semibold active:scale-95 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
         >
           <span className="material-symbols-outlined">person_remove</span>
-          등록 취소
+          {cancelMutation.isPending ? "취소 중..." : "등록 취소"}
         </button>
       );
     }
@@ -182,8 +194,24 @@ export default function EventInfo() {
       {/* Bottom Actions */}
       <footer className="fixed bottom-0 left-0 w-full z-50 bg-surface/80 backdrop-blur-md p-5 shadow-[0px_-4px_20px_rgba(0,0,0,0.04)] flex gap-3">
         <button
-          onClick={() => navigate(-1)}
-          className="flex-1 h-14 border-2 border-outline rounded-xl text-xl font-semibold text-on-surface-variant active:scale-95 transition-all"
+          onClick={() => {
+            if (!isRegistered) {
+              navigate(-1);
+              return;
+            }
+            if (!window.confirm("불참 처리하시겠습니까? 등록이 취소됩니다.")) return;
+            cancelMutation.mutate(undefined, {
+              onSuccess: () => {
+                pushToast("불참 처리되었어요");
+                navigate(-1);
+              },
+              onError: (error) => {
+                pushToast(error instanceof Error ? error.message : "불참 처리에 실패했어요");
+              },
+            });
+          }}
+          disabled={cancelMutation.isPending}
+          className="flex-1 h-14 border-2 border-outline rounded-xl text-xl font-semibold text-on-surface-variant active:scale-95 transition-all disabled:opacity-50"
         >
           불참
         </button>
