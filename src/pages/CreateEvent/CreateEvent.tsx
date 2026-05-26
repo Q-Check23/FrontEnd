@@ -18,6 +18,8 @@ export default function CreateEvent() {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [location, setLocation] = useState("");
+  const [createDiscordChannel, setCreateDiscordChannel] = useState(false);
+  const [channelOption, setChannelOption] = useState<"new" | "existing">("new");
   const [discordChannelId, setDiscordChannelId] = useState("");
   const [fields, setFields] = useState<FormField[]>([
     { label: "참가자 실명", required: true },
@@ -53,7 +55,10 @@ export default function CreateEvent() {
         description: description.trim(),
         startTime,
         ...(location.trim() ? { location: location.trim() } : {}),
-        ...(discordChannelId.trim() ? { discordChannelId: discordChannelId.trim() } : {}),
+        createDiscordChannel,
+        ...(createDiscordChannel && channelOption === "existing" && discordChannelId.trim()
+          ? { discordChannelId: discordChannelId.trim() }
+          : {}),
         formFields: fields
           .filter((f) => f.label.trim())
           .map((f) => ({
@@ -143,25 +148,78 @@ export default function CreateEvent() {
           </div>
         </section>
 
-        {/* 디스코드 채널 (선택) */}
+        {/* 디스코드 채널 */}
         <section className="space-y-3">
           <SectionHeader icon="forum" title="디스코드 채널" />
-          <div className="bg-surface-container-lowest p-4 rounded-xl shadow-sm">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="material-symbols-outlined text-[#5865F2] text-[18px]">
-                forum
+          <div className="bg-surface-container-lowest p-4 rounded-xl shadow-sm space-y-4">
+            <label className="flex items-center justify-between cursor-pointer">
+              <span className="text-sm font-medium text-on-surface">
+                디스코드 채널 연동
               </span>
-              <span className="text-xs font-semibold text-on-surface-variant">
-                디스코드 채널 ID (선택)
-              </span>
-            </div>
-            <input
-              type="text"
-              value={discordChannelId}
-              onChange={(e) => setDiscordChannelId(e.target.value)}
-              placeholder="연결할 디스코드 채널 ID를 입력하세요"
-              className="w-full bg-surface-container-low border-none rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
-            />
+              <button
+                type="button"
+                role="switch"
+                aria-checked={createDiscordChannel}
+                onClick={() => setCreateDiscordChannel((v) => !v)}
+                className={`relative w-11 h-6 rounded-full transition-colors ${
+                  createDiscordChannel ? "bg-primary" : "bg-outline-variant"
+                }`}
+              >
+                <span
+                  className={`absolute top-0.5 left-0.5 w-5 h-5 bg-surface rounded-full shadow transition-transform ${
+                    createDiscordChannel ? "translate-x-5" : ""
+                  }`}
+                />
+              </button>
+            </label>
+
+            {createDiscordChannel && (
+              <div className="space-y-3 pt-1">
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setChannelOption("new")}
+                    className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
+                      channelOption === "new"
+                        ? "bg-primary text-on-primary"
+                        : "bg-surface-container-low text-on-surface-variant"
+                    }`}
+                  >
+                    새 채널 생성
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setChannelOption("existing")}
+                    className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
+                      channelOption === "existing"
+                        ? "bg-primary text-on-primary"
+                        : "bg-surface-container-low text-on-surface-variant"
+                    }`}
+                  >
+                    기존 채널 사용
+                  </button>
+                </div>
+
+                {channelOption === "new" ? (
+                  <p className="text-xs text-on-surface-variant">
+                    행사 이름으로 새 디스코드 채널이 자동 생성됩니다.
+                  </p>
+                ) : (
+                  <div>
+                    <label className="text-xs font-semibold text-on-surface-variant block mb-2">
+                      채널 ID
+                    </label>
+                    <input
+                      type="text"
+                      value={discordChannelId}
+                      onChange={(e) => setDiscordChannelId(e.target.value)}
+                      placeholder="디스코드 채널 ID를 입력하세요"
+                      className="w-full bg-surface-container-low border-none rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+                    />
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </section>
 
