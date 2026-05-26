@@ -15,7 +15,8 @@ export default function QRInfo() {
 
   const qrRef = useRef<HTMLDivElement>(null);
 
-  // TODO: API 연동 - 사전 등록 링크 조회
+  const checkInQrValue = `QCHECK:CHECKIN:${eventId ?? ""}`;
+  // 사전 등록 링크는 별도 유지
   const registrationLink = `https://www.qcheck.com/register/${eventId ?? ""}`;
 
   function handleCopyLink() {
@@ -96,7 +97,7 @@ export default function QRInfo() {
             {/* QR 코드 영역 */}
             <div ref={qrRef} className="relative w-64 h-64 bg-white p-4 rounded-xl shadow-inner flex items-center justify-center">
               <QRCodeSVG
-                value={registrationLink}
+                value={checkInQrValue}
                 size={224}
                 level="M"
               />

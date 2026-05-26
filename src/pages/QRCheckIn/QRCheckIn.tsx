@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Html5Qrcode } from "html5-qrcode";
 import { type AttendanceCheckInResult } from "../../api/attendance";
-import { useCheckIn } from "../../hooks";
+import { useSelfCheckIn } from "../../hooks";
 import { useToastStore } from "../../stores/useToastStore";
 
 type ScanState = "scanning" | "success" | "register";
@@ -22,20 +22,29 @@ export default function QRCheckIn() {
 
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const processingRef = useRef(false);
-  const handleCheckInRef = useRef<(qrToken: string) => void>(() => {});
+  const handleScanRef = useRef<(decodedText: string) => void>(() => {});
 
-  const checkInMutation = useCheckIn(eventId);
+  const selfCheckInMutation = useSelfCheckIn(eventId);
 
-  const handleCheckIn = useCallback(
-    (qrToken: string) => {
+  const handleScan = useCallback(
+    (decodedText: string) => {
       if (processingRef.current) return;
+
+      // QR 포맷 파싱: "QCHECK:CHECKIN:{eventId}"
+      const match = decodedText.match(/^QCHECK:CHECKIN:(\d+)$/);
+      if (!match) {
+        pushToast("올바른 체크인 QR 코드가 아닙니다.");
+        return;
+      }
+
+      const scannedEventId = Number(match[1]);
       processingRef.current = true;
 
       // 스캔 성공 시 카메라 일시 정지
       scannerRef.current?.pause(true);
 
-      checkInMutation.mutate(
-        { qrToken },
+      selfCheckInMutation.mutate(
+        { eventId: scannedEventId },
         {
           onSuccess: (data) => {
             setResult(data);
@@ -56,11 +65,11 @@ export default function QRCheckIn() {
         },
       );
     },
-    [checkInMutation, pushToast],
+    [selfCheckInMutation, pushToast],
   );
 
-  // 최신 handleCheckIn을 ref에 유지 (useEffect 내 stale closure 방지)
-  handleCheckInRef.current = handleCheckIn;
+  // 최신 handleScan을 ref에 유지 (useEffect 내 stale closure 방지)
+  handleScanRef.current = handleScan;
 
   const handleConfirmSuccess = useCallback(() => {
     setResult(null);
@@ -80,7 +89,7 @@ export default function QRCheckIn() {
       .start(
         { facingMode: "environment" },
         { fps: 10, qrbox: { width: 250, height: 250 }, disableFlip: false },
-        (decodedText) => handleCheckInRef.current(decodedText),
+        (decodedText) => handleScanRef.current(decodedText),
         () => {}, // QR 미감지 시 무시
       )
       .catch(() => {

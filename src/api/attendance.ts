@@ -37,3 +37,20 @@ export async function checkInAttendance(body: AttendanceCheckInRequest) {
 
   return mapCheckInResponse(response);
 }
+
+export interface SelfCheckInRequest {
+  eventId: number;
+}
+
+export async function selfCheckInAttendance(body: SelfCheckInRequest) {
+  const response = await apiRequest<CheckInResponse>(
+    "/attendance/self-check-in",
+    {
+      method: "POST",
+      auth: { type: "dev-user" },
+      body,
+    },
+  );
+
+  return mapCheckInResponse(response);
+}

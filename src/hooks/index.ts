@@ -18,6 +18,7 @@ export { useCreateEvent } from "./mutations/useCreateEvent";
 export { useCreateNotice } from "./mutations/useCreateNotice";
 export { useUpdateEvent } from "./mutations/useUpdateEvent";
 export { useCheckIn } from "./mutations/useCheckIn";
+export { useSelfCheckIn } from "./mutations/useSelfCheckIn";
 export { useCreateRegistration } from "./mutations/useCreateRegistration";
 export { useUpdateProfile } from "./mutations/useUpdateProfile";
 export { useLogout } from "./mutations/useLogout";
