@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useCreateEvent } from "../../hooks";
+import { useCreateEvent, useClubDetail } from "../../hooks";
 import BackHeader from "../../components/BackHeader";
 
 interface FormField {
@@ -27,6 +27,8 @@ export default function CreateEvent() {
     { label: "소속/직무 입력", required: false },
   ]);
 
+  const { data: club } = useClubDetail(clubId);
+  const hasDiscord = Boolean(club?.discordGuildId);
   const mutation = useCreateEvent();
 
   function handleRemoveField(index: number) {
@@ -152,72 +154,95 @@ export default function CreateEvent() {
         <section className="space-y-3">
           <SectionHeader icon="forum" title="디스코드 채널" />
           <div className="bg-surface-container-lowest p-4 rounded-xl shadow-sm space-y-4">
-            <label className="flex items-center justify-between cursor-pointer">
-              <span className="text-sm font-medium text-on-surface">
-                디스코드 채널 연동
-              </span>
-              <button
-                type="button"
-                role="switch"
-                aria-checked={createDiscordChannel}
-                onClick={() => setCreateDiscordChannel((v) => !v)}
-                className={`relative w-11 h-6 rounded-full transition-colors ${
-                  createDiscordChannel ? "bg-primary" : "bg-outline-variant"
-                }`}
-              >
-                <span
-                  className={`absolute top-0.5 left-0.5 w-5 h-5 bg-surface rounded-full shadow transition-transform ${
-                    createDiscordChannel ? "translate-x-5" : ""
-                  }`}
-                />
-              </button>
-            </label>
-
-            {createDiscordChannel && (
-              <div className="space-y-3 pt-1">
-                <div className="flex gap-2">
+            {hasDiscord ? (
+              <>
+                <label className="flex items-center justify-between cursor-pointer">
+                  <span className="text-sm font-medium text-on-surface">
+                    디스코드 채널 연동
+                  </span>
                   <button
                     type="button"
-                    onClick={() => setChannelOption("new")}
-                    className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
-                      channelOption === "new"
-                        ? "bg-primary text-on-primary"
-                        : "bg-surface-container-low text-on-surface-variant"
+                    role="switch"
+                    aria-checked={createDiscordChannel}
+                    onClick={() => setCreateDiscordChannel((v) => !v)}
+                    className={`relative w-11 h-6 rounded-full transition-colors ${
+                      createDiscordChannel ? "bg-primary" : "bg-outline-variant"
                     }`}
                   >
-                    새 채널 생성
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setChannelOption("existing")}
-                    className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
-                      channelOption === "existing"
-                        ? "bg-primary text-on-primary"
-                        : "bg-surface-container-low text-on-surface-variant"
-                    }`}
-                  >
-                    기존 채널 사용
-                  </button>
-                </div>
-
-                {channelOption === "new" ? (
-                  <p className="text-xs text-on-surface-variant">
-                    행사 이름으로 새 디스코드 채널이 자동 생성됩니다.
-                  </p>
-                ) : (
-                  <div>
-                    <label className="text-xs font-semibold text-on-surface-variant block mb-2">
-                      채널 ID
-                    </label>
-                    <input
-                      type="text"
-                      value={discordChannelId}
-                      onChange={(e) => setDiscordChannelId(e.target.value)}
-                      placeholder="디스코드 채널 ID를 입력하세요"
-                      className="w-full bg-surface-container-low border-none rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+                    <span
+                      className={`absolute top-0.5 left-0.5 w-5 h-5 bg-surface rounded-full shadow transition-transform ${
+                        createDiscordChannel ? "translate-x-5" : ""
+                      }`}
                     />
+                  </button>
+                </label>
+
+                {createDiscordChannel && (
+                  <div className="space-y-3 pt-1">
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setChannelOption("new")}
+                        className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
+                          channelOption === "new"
+                            ? "bg-primary text-on-primary"
+                            : "bg-surface-container-low text-on-surface-variant"
+                        }`}
+                      >
+                        새 채널 생성
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setChannelOption("existing")}
+                        className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
+                          channelOption === "existing"
+                            ? "bg-primary text-on-primary"
+                            : "bg-surface-container-low text-on-surface-variant"
+                        }`}
+                      >
+                        기존 채널 사용
+                      </button>
+                    </div>
+
+                    {channelOption === "new" ? (
+                      <p className="text-xs text-on-surface-variant">
+                        행사 이름으로 새 디스코드 채널이 자동 생성됩니다.
+                      </p>
+                    ) : (
+                      <div>
+                        <label className="text-xs font-semibold text-on-surface-variant block mb-2">
+                          채널 ID
+                        </label>
+                        <input
+                          type="text"
+                          value={discordChannelId}
+                          onChange={(e) => setDiscordChannelId(e.target.value)}
+                          placeholder="디스코드 채널 ID를 입력하세요"
+                          className="w-full bg-surface-container-low border-none rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+                        />
+                      </div>
+                    )}
                   </div>
                 )}
+              </>
+            ) : (
+              <div className="flex items-start gap-3 py-1">
+                <span className="material-symbols-outlined text-outline text-[20px] mt-0.5">
+                  info
+                </span>
+                <div className="flex-1 space-y-2">
+                  <p className="text-sm text-on-surface-variant">
+                    디스코드 연동이 설정되지 않았습니다. 모임 설정에서 디스코드
+                    서버 ID를 먼저 등록해 주세요.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/club-settings?clubId=${clubId}`)}
+                    className="text-sm text-primary font-medium hover:underline"
+                  >
+                    모임 설정으로 이동
+                  </button>
+                </div>
               </div>
             )}
           </div>
