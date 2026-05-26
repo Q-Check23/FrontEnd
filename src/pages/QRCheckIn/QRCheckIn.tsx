@@ -1,7 +1,9 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { Html5Qrcode } from "html5-qrcode";
 import { type AttendanceCheckInResult } from "../../api/attendance";
 import { useCheckIn } from "../../hooks";
+import { useToastStore } from "../../stores/useToastStore";
 
 type ScanState = "scanning" | "success" | "register";
 
@@ -9,21 +11,29 @@ export default function QRCheckIn() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const eventId = Number(searchParams.get("eventId") || "0");
+  const pushToast = useToastStore((state) => state.push);
 
   const [state, setState] = useState<ScanState>("scanning");
-  const [flashOn, setFlashOn] = useState(false);
   const [result, setResult] = useState<AttendanceCheckInResult | null>(null);
 
   // on-site registration form
   const [regName, setRegName] = useState("");
   const [regPhone, setRegPhone] = useState("");
 
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const scannerRef = useRef<Html5Qrcode | null>(null);
+  const processingRef = useRef(false);
+  const handleCheckInRef = useRef<(qrToken: string) => void>(() => {});
 
   const checkInMutation = useCheckIn(eventId);
 
   const handleCheckIn = useCallback(
     (qrToken: string) => {
+      if (processingRef.current) return;
+      processingRef.current = true;
+
+      // 스캔 성공 시 카메라 일시 정지
+      scannerRef.current?.pause(true);
+
       checkInMutation.mutate(
         { qrToken },
         {
@@ -31,16 +41,59 @@ export default function QRCheckIn() {
             setResult(data);
             setState("success");
           },
+          onError: (error) => {
+            pushToast(
+              error instanceof Error ? error.message : "체크인에 실패했어요",
+            );
+            // 실패 시 다시 스캔 재개
+            try {
+              scannerRef.current?.resume();
+            } catch {
+              // 스캐너가 이미 정지된 경우 무시
+            }
+            processingRef.current = false;
+          },
         },
       );
     },
-    [checkInMutation],
+    [checkInMutation, pushToast],
   );
+
+  // 최신 handleCheckIn을 ref에 유지 (useEffect 내 stale closure 방지)
+  handleCheckInRef.current = handleCheckIn;
 
   const handleConfirmSuccess = useCallback(() => {
     setResult(null);
     setState("scanning");
+    processingRef.current = false;
+    // useEffect가 state==="scanning" 감지해서 새 스캐너를 시작함
   }, []);
+
+  // QR 스캐너 시작/정지 관리
+  useEffect(() => {
+    if (state !== "scanning") return;
+
+    const scanner = new Html5Qrcode("qr-reader");
+    scannerRef.current = scanner;
+
+    scanner
+      .start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: { width: 250, height: 250 } },
+        (decodedText) => handleCheckInRef.current(decodedText),
+        () => {}, // QR 미감지 시 무시
+      )
+      .catch(() => {
+        pushToast("카메라를 사용할 수 없어요. 권한을 확인해주세요.");
+      });
+
+    return () => {
+      scanner
+        .stop()
+        .catch(() => {});
+      scannerRef.current = null;
+    };
+  }, [state]); // handleCheckIn은 의도적으로 제외 (ref 기반 처리)
 
   const handleRegisterSubmit = useCallback(() => {
     // TODO: API 연동 - 현장 등록 처리
@@ -51,18 +104,17 @@ export default function QRCheckIn() {
 
   return (
     <div className="relative min-h-screen bg-black text-white overflow-hidden">
-      {/* Camera Preview (placeholder) */}
-      <video
-        ref={videoRef}
-        autoPlay
-        playsInline
-        className="fixed inset-0 w-full h-full object-cover z-0"
+      {/* Camera Preview - html5-qrcode가 여기에 비디오를 렌더링 */}
+      <div
+        id="qr-reader"
+        className="fixed inset-0 w-full h-full z-0"
+        style={{ background: "black" }}
       />
 
       {/* UI Overlay */}
-      <div className="relative z-10 flex flex-col h-screen">
+      <div className="relative z-10 flex flex-col h-screen pointer-events-none">
         {/* TopAppBar */}
-        <header className="flex items-center px-5 h-14 w-full bg-transparent fixed top-0 left-0 right-0 z-20">
+        <header className="flex items-center px-5 h-14 w-full bg-transparent fixed top-0 left-0 right-0 z-20 pointer-events-auto">
           <button
             onClick={() => navigate(-1)}
             className="mr-4 active:opacity-70 transition-opacity p-2 -ml-2 rounded-full hover:bg-white/10"
@@ -76,7 +128,7 @@ export default function QRCheckIn() {
 
         {/* Main Scanner Canvas */}
         <main className="flex-grow flex flex-col items-center justify-center px-5">
-          {/* Scanning Area */}
+          {/* Scanning Area Indicator */}
           <div className="relative w-full max-w-[280px] aspect-square mb-6">
             <div className="absolute inset-0 rounded-2xl border-2 border-white/20" />
             {/* Corner Indicators */}
@@ -97,7 +149,7 @@ export default function QRCheckIn() {
         </main>
 
         {/* Bottom Actions */}
-        <footer className="pb-12 flex flex-col items-center gap-3">
+        <footer className="pb-12 flex flex-col items-center gap-3 pointer-events-auto">
           {/* Manual Registration */}
           <button
             onClick={() => setState("register")}
@@ -105,21 +157,6 @@ export default function QRCheckIn() {
           >
             참가자 직접 등록
           </button>
-
-          {/* Flashlight */}
-          <button
-            onClick={() => setFlashOn((v) => !v)}
-            className={`w-16 h-16 rounded-full backdrop-blur-xl border border-white/30 flex items-center justify-center shadow-lg active:scale-95 transition-transform ${
-              flashOn ? "bg-white/40" : "bg-white/20 hover:bg-white/30"
-            }`}
-          >
-            <span className="material-symbols-outlined text-[32px]">
-              {flashOn ? "flashlight_off" : "flashlight_on"}
-            </span>
-          </button>
-          <p className="text-white/60 text-xs font-semibold">
-            {flashOn ? "손전등 끄기" : "손전등 켜기"}
-          </p>
         </footer>
       </div>
 
