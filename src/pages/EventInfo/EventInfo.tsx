@@ -42,8 +42,26 @@ export default function EventInfo() {
   }
 
   function renderActionButton() {
+    if (!isRegistered && !beforeCutoff) {
+      // 미등록 + 30분 이내 → 입장하기
+      return (
+        <button
+          onClick={() => navigate(`/qrcheck-in?eventId=${eventId}`)}
+          className="flex-[2] h-14 bg-gradient-to-br from-primary-container to-primary text-white rounded-xl text-xl font-semibold shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2"
+        >
+          <span
+            className="material-symbols-outlined"
+            style={{ fontVariationSettings: "'FILL' 1" }}
+          >
+            qr_code_2
+          </span>
+          입장하기
+        </button>
+      );
+    }
+
     if (!isRegistered) {
-      // 미등록 → 사전 등록하기
+      // 미등록 + 30분 이상 남음 → 사전 등록하기
       return (
         <button
           onClick={() => navigate(`/register?eventId=${eventId}`)}
