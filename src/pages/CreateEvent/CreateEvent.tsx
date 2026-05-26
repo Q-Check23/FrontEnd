@@ -41,10 +41,9 @@ export default function CreateEvent() {
   }
 
   function handleSubmit() {
-    if (!title.trim()) return;
+    if (!title.trim() || !date || !time) return;
 
-    const startTime =
-      date && time ? new Date(`${date}T${time}`).toISOString() : "";
+    const startTime = `${date}T${time}${time.length === 5 ? ":00" : ""}`;
 
     mutation.mutate(
       {
