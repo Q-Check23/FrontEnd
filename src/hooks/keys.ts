@@ -29,4 +29,7 @@ export const queryKeys = {
   users: {
     me: () => ["users", "me"] as const,
   },
+  discord: {
+    botInviteUrl: () => ["discord", "bot-invite-url"] as const,
+  },
 };

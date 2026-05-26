@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BackHeader from "../../components/BackHeader";
-import { useCreateClub } from "../../hooks";
+import { useCreateClub, useDiscordBotInviteUrl } from "../../hooks";
 import { useToastStore } from "../../stores/useToastStore";
 
 export default function CreateClub() {
   const navigate = useNavigate();
   const pushToast = useToastStore((state) => state.push);
   const mutation = useCreateClub();
+  const { data: botInviteUrl } = useDiscordBotInviteUrl();
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -84,6 +85,16 @@ export default function CreateClub() {
               onChange={setDiscordGuildId}
               placeholder="비워두면 연동 안 함"
             />
+            {botInviteUrl && (
+              <button
+                type="button"
+                onClick={() => window.open(botInviteUrl, "_blank")}
+                className="flex items-center gap-2 text-sm text-primary font-medium hover:underline"
+              >
+                <span className="material-symbols-outlined text-[18px]">smart_toy</span>
+                디스코드 봇 초대하기
+              </button>
+            )}
             <Field
               label="커버 이미지 URL"
               value={coverImageUrl}

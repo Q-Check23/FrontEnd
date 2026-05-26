@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useClubMembers, useEvents, useMyClubs } from "../../hooks";
+import { useClubMembers, useDiscordBotInviteUrl, useEvents, useMyClubs } from "../../hooks";
 import BackHeader from "../../components/BackHeader";
 import GroupTabs from "../../components/GroupTabs";
 import EventCard from "./components/EventCard";
@@ -17,6 +17,7 @@ export default function GroupEvents() {
   const { data, isLoading, isError, refetch } = useEvents();
   const { data: clubs = [] } = useMyClubs();
   const { data: members = [] } = useClubMembers(clubId);
+  const { data: botInviteUrl } = useDiscordBotInviteUrl();
   const [query, setQuery] = useState("");
 
   const currentClub = clubs.find((club) => club.clubId === clubId);
@@ -37,6 +38,22 @@ export default function GroupEvents() {
       <GroupTabs activeTab="events" />
 
       <main className="p-5 pb-32">
+        {/* 디스코드 봇 연동 배너 (관리자 전용) */}
+        {isAdmin && botInviteUrl && (
+          <button
+            type="button"
+            onClick={() => window.open(botInviteUrl, "_blank")}
+            className="w-full flex items-center gap-3 mb-4 px-4 py-3 bg-[#5865F2]/10 rounded-xl text-left"
+          >
+            <span className="material-symbols-outlined text-[#5865F2] text-[22px]">smart_toy</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-on-surface">디스코드 봇 연동</p>
+              <p className="text-xs text-on-surface-variant">봇을 서버에 초대하여 채널 자동 생성을 활성화하세요</p>
+            </div>
+            <span className="material-symbols-outlined text-on-surface-variant text-[18px]">open_in_new</span>
+          </button>
+        )}
+
         {/* 검색바 */}
         <div className="relative mb-6">
           <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">
