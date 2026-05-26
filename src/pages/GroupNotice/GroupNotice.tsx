@@ -50,7 +50,7 @@ export default function GroupNotice() {
 
   return (
     <div className="bg-surface h-full overflow-y-auto pb-24">
-      <BackHeader title={clubName} subtitle={`멤버 ${memberCount}명`} />
+      <BackHeader title={clubName} subtitle={`멤버 ${memberCount}명`} backTo="/meeting" />
       <GroupTabs activeTab="notice" />
 
       <main className="px-5 pt-6 space-y-3">

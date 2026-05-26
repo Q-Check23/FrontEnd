@@ -1,5 +1,5 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useEventDetail, useEventRegistrations } from "../../hooks";
+import { useEventDetail, useEventRegistrations, useMyClubs } from "../../hooks";
 import BackHeader from "../../components/BackHeader";
 import EventManageTabs from "../../components/EventManageTabs";
 import LoadingSpinner from "../../components/LoadingSpinner";
@@ -11,6 +11,9 @@ export default function DashBoard() {
   const eventId = Number(searchParams.get("eventId"));
   const { data: event, isLoading, isError, refetch } = useEventDetail(eventId);
   const { data: registrations = [] } = useEventRegistrations(eventId);
+  const { data: clubs = [] } = useMyClubs();
+  const currentClub = event ? clubs.find((c) => c.clubId === event.clubId) : undefined;
+  const backTo = event ? `/group-events?clubId=${event.clubId}&role=${currentClub?.myRole ?? "MEMBER"}` : undefined;
 
   const checkedInCount = registrations.filter(
     (r) => r.status === "CHECKED_IN",
@@ -26,6 +29,7 @@ export default function DashBoard() {
       <div className="bg-surface h-full overflow-y-auto">
         <BackHeader
           title="행사 상세 설정"
+          backTo={backTo}
           rightSlot={
             <button className="material-symbols-outlined text-on-surface-variant p-2">
               more_vert
@@ -43,6 +47,7 @@ export default function DashBoard() {
       <div className="bg-surface h-full overflow-y-auto">
         <BackHeader
           title="행사 상세 설정"
+          backTo={backTo}
           rightSlot={
             <button className="material-symbols-outlined text-on-surface-variant p-2">
               more_vert
@@ -59,6 +64,7 @@ export default function DashBoard() {
     <div className="bg-surface h-full overflow-y-auto">
       <BackHeader
         title="행사 상세 설정"
+        backTo={backTo}
         rightSlot={
           <button className="material-symbols-outlined text-on-surface-variant p-2">
             more_vert

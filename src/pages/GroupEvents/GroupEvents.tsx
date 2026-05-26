@@ -33,7 +33,7 @@ export default function GroupEvents() {
 
   return (
     <div className="bg-surface h-full overflow-y-auto">
-      <BackHeader title={clubName} subtitle={`멤버 ${memberCount}명`} />
+      <BackHeader title={clubName} subtitle={`멤버 ${memberCount}명`} backTo="/meeting" />
       <GroupTabs activeTab="events" />
 
       <main className="p-5 pb-32">

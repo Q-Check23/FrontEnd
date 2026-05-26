@@ -3,10 +3,15 @@ import { useSearchParams } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
 import BackHeader from "../../components/BackHeader";
 import EventManageTabs from "../../components/EventManageTabs";
+import { useEventDetail, useMyClubs } from "../../hooks";
 
 export default function QRInfo() {
   const [searchParams] = useSearchParams();
   const eventId = searchParams.get("eventId");
+  const { data: event } = useEventDetail(Number(eventId));
+  const { data: clubs = [] } = useMyClubs();
+  const currentClub = event ? clubs.find((c) => c.clubId === event.clubId) : undefined;
+  const backTo = event ? `/group-events?clubId=${event.clubId}&role=${currentClub?.myRole ?? "MEMBER"}` : undefined;
 
   const qrRef = useRef<HTMLDivElement>(null);
 
@@ -54,7 +59,7 @@ export default function QRInfo() {
 
   return (
     <div className="bg-surface h-full overflow-y-auto">
-      <BackHeader title="행사 상세 설정" />
+      <BackHeader title="행사 상세 설정" backTo={backTo} />
       <EventManageTabs activeTab="qr" />
 
       <main className="pt-14 px-5 pb-24">

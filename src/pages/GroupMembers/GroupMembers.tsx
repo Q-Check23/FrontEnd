@@ -126,7 +126,7 @@ export default function GroupMembers() {
 
   return (
     <div className="bg-surface h-full overflow-y-auto">
-      <BackHeader title={clubName} subtitle={`멤버 ${members.length}명`} />
+      <BackHeader title={clubName} subtitle={`멤버 ${members.length}명`} backTo="/meeting" />
       <GroupTabs activeTab="members" />
 
       <main className="pb-24">

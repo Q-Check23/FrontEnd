@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { type EventRegistration } from "../../api/events";
-import { useEventRegistrations } from "../../hooks";
+import { useEventDetail, useEventRegistrations, useMyClubs } from "../../hooks";
 import BackHeader from "../../components/BackHeader";
 import EventManageTabs from "../../components/EventManageTabs";
 import LoadingSpinner from "../../components/LoadingSpinner";
@@ -12,6 +12,10 @@ type StatusFilter = "all" | "CHECKED_IN" | "REGISTERED" | "ABSENT";
 export default function EventParticipants() {
   const [searchParams] = useSearchParams();
   const eventId = Number(searchParams.get("eventId"));
+  const { data: event } = useEventDetail(eventId);
+  const { data: clubs = [] } = useMyClubs();
+  const currentClub = event ? clubs.find((c) => c.clubId === event.clubId) : undefined;
+  const backTo = event ? `/group-events?clubId=${event.clubId}&role=${currentClub?.myRole ?? "MEMBER"}` : undefined;
   const {
     data: registrations = [],
     isLoading,
@@ -33,6 +37,7 @@ export default function EventParticipants() {
     <div className="bg-surface h-full overflow-y-auto">
       <BackHeader
         title="행사 상세 설정"
+        backTo={backTo}
         rightSlot={
           <button className="material-symbols-outlined text-on-surface-variant p-2">
             more_vert

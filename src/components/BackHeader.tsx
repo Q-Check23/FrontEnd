@@ -4,15 +4,16 @@ interface BackHeaderProps {
   title?: string;
   subtitle?: string;
   rightSlot?: React.ReactNode;
+  backTo?: string | undefined;
 }
 
-export default function BackHeader({ title, subtitle, rightSlot }: BackHeaderProps) {
+export default function BackHeader({ title, subtitle, rightSlot, backTo }: BackHeaderProps) {
   const navigate = useNavigate();
 
   return (
     <header className="sticky top-0 z-50 bg-surface/80 backdrop-blur-md shadow-sm flex items-center px-5 h-16 w-full">
       <button
-        onClick={() => navigate(-1)}
+        onClick={() => backTo ? navigate(backTo) : navigate(-1)}
         className="material-symbols-outlined text-on-surface active:scale-95 transition-transform p-1"
       >
         arrow_back
