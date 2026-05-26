@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import BackHeader from "../../components/BackHeader";
 import GroupTabs from "../../components/GroupTabs";
 import NoticeCard from "./components/NoticeCard";
@@ -17,6 +17,7 @@ function formatTimeAgo(dateString: string) {
 }
 
 export default function GroupNotice() {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const clubId = Number(searchParams.get("clubId"));
   const role = searchParams.get("role");
@@ -67,6 +68,7 @@ export default function GroupNotice() {
               timeAgo={formatTimeAgo(notice.createdAt)}
               title={notice.title}
               content={notice.content}
+              onClick={() => navigate(`/notice-detail?clubId=${clubId}&noticeId=${notice.noticeId}`)}
             />
           ))
         )}

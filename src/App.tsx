@@ -21,6 +21,7 @@ import EventParticipants from "./pages/EventParticipants/EventParticipants";
 import CreateEvent from "./pages/CreateEvent/CreateEvent";
 import CreateClub from "./pages/CreateClub/CreateClub";
 import EditEvent from "./pages/EditEvent/EditEvent";
+import NoticeDetail from "./pages/NoticeDetail/NoticeDetail";
 import ProfileSettings from "./pages/Profile/ProfileSettings";
 import AuthCallback from "./pages/AuthCallback/AuthCallback";
 import Register from "./pages/Register/Register";
@@ -49,6 +50,7 @@ export default function App() {
               <Route path="/dashboard" element={<DashBoard/>} />
               <Route path="/qr-info" element={<QRInfo/>} />
               <Route path="/group-notice" element={<GroupNotice />} />
+              <Route path="/notice-detail" element={<NoticeDetail />} />
               <Route path="/group-events" element={<GroupEvents />} />
               <Route path="/group-members" element={<GroupMembers />} />
               <Route path="/event-info" element={<EventInfo />} />

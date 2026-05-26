@@ -4,6 +4,7 @@ interface NoticeCardProps {
   timeAgo: string;
   title: string;
   content: string;
+  onClick?: () => void;
 }
 
 export default function NoticeCard({
@@ -12,9 +13,13 @@ export default function NoticeCard({
   timeAgo,
   title,
   content,
+  onClick,
 }: NoticeCardProps) {
   return (
-    <article className="bg-surface-container-lowest rounded-xl p-4 shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10 active:scale-[0.98] transition-transform">
+    <article
+      onClick={onClick}
+      className={`bg-surface-container-lowest rounded-xl p-4 shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10 active:scale-[0.98] transition-transform${onClick ? " cursor-pointer" : ""}`}
+    >
       <div className="flex items-center gap-3 mb-3">
         <div>
           <div className="flex items-center gap-1.5">
