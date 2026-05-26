@@ -21,6 +21,7 @@ export const queryKeys = {
   },
   clubs: {
     my: () => ["clubs", "my"] as const,
+    detail: (clubId: number) => ["clubs", "detail", clubId] as const,
     members: (clubId: number) => ["clubs", clubId, "members"] as const,
   },
   notices: {

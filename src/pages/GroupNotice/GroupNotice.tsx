@@ -51,7 +51,21 @@ export default function GroupNotice() {
 
   return (
     <div className="bg-surface h-full overflow-y-auto pb-24">
-      <BackHeader title={clubName} subtitle={`멤버 ${memberCount}명`} backTo="/meeting" />
+      <BackHeader
+        title={clubName}
+        subtitle={`멤버 ${memberCount}명`}
+        backTo="/meeting"
+        rightSlot={
+          isAdmin ? (
+            <button
+              onClick={() => navigate(`/club-settings?clubId=${clubId}`)}
+              className="material-symbols-outlined text-on-surface-variant p-1 active:scale-95 transition-transform"
+            >
+              settings
+            </button>
+          ) : undefined
+        }
+      />
       <GroupTabs activeTab="notice" />
 
       <main className="px-5 pt-6 space-y-3">

@@ -23,6 +23,22 @@ export interface CreateClubRequest {
   coverImageUrl: string;
 }
 
+export interface UpdateClubRequest {
+  name?: string;
+  description?: string;
+  coverImageUrl?: string;
+  discordGuildId?: string;
+}
+
+export interface ClubDetailResponse {
+  clubId: number;
+  clubName: string;
+  clubDescription: string;
+  memberCount: number;
+  myRole: string;
+  discordGuildId: string | null;
+}
+
 export interface ClubResponse {
   id: number;
   name: string;
@@ -71,6 +87,28 @@ export function createClub(body: CreateClubRequest) {
     method: "POST",
     auth: { type: "dev-user" },
     body,
+  });
+}
+
+export function getClubDetail(clubId: number) {
+  return apiRequest<ClubDetailResponse>(`/clubs/${clubId}`, {
+    method: "GET",
+    auth: { type: "dev-user" },
+  });
+}
+
+export function updateClub(clubId: number, body: UpdateClubRequest) {
+  return apiRequest<ClubDetailResponse>(`/clubs/${clubId}`, {
+    method: "PUT",
+    auth: { type: "dev-user" },
+    body,
+  });
+}
+
+export function deleteClub(clubId: number) {
+  return apiRequest<void>(`/clubs/${clubId}`, {
+    method: "DELETE",
+    auth: { type: "dev-user" },
   });
 }
 

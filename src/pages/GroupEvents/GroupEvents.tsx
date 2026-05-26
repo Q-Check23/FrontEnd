@@ -34,7 +34,21 @@ export default function GroupEvents() {
 
   return (
     <div className="bg-surface h-full overflow-y-auto">
-      <BackHeader title={clubName} subtitle={`멤버 ${memberCount}명`} backTo="/meeting" />
+      <BackHeader
+        title={clubName}
+        subtitle={`멤버 ${memberCount}명`}
+        backTo="/meeting"
+        rightSlot={
+          isAdmin ? (
+            <button
+              onClick={() => navigate(`/club-settings?clubId=${clubId}`)}
+              className="material-symbols-outlined text-on-surface-variant p-1 active:scale-95 transition-transform"
+            >
+              settings
+            </button>
+          ) : undefined
+        }
+      />
       <GroupTabs activeTab="events" />
 
       <main className="p-5 pb-32">

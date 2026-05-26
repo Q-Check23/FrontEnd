@@ -11,6 +11,7 @@ export { useClubMembers } from "./queries/useClubMembers";
 export { useMyEventRegistration } from "./queries/useMyEventRegistration";
 export { useNotices } from "./queries/useNotices";
 export { useDiscordBotInviteUrl } from "./queries/useDiscordBotInviteUrl";
+export { useClubDetail } from "./queries/useClubDetail";
 
 // Mutation hooks
 export { useCreateEvent } from "./mutations/useCreateEvent";
@@ -24,6 +25,8 @@ export { useRemoveClubMember } from "./mutations/useRemoveClubMember";
 export { useLeaveClub } from "./mutations/useLeaveClub";
 export { useAddClubMember } from "./mutations/useAddClubMember";
 export { useCreateClub } from "./mutations/useCreateClub";
+export { useUpdateClub } from "./mutations/useUpdateClub";
+export { useDeleteClub } from "./mutations/useDeleteClub";
 
 // Utility hooks
 export { useDebouncedValue } from "./useDebouncedValue";
