@@ -30,13 +30,14 @@ import Register from "./pages/Register/Register";
 import Layout from "./components/Layout"
 import ProtectedRoute from "./components/ProtectedRoute"
 import ToastContainer from "./components/ToastContainer"
+import AuthBootstrapGate from "./components/AuthBootstrapGate"
 
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
         <div className="App">
-
+         <AuthBootstrapGate>
           <Routes>
 
             {/* 공개 라우트 */}
@@ -73,7 +74,7 @@ export default function App() {
             </Route>
 
           </Routes>
-
+         </AuthBootstrapGate>
         </div>
       </Router>
       <ToastContainer />
