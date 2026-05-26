@@ -18,7 +18,7 @@ export default function CreateEvent() {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [location, setLocation] = useState("");
-  const [discordChannel, setDiscordChannel] = useState(true);
+  const [discordChannelId, setDiscordChannelId] = useState("");
   const [fields, setFields] = useState<FormField[]>([
     { label: "참가자 실명", required: true },
     { label: "연락처 (전화번호)", required: true },
@@ -52,6 +52,8 @@ export default function CreateEvent() {
         title: title.trim(),
         description: description.trim(),
         startTime,
+        ...(location.trim() ? { location: location.trim() } : {}),
+        ...(discordChannelId.trim() ? { discordChannelId: discordChannelId.trim() } : {}),
         formFields: fields
           .filter((f) => f.label.trim())
           .map((f) => ({
@@ -131,52 +133,35 @@ export default function CreateEvent() {
         <section className="space-y-3">
           <SectionHeader icon="location_on" title="장소" />
           <div className="bg-surface-container-lowest p-4 rounded-xl shadow-sm">
-            <div className="relative flex items-center">
-              <input
-                type="text"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                placeholder="장소를 검색하거나 직접 입력하세요"
-                className="w-full bg-surface-container-low border-none rounded-lg pl-4 pr-12 py-3 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
-              />
-              <button className="absolute right-3 text-on-surface-variant">
-                <span className="material-symbols-outlined">search</span>
-              </button>
-            </div>
-            <div className="mt-4 rounded-lg overflow-hidden h-32 bg-surface-container flex items-center justify-center">
-              <span className="material-symbols-outlined text-on-surface-variant text-4xl">
-                map
-              </span>
-            </div>
+            <input
+              type="text"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              placeholder="장소를 직접 입력하세요"
+              className="w-full bg-surface-container-low border-none rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+            />
           </div>
         </section>
 
-        {/* 설정 */}
+        {/* 디스코드 채널 (선택) */}
         <section className="space-y-3">
-          <SectionHeader icon="settings" title="설정" />
-          <div className="bg-surface-container-lowest p-4 rounded-xl shadow-sm flex items-center justify-between">
-            <div className="flex-1 pr-4">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="material-symbols-outlined text-[#5865F2] text-[18px]">
-                  forum
-                </span>
-                <span className="text-base font-medium text-on-surface">
-                  디스코드 채널 자동 생성
-                </span>
-              </div>
-              <p className="text-xs font-semibold text-on-surface-variant">
-                행사 생성 시 해당 워크스페이스에 전용 채널이 생성됩니다.
-              </p>
+          <SectionHeader icon="forum" title="디스코드 채널" />
+          <div className="bg-surface-container-lowest p-4 rounded-xl shadow-sm">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="material-symbols-outlined text-[#5865F2] text-[18px]">
+                forum
+              </span>
+              <span className="text-xs font-semibold text-on-surface-variant">
+                디스코드 채널 ID (선택)
+              </span>
             </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={discordChannel}
-                onChange={(e) => setDiscordChannel(e.target.checked)}
-                className="sr-only peer"
-              />
-              <div className="w-11 h-6 bg-surface-container-high rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary" />
-            </label>
+            <input
+              type="text"
+              value={discordChannelId}
+              onChange={(e) => setDiscordChannelId(e.target.value)}
+              placeholder="연결할 디스코드 채널 ID를 입력하세요"
+              className="w-full bg-surface-container-low border-none rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+            />
           </div>
         </section>
 

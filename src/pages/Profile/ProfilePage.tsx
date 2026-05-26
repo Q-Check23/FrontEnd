@@ -1,8 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import { useMyProfile } from "../../hooks";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ErrorFallback from "../../components/ErrorFallback";
 
 export default function ProfilePage() {
+  const navigate = useNavigate();
   const { data: profile, isLoading, isError, refetch } = useMyProfile();
 
   const displayName = profile?.realName || profile?.username || "사용자";
@@ -10,7 +12,7 @@ export default function ProfilePage() {
   if (isLoading) {
     return (
       <>
-        <ProfileHeader />
+        <ProfileHeader onSettingsClick={() => navigate("/profile/settings")} />
         <main className="mt-20 px-5 flex flex-col gap-6 pb-24">
           <LoadingSpinner />
         </main>
@@ -21,7 +23,7 @@ export default function ProfilePage() {
   if (isError) {
     return (
       <>
-        <ProfileHeader />
+        <ProfileHeader onSettingsClick={() => navigate("/profile/settings")} />
         <main className="mt-20 px-5 flex flex-col gap-6 pb-24">
           <ErrorFallback onRetry={refetch} />
         </main>
@@ -31,7 +33,7 @@ export default function ProfilePage() {
 
   return (
     <>
-      <ProfileHeader />
+      <ProfileHeader onSettingsClick={() => navigate("/profile/settings")} />
 
       <main className="mt-20 px-5 flex flex-col gap-6 pb-24">
         {/* 프로필 섹션 */}
@@ -86,7 +88,7 @@ export default function ProfilePage() {
             </div>
             <div className="flex flex-col">
               <p className="text-xs font-semibold text-on-surface-variant">이메일</p>
-              <p className="text-base font-medium">{profile?.username ?? "-"}</p>
+              <p className="text-base font-medium">{profile?.email || "-"}</p>
             </div>
           </div>
           <div className="h-px bg-outline-variant/30 w-full" />
@@ -96,7 +98,7 @@ export default function ProfilePage() {
             </div>
             <div className="flex flex-col">
               <p className="text-xs font-semibold text-on-surface-variant">휴대폰 번호</p>
-              <p className="text-base font-medium">-</p>
+              <p className="text-base font-medium">{profile?.phone || "-"}</p>
             </div>
           </div>
         </section>
@@ -141,7 +143,7 @@ export default function ProfilePage() {
   );
 }
 
-function ProfileHeader() {
+function ProfileHeader({ onSettingsClick }: { onSettingsClick?: () => void }) {
   return (
     <header className="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-outline-variant/20 shadow-sm flex items-center justify-between px-5 h-16">
       <div className="flex items-center gap-1">
@@ -152,7 +154,10 @@ function ProfileHeader() {
           내 정보
         </h1>
       </div>
-      <button className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container-high transition-colors">
+      <button
+        onClick={onSettingsClick}
+        className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container-high transition-colors"
+      >
         <span className="material-symbols-outlined text-on-surface-variant">
           settings
         </span>

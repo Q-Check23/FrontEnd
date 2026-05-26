@@ -21,6 +21,7 @@ import EventParticipants from "./pages/EventParticipants/EventParticipants";
 import CreateEvent from "./pages/CreateEvent/CreateEvent";
 import CreateClub from "./pages/CreateClub/CreateClub";
 import EditEvent from "./pages/EditEvent/EditEvent";
+import ProfileSettings from "./pages/Profile/ProfileSettings";
 import AuthCallback from "./pages/AuthCallback/AuthCallback";
 import Register from "./pages/Register/Register";
 
@@ -56,6 +57,7 @@ export default function App() {
               <Route path="/create-event" element={<CreateEvent />} />
               <Route path="/create-club" element={<CreateClub />} />
               <Route path="/edit-event" element={<EditEvent />} />
+              <Route path="/profile/settings" element={<ProfileSettings />} />
 
               {/* BottomBar 있는 페이지 */}
               <Route element={<Layout />}>

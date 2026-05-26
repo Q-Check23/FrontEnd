@@ -1,6 +1,6 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { type CalendarEvent } from "../../../api/calendar";
-import { useCalendarSearch, useCalendarFilter, useDebouncedValue } from "../../../hooks";
+import { useCalendarSearch, useCalendarFilter, useMyClubs, useDebouncedValue } from "../../../hooks";
 import EventSearchCard from "./EventSearchCard";
 
 interface BottomSheetProps {
@@ -17,20 +17,43 @@ export default function BottomSheet({
   onEventClick,
 }: BottomSheetProps) {
   const [query, setQuery] = useState("");
-  const [activeFilter, setActiveFilter] = useState<"period" | null>(null);
+  const [activeFilter, setActiveFilter] = useState<"period" | "club" | null>(null);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [selectedClub, setSelectedClub] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   const debouncedQuery = useDebouncedValue(query, 300);
   const hasQuery = debouncedQuery.trim().length > 0;
 
+  const filterParams = useMemo(() => ({
+    ...(startDate ? { startDate } : {}),
+    ...(endDate ? { endDate } : {}),
+    ...(selectedClub ? { clubName: selectedClub } : {}),
+  }), [startDate, endDate, selectedClub]);
+
   const { data: searchResults = [] } = useCalendarSearch(debouncedQuery, open && hasQuery);
-  const { data: filterResults = [] } = useCalendarFilter({}, open && !hasQuery);
+  const { data: filterResults = [] } = useCalendarFilter(filterParams, open && !hasQuery);
+  const { data: clubs = [] } = useMyClubs();
 
   const results = hasQuery ? searchResults : filterResults;
 
   const handleTogglePeriod = useCallback(() => {
     setActiveFilter((prev) => (prev === "period" ? null : "period"));
   }, []);
+
+  const handleToggleClub = useCallback(() => {
+    setActiveFilter((prev) => (prev === "club" ? null : "club"));
+  }, []);
+
+  const handleResetFilters = useCallback(() => {
+    setStartDate("");
+    setEndDate("");
+    setSelectedClub("");
+    setActiveFilter(null);
+  }, []);
+
+  const hasActiveFilters = startDate || endDate || selectedClub;
 
   // Peeking state
   if (!open) {
@@ -87,7 +110,7 @@ export default function BottomSheet({
           <button
             onClick={handleTogglePeriod}
             className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
-              activeFilter === "period"
+              activeFilter === "period" || startDate || endDate
                 ? "bg-primary text-on-primary"
                 : "bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest"
             }`}
@@ -97,10 +120,90 @@ export default function BottomSheet({
               keyboard_arrow_down
             </span>
           </button>
-          <button className="px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-full text-xs font-semibold whitespace-nowrap hover:bg-surface-container-highest transition-colors">
+          <button
+            onClick={handleToggleClub}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
+              activeFilter === "club" || selectedClub
+                ? "bg-primary text-on-primary"
+                : "bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest"
+            }`}
+          >
             모임
+            <span className="material-symbols-outlined text-[16px]">
+              keyboard_arrow_down
+            </span>
           </button>
+          {hasActiveFilters && (
+            <button
+              onClick={handleResetFilters}
+              className="flex items-center gap-1 px-3 py-2 rounded-full text-xs font-semibold text-on-surface-variant hover:bg-surface-container-highest transition-colors whitespace-nowrap"
+            >
+              <span className="material-symbols-outlined text-[16px]">close</span>
+              초기화
+            </button>
+          )}
         </div>
+
+        {/* 기간 필터 패널 */}
+        {activeFilter === "period" && (
+          <div className="px-5 pb-4">
+            <div className="bg-surface-container-lowest rounded-xl p-4 shadow-sm space-y-3">
+              <p className="text-xs font-semibold text-on-surface-variant">기간 선택</p>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs text-on-surface-variant block mb-1">시작일</label>
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    className="w-full bg-surface-container-low border-none rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-on-surface-variant block mb-1">종료일</label>
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    className="w-full bg-surface-container-low border-none rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 모임 필터 패널 */}
+        {activeFilter === "club" && (
+          <div className="px-5 pb-4">
+            <div className="bg-surface-container-lowest rounded-xl p-4 shadow-sm space-y-2">
+              <p className="text-xs font-semibold text-on-surface-variant">모임 선택</p>
+              <button
+                onClick={() => setSelectedClub("")}
+                className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                  !selectedClub
+                    ? "bg-primary/10 text-primary font-semibold"
+                    : "hover:bg-surface-container-low text-on-surface"
+                }`}
+              >
+                전체
+              </button>
+              {clubs.map((club) => (
+                <button
+                  key={club.clubId}
+                  onClick={() => setSelectedClub(club.clubName)}
+                  className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                    selectedClub === club.clubName
+                      ? "bg-primary/10 text-primary font-semibold"
+                      : "hover:bg-surface-container-low text-on-surface"
+                  }`}
+                >
+                  {club.clubName}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* 이벤트 목록 */}
         <div className="flex-1 overflow-y-auto px-5 pb-24 flex flex-col gap-3">

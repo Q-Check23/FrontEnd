@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { type CalendarEvent } from "../../api/calendar";
 import { useMonthlyCalendar } from "../../hooks";
 import TopAppBar from "./components/TopAppBar";
@@ -9,6 +10,7 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 import ErrorFallback from "../../components/ErrorFallback";
 
 export default function Home() {
+  const navigate = useNavigate();
   const today = useMemo(() => new Date(), []);
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth() + 1);
@@ -74,9 +76,8 @@ export default function Home() {
   }, []);
 
   const handleEventClick = useCallback((event: CalendarEvent) => {
-    // Navigate to event detail in the future
-    console.log("Event clicked:", event.eventId);
-  }, []);
+    navigate(`/event-info?eventId=${event.eventId}`);
+  }, [navigate]);
 
   return (
     <>

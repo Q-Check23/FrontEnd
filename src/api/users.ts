@@ -4,16 +4,22 @@ interface MyProfileResponse {
   id: number;
   username: string | null;
   realName: string | null;
+  email: string | null;
+  phone: string | null;
 }
 
 export interface MyProfile {
   id: number;
   username: string;
   realName: string;
+  email: string;
+  phone: string;
 }
 
 export interface UpdateMyProfileRequest {
   realName: string;
+  username: string;
+  phone: string;
 }
 
 function normalizeText(value: string | null | undefined) {
@@ -25,6 +31,8 @@ function mapProfile(response: MyProfileResponse): MyProfile {
     id: response.id,
     username: normalizeText(response.username) || `user-${response.id}`,
     realName: normalizeText(response.realName),
+    email: normalizeText(response.email),
+    phone: normalizeText(response.phone),
   };
 }
 

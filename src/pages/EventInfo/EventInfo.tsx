@@ -1,5 +1,5 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useEventDetail, useEventRegistrations } from "../../hooks";
+import { useEventDetail, useEventRegistrations, useMyEventRegistration } from "../../hooks";
 import BackHeader from "../../components/BackHeader";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ErrorFallback from "../../components/ErrorFallback";
@@ -17,7 +17,10 @@ export default function EventInfo() {
   const eventId = Number(searchParams.get("eventId"));
   const { data: event, isLoading, isError, refetch } = useEventDetail(eventId);
   const { data: registrations = [] } = useEventRegistrations(eventId);
-  const showRegistration = isBeforeRegistrationCutoff(event?.startTime);
+  const { data: myRegistration } = useMyEventRegistration(eventId);
+
+  const isRegistered = myRegistration != null && myRegistration.status !== "CANCELLED";
+  const beforeCutoff = isBeforeRegistrationCutoff(event?.startTime);
   const participantCount = registrations.length;
 
   if (isLoading) {
@@ -35,6 +38,58 @@ export default function EventInfo() {
         <BackHeader title="행사 상세 정보" />
         <ErrorFallback onRetry={refetch} />
       </div>
+    );
+  }
+
+  function renderActionButton() {
+    if (!isRegistered) {
+      // 미등록 → 사전 등록하기
+      return (
+        <button
+          onClick={() => navigate(`/register?eventId=${eventId}`)}
+          className="flex-[2] h-14 bg-gradient-to-br from-primary-container to-primary text-white rounded-xl text-xl font-semibold shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2"
+        >
+          <span
+            className="material-symbols-outlined"
+            style={{ fontVariationSettings: "'FILL' 1" }}
+          >
+            how_to_reg
+          </span>
+          사전 등록하기
+        </button>
+      );
+    }
+
+    if (beforeCutoff) {
+      // 등록 완료 + 30분 이상 남음 → 등록 취소
+      return (
+        <button
+          onClick={() => {
+            // TODO: DELETE /events/{eventId}/registrations/me API 연동
+            alert("등록 취소 기능은 준비 중입니다.");
+          }}
+          className="flex-[2] h-14 border-2 border-primary text-primary rounded-xl text-xl font-semibold active:scale-95 transition-all flex items-center justify-center gap-2"
+        >
+          <span className="material-symbols-outlined">person_remove</span>
+          등록 취소
+        </button>
+      );
+    }
+
+    // 등록 완료 + 30분 이내 → 입장하기
+    return (
+      <button
+        onClick={() => navigate(`/qrcheck-in?eventId=${eventId}`)}
+        className="flex-[2] h-14 bg-gradient-to-br from-primary-container to-primary text-white rounded-xl text-xl font-semibold shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2"
+      >
+        <span
+          className="material-symbols-outlined"
+          style={{ fontVariationSettings: "'FILL' 1" }}
+        >
+          qr_code_2
+        </span>
+        입장하기
+      </button>
     );
   }
 
@@ -114,24 +169,7 @@ export default function EventInfo() {
         >
           불참
         </button>
-        <button
-          onClick={() =>
-            navigate(
-              showRegistration
-                ? `/register?eventId=${eventId}`
-                : `/qrcheck-in?eventId=${eventId}`,
-            )
-          }
-          className="flex-[2] h-14 bg-gradient-to-br from-primary-container to-primary text-white rounded-xl text-xl font-semibold shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2"
-        >
-          <span
-            className="material-symbols-outlined"
-            style={{ fontVariationSettings: "'FILL' 1" }}
-          >
-            {showRegistration ? "how_to_reg" : "qr_code_2"}
-          </span>
-          {showRegistration ? "사전 등록하기" : "QR 체크인하기"}
-        </button>
+        {renderActionButton()}
       </footer>
     </div>
   );

@@ -13,6 +13,7 @@ export { useNotices } from "./queries/useNotices";
 
 // Mutation hooks
 export { useCreateEvent } from "./mutations/useCreateEvent";
+export { useCreateNotice } from "./mutations/useCreateNotice";
 export { useUpdateEvent } from "./mutations/useUpdateEvent";
 export { useCheckIn } from "./mutations/useCheckIn";
 export { useCreateRegistration } from "./mutations/useCreateRegistration";

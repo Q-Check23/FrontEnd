@@ -51,6 +51,8 @@ export interface CreateEventRequest {
   title: string;
   description: string;
   startTime: string;
+  location?: string;
+  discordChannelId?: string;
   formFields: CreateEventFormField[];
 }
 
