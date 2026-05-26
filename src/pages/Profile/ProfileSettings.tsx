@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useMyProfile, useUpdateProfile } from "../../hooks";
 import BackHeader from "../../components/BackHeader";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ErrorFallback from "../../components/ErrorFallback";
 
 export default function ProfileSettings() {
+  const navigate = useNavigate();
   const { data: profile, isLoading, isError, refetch } = useMyProfile();
   const updateMutation = useUpdateProfile();
 
@@ -23,6 +25,7 @@ export default function ProfileSettings() {
   function handleSave() {
     updateMutation.mutate(
       { realName: realName.trim(), username: username.trim(), phone: phone.trim() },
+      { onSuccess: () => navigate("/profile") },
     );
   }
 
