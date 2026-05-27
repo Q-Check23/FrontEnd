@@ -166,10 +166,10 @@ function ParticipantCard({
         </div>
         <div>
           <span className="text-base font-medium text-on-surface">
-            {registration.username}
+            {registration.realName || registration.username}
           </span>
           <p className="text-xs font-semibold text-on-surface-variant/70">
-            ID: {registration.userId}
+            @{registration.username}
           </p>
         </div>
       </div>
