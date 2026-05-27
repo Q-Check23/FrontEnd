@@ -63,18 +63,19 @@ export default function EventParticipants() {
           </div>
           <button
             onClick={async () => {
-              try {
-                await navigator.clipboard.writeText(registrationLink);
-                pushToast("사전 등록 링크가 복사되었어요");
-              } catch {
-                // clipboard 실패 시 fallback
-                const input = document.createElement("input");
-                input.value = registrationLink;
-                document.body.appendChild(input);
-                input.select();
-                document.execCommand("copy");
-                document.body.removeChild(input);
-                pushToast("사전 등록 링크가 복사되었어요");
+              if (navigator.share) {
+                try {
+                  await navigator.share({ title: "행사 사전 등록", url: registrationLink });
+                } catch {
+                  // 공유 취소 무시
+                }
+              } else {
+                try {
+                  await navigator.clipboard.writeText(registrationLink);
+                  pushToast("사전 등록 링크가 복사되었어요");
+                } catch {
+                  pushToast("링크 복사에 실패했어요");
+                }
               }
             }}
             className="bg-gradient-to-br from-primary to-primary-container text-on-primary px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-lg active:scale-95 transition-all"
