@@ -164,8 +164,8 @@ function ParticipantCard({
             </span>
           </div>
         </div>
-        <div>
-          <span className="text-base font-medium text-on-surface">
+        <div className="text-left">
+          <span className="block text-base font-medium text-on-surface">
             {registration.realName || registration.username}
           </span>
           <p className="text-xs font-semibold text-on-surface-variant/70">
