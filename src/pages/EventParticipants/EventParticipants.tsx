@@ -25,7 +25,7 @@ export default function EventParticipants() {
   } = useEventRegistrations(eventId);
   const pushToast = useToastStore((state) => state.push);
   const [filter, setFilter] = useState<StatusFilter>("all");
-  const registrationLink = `https://www.qcheck.com/register/${eventId}`;
+  const registrationLink = `https://qcheck.asia/register?eventId=${eventId}`;
 
   const checkedInCount = registrations.filter(
     (r) => r.status === "CHECKED_IN",

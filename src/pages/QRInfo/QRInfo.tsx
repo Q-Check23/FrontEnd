@@ -17,7 +17,7 @@ export default function QRInfo() {
 
   const checkInQrValue = `QCHECK:CHECKIN:${eventId ?? ""}`;
   // 사전 등록 링크는 별도 유지
-  const registrationLink = `https://www.qcheck.com/register/${eventId ?? ""}`;
+  const registrationLink = `https://qcheck.asia/register?eventId=${eventId ?? ""}`;
 
   function handleCopyLink() {
     void navigator.clipboard.writeText(registrationLink);
