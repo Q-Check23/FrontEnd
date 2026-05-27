@@ -63,7 +63,9 @@ export default function EventParticipants() {
           </div>
           <button
             onClick={async () => {
-              if (navigator.share) {
+              // 모바일: OS 공유 시트 / PC: 클립보드 복사
+              const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+              if (isMobile && navigator.share) {
                 try {
                   await navigator.share({ title: "행사 사전 등록", url: registrationLink });
                 } catch {
@@ -74,7 +76,15 @@ export default function EventParticipants() {
                   await navigator.clipboard.writeText(registrationLink);
                   pushToast("사전 등록 링크가 복사되었어요");
                 } catch {
-                  pushToast("링크 복사에 실패했어요");
+                  const textarea = document.createElement("textarea");
+                  textarea.value = registrationLink;
+                  textarea.style.position = "fixed";
+                  textarea.style.opacity = "0";
+                  document.body.appendChild(textarea);
+                  textarea.select();
+                  document.execCommand("copy");
+                  document.body.removeChild(textarea);
+                  pushToast("사전 등록 링크가 복사되었어요");
                 }
               }
             }}
