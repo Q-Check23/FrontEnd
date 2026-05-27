@@ -1,12 +1,15 @@
 import { useNavigate } from "react-router-dom";
-import { useMyProfile, useLogout } from "../../hooks";
+import { useMyProfile, useMyStats, useLogout } from "../../hooks";
+import { useToastStore } from "../../stores/useToastStore";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ErrorFallback from "../../components/ErrorFallback";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
   const { data: profile, isLoading, isError, refetch } = useMyProfile();
+  const { data: stats } = useMyStats();
   const logoutMutation = useLogout();
+  const pushToast = useToastStore((state) => state.push);
 
   const displayName = profile?.realName || profile?.username || "사용자";
 
@@ -64,9 +67,6 @@ export default function ProfilePage() {
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
                 <span className="text-xl font-semibold">{displayName}</span>
-                <span className="bg-white/20 px-2 py-0.5 rounded-full text-xs font-semibold border border-white/30">
-                  참가자
-                </span>
               </div>
               <p className="text-sm text-white/80">
                 {profile ? `ID: ${profile.username}` : ""}
@@ -77,11 +77,11 @@ export default function ProfilePage() {
           {/* 통계 */}
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-white/10 backdrop-blur-xl rounded-lg p-3 text-center border border-white/10">
-              <p className="text-xl font-semibold">-</p>
+              <p className="text-xl font-semibold">{stats?.attended ?? 0}</p>
               <p className="text-xs font-semibold text-white/70">참여한 행사</p>
             </div>
             <div className="bg-white/10 backdrop-blur-xl rounded-lg p-3 text-center border border-white/10">
-              <p className="text-xl font-semibold">-</p>
+              <p className="text-xl font-semibold">{stats?.upcoming ?? 0}</p>
               <p className="text-xs font-semibold text-white/70">예정된 행사</p>
             </div>
           </div>
@@ -116,7 +116,7 @@ export default function ProfilePage() {
             지원 및 정보
           </h3>
           <div className="bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0px_2px_8px_0px_rgba(0,0,0,0.02)]">
-            <button className="w-full flex items-center justify-between p-4 hover:bg-surface-container transition-colors group">
+            <button onClick={() => pushToast("도움말 페이지 준비 중입니다")} className="w-full flex items-center justify-between p-4 hover:bg-surface-container transition-colors group">
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-on-surface-variant">help</span>
                 <span className="text-base font-medium">도움말</span>
@@ -126,7 +126,7 @@ export default function ProfilePage() {
               </span>
             </button>
             <div className="mx-4 h-px bg-outline-variant/10" />
-            <button className="w-full flex items-center justify-between p-4 hover:bg-surface-container transition-colors group">
+            <button onClick={() => pushToast("QCheck v1.0.0")} className="w-full flex items-center justify-between p-4 hover:bg-surface-container transition-colors group">
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-on-surface-variant">info</span>
                 <span className="text-base font-medium">앱 정보</span>

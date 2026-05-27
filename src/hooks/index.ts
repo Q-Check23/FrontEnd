@@ -6,6 +6,7 @@ export { useEventDetail } from "./queries/useEventDetail";
 export { useEvents } from "./queries/useEvents";
 export { useEventRegistrations } from "./queries/useEventRegistrations";
 export { useMyProfile } from "./queries/useMyProfile";
+export { useMyStats } from "./queries/useMyStats";
 export { useMyClubs } from "./queries/useMyClubs";
 export { useClubMembers } from "./queries/useClubMembers";
 export { useMyEventRegistration } from "./queries/useMyEventRegistration";

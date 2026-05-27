@@ -55,6 +55,18 @@ export async function updateMyProfile(body: UpdateMyProfileRequest) {
   return mapProfile(response);
 }
 
+export interface MyUserStats {
+  attended: number;
+  upcoming: number;
+}
+
+export async function getMyStats() {
+  return apiRequest<MyUserStats>("/users/me/stats", {
+    method: "GET",
+    auth: { type: "dev-user" },
+  });
+}
+
 export interface UserSearchResult {
   userId: number;
   username: string;
