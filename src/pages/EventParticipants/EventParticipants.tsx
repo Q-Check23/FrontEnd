@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { type EventRegistration } from "../../api/events";
 import { useEventDetail, useEventRegistrations, useMyClubs } from "../../hooks";
+import { useToastStore } from "../../stores/useToastStore";
 import BackHeader from "../../components/BackHeader";
 import EventManageTabs from "../../components/EventManageTabs";
 import LoadingSpinner from "../../components/LoadingSpinner";
@@ -22,7 +23,9 @@ export default function EventParticipants() {
     isError,
     refetch,
   } = useEventRegistrations(eventId);
+  const pushToast = useToastStore((state) => state.push);
   const [filter, setFilter] = useState<StatusFilter>("all");
+  const registrationLink = `https://www.qcheck.com/register/${eventId}`;
 
   const checkedInCount = registrations.filter(
     (r) => r.status === "CHECKED_IN",
@@ -58,7 +61,13 @@ export default function EventParticipants() {
               </span>
             </p>
           </div>
-          <button className="bg-gradient-to-br from-primary to-primary-container text-on-primary px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-lg active:scale-95 transition-all">
+          <button
+            onClick={() => {
+              void navigator.clipboard.writeText(registrationLink);
+              pushToast("사전 등록 링크가 복사되었어요");
+            }}
+            className="bg-gradient-to-br from-primary to-primary-container text-on-primary px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-lg active:scale-95 transition-all"
+          >
             <span className="material-symbols-outlined text-[18px]">
               person_add
             </span>
