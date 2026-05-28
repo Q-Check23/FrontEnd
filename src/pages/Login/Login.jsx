@@ -17,18 +17,18 @@ export default function Login() {
   const [checkedUsername, setCheckedUsername] = useState("");
   const [usernameStatus, setUsernameStatus] = useState("idle");
   const [usernameMessage, setUsernameMessage] = useState("");
-  const toast = useToastStore();
+  const pushToast = useToastStore((state) => state.push);
   const setAccessToken = useUserStore((state) => state.setAccessToken);
 
   useEffect(() => {
     const token = sessionStorage.getItem(SIGNUP_TOKEN_STORAGE_KEY);
     if (!token) {
-      toast?.push("Discord 로그인 이후에 회원가입을 진행해주세요.");
+      pushToast("Discord 로그인 이후에 회원가입을 진행해주세요.");
       navigate("/login-landing", { replace: true });
       return;
     }
     setSignupToken(token);
-  }, [navigate, toast]);
+  }, [navigate, pushToast]);
 
   const domains = ["직접입력", "gmail.com", "naver.com", "daum.net", "kakao.com"];
 
@@ -74,7 +74,7 @@ export default function Login() {
       if (response.available) {
         setUsernameStatus("available");
         setUsernameMessage("사용 가능한 아이디입니다.");
-        toast?.push("아이디를 사용할 수 있습니다.");
+        pushToast("아이디를 사용할 수 있습니다.");
         return;
       }
 
@@ -85,7 +85,7 @@ export default function Login() {
         error instanceof Error ? error.message : "아이디 확인에 실패했습니다.";
       setUsernameStatus("error");
       setUsernameMessage(message);
-      toast?.push(message);
+      pushToast(message);
     } finally {
       setIsCheckingUsername(false);
     }
@@ -99,12 +99,12 @@ export default function Login() {
     }
 
     if (!isUsernameAvailable) {
-      toast?.push("회원가입 전 아이디 중복 확인이 필요합니다.");
+      pushToast("회원가입 전 아이디 중복 확인이 필요합니다.");
       return;
     }
 
     if (!signupToken) {
-      toast?.push("Discord 로그인 이후에 회원가입을 진행해주세요.");
+      pushToast("Discord 로그인 이후에 회원가입을 진행해주세요.");
       return;
     }
 
@@ -120,12 +120,12 @@ export default function Login() {
       );
       setAccessToken(response.accessToken);
       sessionStorage.removeItem(SIGNUP_TOKEN_STORAGE_KEY);
-      toast?.push("회원가입이 완료되었습니다.");
+      pushToast("회원가입이 완료되었습니다.");
       navigate("/home", { replace: true });
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "회원가입에 실패했습니다.";
-      toast?.push(message);
+      pushToast(message);
     } finally {
       setIsSubmitting(false);
     }
