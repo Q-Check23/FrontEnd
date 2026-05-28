@@ -3,7 +3,13 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import BackHeader from "../../components/BackHeader";
 import GroupTabs from "../../components/GroupTabs";
 import NoticeCard from "./components/NoticeCard";
-import { useClubMembers, useMyClubs, useNotices, useCreateNotice } from "../../hooks";
+import {
+  useClubMembers,
+  useClubRole,
+  useMyClubs,
+  useNotices,
+  useCreateNotice,
+} from "../../hooks";
 
 function formatTimeAgo(dateString: string) {
   const diff = Date.now() - new Date(dateString).getTime();
@@ -20,8 +26,7 @@ export default function GroupNotice() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const clubId = Number(searchParams.get("clubId"));
-  const role = searchParams.get("role");
-  const isAdmin = role === "ADMIN" || role === "OWNER";
+  const { isAdmin } = useClubRole(clubId);
 
   const { data: clubs = [] } = useMyClubs();
   const { data: members = [] } = useClubMembers(clubId);

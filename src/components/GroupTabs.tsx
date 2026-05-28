@@ -16,7 +16,6 @@ export default function GroupTabs({ activeTab }: GroupTabsProps) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const clubId = searchParams.get("clubId") ?? "";
-  const role = searchParams.get("role") ?? "";
 
   return (
     <nav className="sticky top-14 z-40 bg-surface flex border-b border-outline-variant/30 px-5">
@@ -25,7 +24,7 @@ export default function GroupTabs({ activeTab }: GroupTabsProps) {
         return (
           <button
             key={tab.key}
-            onClick={() => navigate(`${tab.path}?clubId=${clubId}&role=${role}`)}
+            onClick={() => navigate(`${tab.path}?clubId=${clubId}`)}
             className={`flex-1 py-4 text-center text-sm transition-colors ${
               isActive
                 ? "text-primary font-bold border-b-2 border-primary"

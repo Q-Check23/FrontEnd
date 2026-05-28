@@ -1,5 +1,5 @@
 import { useSearchParams } from "react-router-dom";
-import { useEventDetail, useMyClubs } from "../hooks";
+import { useEventDetail } from "../hooks";
 import BackHeader from "./BackHeader";
 import EventManageTabs from "./EventManageTabs";
 
@@ -13,9 +13,7 @@ export default function EventManageHeader({ activeTab }: EventManageHeaderProps)
   const [searchParams] = useSearchParams();
   const eventId = Number(searchParams.get("eventId"));
   const { data: event } = useEventDetail(eventId);
-  const { data: clubs = [] } = useMyClubs();
-  const currentClub = event ? clubs.find((c) => c.clubId === event.clubId) : undefined;
-  const backTo = event ? `/group-events?clubId=${event.clubId}&role=${currentClub?.myRole ?? "MEMBER"}` : undefined;
+  const backTo = event ? `/group-events?clubId=${event.clubId}` : undefined;
 
   return (
     <>
