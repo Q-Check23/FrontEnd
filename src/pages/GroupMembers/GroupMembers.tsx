@@ -7,9 +7,7 @@ import MemberCard from "./components/MemberCard";
 import MemberActionSheet, {
   type MemberAction,
 } from "./components/MemberActionSheet";
-import AddMemberSheet from "./components/AddMemberSheet";
 import {
-  useAddClubMember,
   useClubMembers,
   useLeaveClub,
   useMyClubs,
@@ -19,7 +17,6 @@ import {
 } from "../../hooks";
 import { useToastStore } from "../../stores/useToastStore";
 import type { ClubMember } from "../../api/clubs";
-import type { UserSearchResult } from "../../api/users";
 
 function resolveActions(
   viewerIsAdmin: boolean,
@@ -44,7 +41,6 @@ export default function GroupMembers() {
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<ClubMember | null>(null);
   const [pendingAction, setPendingAction] = useState<MemberAction | null>(null);
-  const [isAddSheetOpen, setAddSheetOpen] = useState(false);
 
   const { data: members = [], isLoading, isError, refetch } = useClubMembers(clubId);
   const { data: clubs = [] } = useMyClubs();
@@ -53,19 +49,6 @@ export default function GroupMembers() {
   const updateRole = useUpdateClubMemberRole(clubId);
   const removeMember = useRemoveClubMember(clubId);
   const leave = useLeaveClub(clubId);
-  const addMember = useAddClubMember(clubId);
-
-  const handleAddMember = async (user: UserSearchResult) => {
-    try {
-      await addMember.mutateAsync({ userId: user.userId });
-      pushToast(`${user.username} 님을 모임에 추가했어요`);
-      setAddSheetOpen(false);
-    } catch (error) {
-      pushToast(
-        error instanceof Error ? error.message : "멤버 추가에 실패했어요",
-      );
-    }
-  };
 
   const currentClub = clubs.find((club) => club.clubId === clubId);
   const clubName = currentClub?.clubName ?? "";
@@ -187,29 +170,6 @@ export default function GroupMembers() {
           )}
         </section>
       </main>
-
-      {/* FAB - 멤버 추가 (운영자 전용) */}
-      {isAdmin && (
-        <button
-          onClick={() => setAddSheetOpen(true)}
-          className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-gradient-to-br from-primary to-primary-container text-white shadow-lg flex items-center justify-center z-50 active:scale-90 transition-transform"
-        >
-          <span
-            className="material-symbols-outlined text-[28px]"
-            style={{ fontVariationSettings: "'FILL' 1" }}
-          >
-            person_add
-          </span>
-        </button>
-      )}
-
-      <AddMemberSheet
-        open={isAddSheetOpen}
-        existingUserIds={members.map((m) => m.userId)}
-        isAdding={addMember.isPending}
-        onAdd={handleAddMember}
-        onClose={() => setAddSheetOpen(false)}
-      />
 
       <MemberActionSheet
         member={selected}
