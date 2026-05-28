@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { type EventRegistration } from "../../api/events";
-import { useEventDetail, useEventRegistrations, useMyClubs } from "../../hooks";
+import { useEventRegistrations } from "../../hooks";
 import { useToastStore } from "../../stores/useToastStore";
-import BackHeader from "../../components/BackHeader";
-import EventManageTabs from "../../components/EventManageTabs";
+import EventManageHeader from "../../components/EventManageHeader";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ErrorFallback from "../../components/ErrorFallback";
 
@@ -13,10 +12,6 @@ type StatusFilter = "all" | "CHECKED_IN" | "REGISTERED" | "CANCELED";
 export default function EventParticipants() {
   const [searchParams] = useSearchParams();
   const eventId = Number(searchParams.get("eventId"));
-  const { data: event } = useEventDetail(eventId);
-  const { data: clubs = [] } = useMyClubs();
-  const currentClub = event ? clubs.find((c) => c.clubId === event.clubId) : undefined;
-  const backTo = event ? `/group-events?clubId=${event.clubId}&role=${currentClub?.myRole ?? "MEMBER"}` : undefined;
   const {
     data: registrations = [],
     isLoading,
@@ -38,11 +33,7 @@ export default function EventParticipants() {
 
   return (
     <div className="bg-surface h-full overflow-y-auto">
-      <BackHeader
-        title="행사 상세 설정"
-        backTo={backTo}
-      />
-      <EventManageTabs activeTab="participants" />
+      <EventManageHeader activeTab="participants" />
 
       <main className="p-5 pb-24">
         {/* Header */}
