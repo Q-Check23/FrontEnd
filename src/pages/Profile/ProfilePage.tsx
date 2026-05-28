@@ -90,23 +90,19 @@ export default function ProfilePage() {
         {/* 연락처 정보 */}
         <section className="bg-surface-container-lowest rounded-xl p-5 shadow-[0px_4px_20px_0px_rgba(0,0,0,0.04)] flex flex-col gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
               <span className="material-symbols-outlined text-primary">mail</span>
             </div>
-            <div className="flex flex-col">
-              <p className="text-xs font-semibold text-on-surface-variant">이메일</p>
-              <p className="text-base font-medium">{profile?.email || "-"}</p>
-            </div>
+            <p className="text-xs font-semibold text-on-surface-variant flex-shrink-0">이메일</p>
+            <p className="text-base font-medium truncate">{profile?.email || "-"}</p>
           </div>
           <div className="h-px bg-outline-variant/30 w-full" />
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-tertiary/10 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-tertiary/10 flex items-center justify-center flex-shrink-0">
               <span className="material-symbols-outlined text-tertiary">call</span>
             </div>
-            <div className="flex flex-col">
-              <p className="text-xs font-semibold text-on-surface-variant">휴대폰 번호</p>
-              <p className="text-base font-medium">{profile?.phone || "-"}</p>
-            </div>
+            <p className="text-xs font-semibold text-on-surface-variant flex-shrink-0">휴대폰 번호</p>
+            <p className="text-base font-medium truncate">{profile?.phone || "-"}</p>
           </div>
         </section>
 

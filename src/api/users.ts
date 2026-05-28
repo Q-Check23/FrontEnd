@@ -60,10 +60,20 @@ export interface MyUserStats {
   upcoming: number;
 }
 
-export async function getMyStats() {
-  return apiRequest<MyUserStats>("/users/me/stats", {
+interface MyUserStatsResponse {
+  attendedEventCount: number;
+  upcomingEventCount: number;
+}
+
+export async function getMyStats(): Promise<MyUserStats> {
+  const response = await apiRequest<MyUserStatsResponse>("/users/me/stats", {
     method: "GET",
     auth: { type: "dev-user" },
   });
+
+  return {
+    attended: response.attendedEventCount,
+    upcoming: response.upcomingEventCount,
+  };
 }
 
