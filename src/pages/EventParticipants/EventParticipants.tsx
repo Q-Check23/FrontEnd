@@ -41,11 +41,6 @@ export default function EventParticipants() {
       <BackHeader
         title="행사 상세 설정"
         backTo={backTo}
-        rightSlot={
-          <button className="material-symbols-outlined text-on-surface-variant p-2">
-            more_vert
-          </button>
-        }
       />
       <EventManageTabs activeTab="participants" />
 

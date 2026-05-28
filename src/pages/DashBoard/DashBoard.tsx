@@ -30,11 +30,6 @@ export default function DashBoard() {
         <BackHeader
           title="행사 상세 설정"
           backTo={backTo}
-          rightSlot={
-            <button className="material-symbols-outlined text-on-surface-variant p-2">
-              more_vert
-            </button>
-          }
         />
         <EventManageTabs activeTab="dashboard" />
         <LoadingSpinner />
@@ -48,11 +43,6 @@ export default function DashBoard() {
         <BackHeader
           title="행사 상세 설정"
           backTo={backTo}
-          rightSlot={
-            <button className="material-symbols-outlined text-on-surface-variant p-2">
-              more_vert
-            </button>
-          }
         />
         <EventManageTabs activeTab="dashboard" />
         <ErrorFallback onRetry={refetch} />
@@ -65,11 +55,6 @@ export default function DashBoard() {
       <BackHeader
         title="행사 상세 설정"
         backTo={backTo}
-        rightSlot={
-          <button className="material-symbols-outlined text-on-surface-variant p-2">
-            more_vert
-          </button>
-        }
       />
       <EventManageTabs activeTab="dashboard" />
 
