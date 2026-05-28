@@ -1,5 +1,6 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useEventDetail, useEventRegistrations } from "../../hooks";
+import { useDeleteEvent, useEventDetail, useEventRegistrations } from "../../hooks";
+import { useToastStore } from "../../stores/useToastStore";
 import EventManageHeader from "../../components/EventManageHeader";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ErrorFallback from "../../components/ErrorFallback";
@@ -7,9 +8,24 @@ import ErrorFallback from "../../components/ErrorFallback";
 export default function DashBoard() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const pushToast = useToastStore((state) => state.push);
   const eventId = Number(searchParams.get("eventId"));
   const { data: event, isLoading, isError, refetch } = useEventDetail(eventId);
   const { data: registrations = [] } = useEventRegistrations(eventId);
+  const deleteMutation = useDeleteEvent();
+
+  function handleDelete() {
+    if (!window.confirm("정말 이 행사를 삭제하시겠습니까?")) return;
+    deleteMutation.mutate(eventId, {
+      onSuccess: () => {
+        pushToast("행사를 삭제했어요");
+        navigate(-1);
+      },
+      onError: (error) => {
+        pushToast(error instanceof Error ? error.message : "삭제에 실패했어요");
+      },
+    });
+  }
 
   const checkedInCount = registrations.filter(
     (r) => r.status === "CHECKED_IN",
@@ -104,34 +120,40 @@ export default function DashBoard() {
 
         {/* 행사 정보 */}
         <section className="space-y-3">
-          <h3 className="text-xl font-semibold px-1">행사 정보 확인 및 수정</h3>
-          <div className="bg-surface-container-lowest rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] overflow-hidden border border-outline-variant/20">
-            <InfoRow
-              label="설명:"
-              value={event?.title ?? "-"}
-              icon="edit"
+          <div className="flex items-center justify-between px-1">
+            <h3 className="text-xl font-semibold">행사 정보 확인 및 수정</h3>
+            <button
               onClick={() => navigate(`/edit-event?eventId=${eventId}`)}
-            />
+              className="material-symbols-outlined text-outline text-[22px] active:scale-95 transition-transform"
+              aria-label="행사 정보 수정"
+            >
+              edit
+            </button>
+          </div>
+          <div className="bg-surface-container-lowest rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] overflow-hidden border border-outline-variant/20">
+            <InfoRow label="설명:" value={event?.title ?? "-"} />
             <InfoRow
               label="장소:"
               value={event?.location ?? "-"}
-              icon="edit"
               valueIcon="location_on"
-              onClick={() => navigate(`/edit-event?eventId=${eventId}`)}
             />
             <InfoRow
               label="시간:"
               value={event?.startTime ? formatDateTime(event.startTime) : "-"}
-              icon="edit"
-              onClick={() => navigate(`/edit-event?eventId=${eventId}`)}
             />
             <InfoRow
               label="인원 수:"
               value={`${registrations.length}명`}
-              icon="group"
               isLast
             />
           </div>
+          <button
+            onClick={handleDelete}
+            disabled={deleteMutation.isPending}
+            className="w-full border-2 border-red-500 text-red-500 py-3 rounded-xl text-base font-semibold active:scale-[0.98] transition-transform disabled:opacity-50"
+          >
+            {deleteMutation.isPending ? "삭제 중..." : "행사 삭제"}
+          </button>
         </section>
       </main>
     </div>
@@ -141,17 +163,13 @@ export default function DashBoard() {
 function InfoRow({
   label,
   value,
-  icon,
   valueIcon,
   isLast,
-  onClick,
 }: {
   label: string;
   value: string;
-  icon: string;
   valueIcon?: string;
   isLast?: boolean;
-  onClick?: () => void;
 }) {
   return (
     <div
@@ -170,12 +188,6 @@ function InfoRow({
         )}
         {value}
       </div>
-      <button
-        onClick={onClick}
-        className="material-symbols-outlined text-outline text-[20px] ml-2 active:scale-95 transition-transform"
-      >
-        {icon}
-      </button>
     </div>
   );
 }
