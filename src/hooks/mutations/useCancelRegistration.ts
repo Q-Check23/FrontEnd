@@ -12,6 +12,9 @@ export function useCancelRegistration(eventId: number) {
         queryKey: queryKeys.events.registrations(eventId),
       });
       queryClient.invalidateQueries({
+        queryKey: queryKeys.events.myRegistration(eventId),
+      });
+      queryClient.invalidateQueries({
         queryKey: queryKeys.events.detail(eventId),
       });
     },

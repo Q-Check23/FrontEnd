@@ -7,6 +7,8 @@ export const queryKeys = {
       [...queryKeys.events.all, "detail", eventId] as const,
     registrations: (eventId: number) =>
       [...queryKeys.events.all, eventId, "registrations"] as const,
+    myRegistration: (eventId: number) =>
+      [...queryKeys.events.all, eventId, "my-registration"] as const,
   },
   calendar: {
     monthly: ({ year, month }: { year: number; month: number }) =>

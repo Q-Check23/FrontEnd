@@ -15,6 +15,9 @@ export function useCreateRegistration(eventId: number) {
       queryClient.invalidateQueries({
         queryKey: queryKeys.events.registrations(eventId),
       });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.events.myRegistration(eventId),
+      });
     },
   });
 }
