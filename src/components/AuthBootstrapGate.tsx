@@ -17,9 +17,14 @@ export default function AuthBootstrapGate({
 }) {
   useAuthBootstrap();
   const status = useUserStore((s) => s.bootstrapStatus);
+  const hasAccessToken = useUserStore((s) => s.accessToken !== null);
   const location = useLocation();
 
-  if (status === "pending" && !BYPASS_PATHS.has(location.pathname)) {
+  if (
+    status === "pending" &&
+    !hasAccessToken &&
+    !BYPASS_PATHS.has(location.pathname)
+  ) {
     return (
       <div className="h-full w-full flex items-center justify-center">
         <LoadingSpinner />
