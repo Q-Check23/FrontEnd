@@ -1,7 +1,6 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useEventDetail, useEventRegistrations, useMyClubs } from "../../hooks";
-import BackHeader from "../../components/BackHeader";
-import EventManageTabs from "../../components/EventManageTabs";
+import { useEventDetail, useEventRegistrations } from "../../hooks";
+import EventManageHeader from "../../components/EventManageHeader";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ErrorFallback from "../../components/ErrorFallback";
 
@@ -11,9 +10,6 @@ export default function DashBoard() {
   const eventId = Number(searchParams.get("eventId"));
   const { data: event, isLoading, isError, refetch } = useEventDetail(eventId);
   const { data: registrations = [] } = useEventRegistrations(eventId);
-  const { data: clubs = [] } = useMyClubs();
-  const currentClub = event ? clubs.find((c) => c.clubId === event.clubId) : undefined;
-  const backTo = event ? `/group-events?clubId=${event.clubId}&role=${currentClub?.myRole ?? "MEMBER"}` : undefined;
 
   const checkedInCount = registrations.filter(
     (r) => r.status === "CHECKED_IN",
@@ -27,16 +23,7 @@ export default function DashBoard() {
   if (isLoading) {
     return (
       <div className="bg-surface h-full overflow-y-auto">
-        <BackHeader
-          title="행사 상세 설정"
-          backTo={backTo}
-          rightSlot={
-            <button className="material-symbols-outlined text-on-surface-variant p-2">
-              more_vert
-            </button>
-          }
-        />
-        <EventManageTabs activeTab="dashboard" />
+        <EventManageHeader activeTab="dashboard" />
         <LoadingSpinner />
       </div>
     );
@@ -45,16 +32,7 @@ export default function DashBoard() {
   if (isError) {
     return (
       <div className="bg-surface h-full overflow-y-auto">
-        <BackHeader
-          title="행사 상세 설정"
-          backTo={backTo}
-          rightSlot={
-            <button className="material-symbols-outlined text-on-surface-variant p-2">
-              more_vert
-            </button>
-          }
-        />
-        <EventManageTabs activeTab="dashboard" />
+        <EventManageHeader activeTab="dashboard" />
         <ErrorFallback onRetry={refetch} />
       </div>
     );
@@ -62,16 +40,7 @@ export default function DashBoard() {
 
   return (
     <div className="bg-surface h-full overflow-y-auto">
-      <BackHeader
-        title="행사 상세 설정"
-        backTo={backTo}
-        rightSlot={
-          <button className="material-symbols-outlined text-on-surface-variant p-2">
-            more_vert
-          </button>
-        }
-      />
-      <EventManageTabs activeTab="dashboard" />
+      <EventManageHeader activeTab="dashboard" />
 
       <main className="p-5 space-y-6 pb-24">
         {/* 실시간 입장 현황 */}
