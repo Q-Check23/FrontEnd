@@ -54,3 +54,17 @@ export async function selfCheckInAttendance(body: SelfCheckInRequest) {
 
   return mapCheckInResponse(response);
 }
+
+export interface ManualCheckInRequest {
+  registrationId: number;
+}
+
+export async function manualCheckInAttendance(body: ManualCheckInRequest) {
+  const response = await apiRequest<CheckInResponse>("/attendance/manual", {
+    method: "POST",
+    auth: { type: "dev-user" },
+    body,
+  });
+
+  return mapCheckInResponse(response);
+}

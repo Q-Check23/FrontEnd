@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Html5Qrcode } from "html5-qrcode";
 import { type AttendanceCheckInResult } from "../../api/attendance";
-import { useSelfCheckIn } from "../../hooks";
+import { useEventRegistrations, useManualCheckIn, useSelfCheckIn } from "../../hooks";
 import { useToastStore } from "../../stores/useToastStore";
 
 type ScanState = "scanning" | "success" | "register";
@@ -25,6 +25,8 @@ export default function QRCheckIn() {
   const handleScanRef = useRef<(decodedText: string) => void>(() => {});
 
   const selfCheckInMutation = useSelfCheckIn(eventId);
+  const manualCheckInMutation = useManualCheckIn(eventId);
+  const { data: registrations = [] } = useEventRegistrations(eventId);
 
   const handleScan = useCallback(
     (decodedText: string) => {
@@ -105,11 +107,67 @@ export default function QRCheckIn() {
   }, [state]); // handleCheckIn은 의도적으로 제외 (ref 기반 처리)
 
   const handleRegisterSubmit = useCallback(() => {
-    // TODO: API 연동 - 현장 등록 처리
-    setState("scanning");
-    setRegName("");
-    setRegPhone("");
-  }, []);
+    const name = regName.trim();
+    if (!name) {
+      pushToast("이름을 입력해주세요.");
+      return;
+    }
+
+    const nameKey = name.toLowerCase();
+    const phoneDigits = regPhone.replace(/\D/g, "");
+
+    const active = registrations.filter((r) => r.status !== "CANCELED");
+    const nameMatches = active.filter(
+      (r) => r.realName?.trim().toLowerCase() === nameKey,
+    );
+
+    const candidates =
+      phoneDigits.length > 0
+        ? nameMatches.filter((r) =>
+            r.answers.some((a) =>
+              a.value.replace(/\D/g, "").includes(phoneDigits),
+            ),
+          )
+        : nameMatches;
+
+    if (candidates.length === 0) {
+      pushToast(
+        nameMatches.length === 0
+          ? "등록자를 찾을 수 없어요."
+          : "전화번호가 일치하는 등록자가 없어요.",
+      );
+      return;
+    }
+
+    if (candidates.length > 1) {
+      pushToast("동명이인이 있어요. 전화번호로 식별해주세요.");
+      return;
+    }
+
+    const target = candidates[0];
+    if (!target) return;
+    if (target.status === "CHECKED_IN") {
+      pushToast("이미 체크인된 참가자예요.");
+      return;
+    }
+
+    manualCheckInMutation.mutate(
+      { registrationId: target.registrationId },
+      {
+        onSuccess: (data) => {
+          setResult(data);
+          setState("success");
+          setRegName("");
+          setRegPhone("");
+        },
+        onError: (error) => {
+          pushToast(
+            error instanceof Error ? error.message : "체크인에 실패했어요",
+          );
+        },
+      },
+    );
+  }, [regName, regPhone, registrations, manualCheckInMutation, pushToast]);
 
   return (
     <div className="relative min-h-screen bg-black text-white overflow-hidden">
@@ -281,10 +339,11 @@ export default function QRCheckIn() {
             <div className="w-full flex flex-col items-center gap-3">
               <button
                 onClick={handleRegisterSubmit}
-                className="w-full bg-gradient-to-br from-primary-container to-primary py-4 rounded-xl text-white text-xl font-semibold shadow-md active:scale-95 transition-transform flex items-center justify-center gap-2"
+                disabled={manualCheckInMutation.isPending}
+                className="w-full bg-gradient-to-br from-primary-container to-primary py-4 rounded-xl text-white text-xl font-semibold shadow-md active:scale-95 transition-transform flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 <span className="material-symbols-outlined">how_to_reg</span>
-                입장 처리
+                {manualCheckInMutation.isPending ? "처리 중..." : "입장 처리"}
               </button>
               <button
                 onClick={() => setState("scanning")}
