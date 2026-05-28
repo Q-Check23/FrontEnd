@@ -52,10 +52,6 @@ export interface ClubMember {
   role: ClubRole;
 }
 
-export interface AddClubMemberRequest {
-  userId: number;
-}
-
 export interface UpdateClubMemberRoleRequest {
   role: ClubRole;
 }
@@ -119,11 +115,10 @@ export function getClubMembers(clubId: number) {
   });
 }
 
-export function addClubMember(clubId: number, body: AddClubMemberRequest) {
-  return apiRequest<void>(`/clubs/${clubId}/members`, {
+export function joinClubViaEvent(eventId: number) {
+  return apiRequest<void>(`/clubs/join-via-event/${eventId}`, {
     method: "POST",
     auth: { type: "dev-user" },
-    body,
   });
 }
 

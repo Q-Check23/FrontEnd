@@ -28,7 +28,7 @@ export { useLogout } from "./mutations/useLogout";
 export { useUpdateClubMemberRole } from "./mutations/useUpdateClubMemberRole";
 export { useRemoveClubMember } from "./mutations/useRemoveClubMember";
 export { useLeaveClub } from "./mutations/useLeaveClub";
-export { useAddClubMember } from "./mutations/useAddClubMember";
+export { useJoinClubViaEvent } from "./mutations/useJoinClubViaEvent";
 export { useCreateClub } from "./mutations/useCreateClub";
 export { useUpdateClub } from "./mutations/useUpdateClub";
 export { useDeleteClub } from "./mutations/useDeleteClub";

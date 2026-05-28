@@ -67,24 +67,3 @@ export async function getMyStats() {
   });
 }
 
-export interface UserSearchResult {
-  userId: number;
-  username: string;
-  realName: string | null;
-}
-
-export interface SearchUsersParams {
-  username?: string;
-  email?: string;
-}
-
-export function searchUsers(params: SearchUsersParams) {
-  return apiRequest<UserSearchResult[]>("/users/search", {
-    method: "GET",
-    auth: { type: "dev-user" },
-    query: {
-      username: params.username,
-      email: params.email,
-    },
-  });
-}
