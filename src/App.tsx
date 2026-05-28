@@ -27,6 +27,7 @@ import Register from "./pages/Register/Register";
 
 import Layout from "./components/Layout"
 import ProtectedRoute from "./components/ProtectedRoute"
+import ClubAdminRoute from "./components/ClubAdminRoute"
 import ToastContainer from "./components/ToastContainer"
 import AuthBootstrapGate from "./components/AuthBootstrapGate"
 
@@ -47,18 +48,22 @@ export default function App() {
             {/* 보호 라우트 */}
             <Route element={<ProtectedRoute />}>
               <Route path="/register" element={<Register />} />
-              <Route path="/dashboard" element={<DashBoard/>} />
-              <Route path="/qr-info" element={<QRInfo/>} />
               <Route path="/group-events" element={<GroupEvents />} />
               <Route path="/group-members" element={<GroupMembers />} />
               <Route path="/event-info" element={<EventInfo />} />
               <Route path="/qrcheck-in" element={<QRCheckIn />} />
-              <Route path="/participants" element={<EventParticipants />} />
-              <Route path="/create-event" element={<CreateEvent />} />
               <Route path="/create-club" element={<CreateClub />} />
-              <Route path="/edit-event" element={<EditEvent />} />
-              <Route path="/club-settings" element={<ClubSettings />} />
               <Route path="/profile/settings" element={<ProfileSettings />} />
+
+              {/* 운영진 전용 라우트 */}
+              <Route element={<ClubAdminRoute />}>
+                <Route path="/dashboard" element={<DashBoard/>} />
+                <Route path="/qr-info" element={<QRInfo/>} />
+                <Route path="/participants" element={<EventParticipants />} />
+                <Route path="/create-event" element={<CreateEvent />} />
+                <Route path="/edit-event" element={<EditEvent />} />
+                <Route path="/club-settings" element={<ClubSettings />} />
+              </Route>
 
               {/* BottomBar 있는 페이지 */}
               <Route element={<Layout />}>

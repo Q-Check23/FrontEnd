@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useClubMembers, useDiscordBotInviteUrl, useEvents, useMyClubs } from "../../hooks";
+import {
+  useClubMembers,
+  useClubRole,
+  useDiscordBotInviteUrl,
+  useEvents,
+  useMyClubs,
+} from "../../hooks";
 import BackHeader from "../../components/BackHeader";
 import EventCard from "./components/EventCard";
 import LoadingSpinner from "../../components/LoadingSpinner";
@@ -11,8 +17,7 @@ export default function GroupEvents() {
   const [searchParams] = useSearchParams();
   const clubIdParam = searchParams.get("clubId");
   const clubId = Number(clubIdParam);
-  const role = searchParams.get("role");
-  const isAdmin = role === "ADMIN" || role === "OWNER";
+  const { isAdmin } = useClubRole(clubId);
   const { data, isLoading, isError, refetch } = useEvents({ clubId });
   const { data: clubs = [] } = useMyClubs();
   const { data: members = [] } = useClubMembers(clubId);
@@ -40,7 +45,7 @@ export default function GroupEvents() {
         rightSlot={
           <div className="flex items-center gap-1">
             <button
-              onClick={() => navigate(`/group-members?clubId=${clubId}&role=${role}`)}
+              onClick={() => navigate(`/group-members?clubId=${clubId}`)}
               className="material-symbols-outlined text-on-surface-variant p-1 active:scale-95 transition-transform"
             >
               group

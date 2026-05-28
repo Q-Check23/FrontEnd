@@ -78,7 +78,7 @@ export default function Meeting() {
                 key={club.clubId}
                 club={club}
                 onClick={() =>
-                  navigate(`/group-events?clubId=${club.clubId}&role=${club.myRole}`)
+                  navigate(`/group-events?clubId=${club.clubId}`)
                 }
               />
             ))

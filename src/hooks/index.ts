@@ -13,6 +13,7 @@ export { useMyEventRegistration } from "./queries/useMyEventRegistration";
 export { useNotices } from "./queries/useNotices";
 export { useDiscordBotInviteUrl } from "./queries/useDiscordBotInviteUrl";
 export { useClubDetail } from "./queries/useClubDetail";
+export { useClubRole } from "./queries/useClubRole";
 
 // Mutation hooks
 export { useCreateEvent } from "./mutations/useCreateEvent";
@@ -36,6 +37,7 @@ export { useDeleteEvent } from "./mutations/useDeleteEvent";
 
 // Utility hooks
 export { useDebouncedValue } from "./useDebouncedValue";
+export { useClubIdFromRoute } from "./useClubIdFromRoute";
 
 // Query keys
 export { queryKeys } from "./keys";

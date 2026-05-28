@@ -9,6 +9,7 @@ import MemberActionSheet, {
 } from "./components/MemberActionSheet";
 import {
   useClubMembers,
+  useClubRole,
   useLeaveClub,
   useMyClubs,
   useMyProfile,
@@ -36,8 +37,7 @@ export default function GroupMembers() {
   const pushToast = useToastStore((state) => state.push);
 
   const clubId = Number(searchParams.get("clubId"));
-  const role = searchParams.get("role") ?? "";
-  const isAdmin = role === "ADMIN" || role === "OWNER";
+  const { isAdmin } = useClubRole(clubId);
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<ClubMember | null>(null);
   const [pendingAction, setPendingAction] = useState<MemberAction | null>(null);
@@ -111,7 +111,7 @@ export default function GroupMembers() {
       <BackHeader
         title={clubName}
         subtitle={`멤버 ${members.length}명`}
-        backTo={`/group-events?clubId=${clubId}&role=${role}`}
+        backTo={`/group-events?clubId=${clubId}`}
         rightSlot={
           isAdmin ? (
             <button
