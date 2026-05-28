@@ -36,7 +36,16 @@ export default function BottomSheet({
   const { data: filterResults = [] } = useCalendarFilter(filterParams, open && !hasQuery);
   const { data: clubs = [] } = useMyClubs();
 
-  const results = hasQuery ? searchResults : filterResults;
+  const sortedFilterResults = useMemo(
+    () =>
+      [...filterResults].sort((a, b) =>
+        a.eventTitle.localeCompare(b.eventTitle, "ko"),
+      ),
+    [filterResults],
+  );
+
+  const results = hasQuery ? searchResults : sortedFilterResults;
+  const isDefaultMode = !hasQuery && !startDate && !endDate && !selectedClub;
 
   const handleTogglePeriod = useCallback(() => {
     setActiveFilter((prev) => (prev === "period" ? null : "period"));
@@ -209,7 +218,7 @@ export default function BottomSheet({
         <div className="flex-1 overflow-y-auto px-5 pb-24 flex flex-col gap-3">
           {results.length === 0 ? (
             <p className="text-sm text-on-surface-variant py-8 text-center">
-              검색 결과가 없습니다
+              {isDefaultMode ? "표시할 행사가 없어요" : "검색 결과가 없습니다"}
             </p>
           ) : (
             results.map((event) => (
