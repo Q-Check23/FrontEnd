@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useUserStore } from "../../stores/useUserStore";
 import { useToastStore } from "../../stores/useToastStore";
+import { consumeAuthNext } from "../../lib/authRedirect";
 
 const SIGNUP_TOKEN_STORAGE_KEY = "qcheck:signup-token";
 
@@ -35,7 +36,8 @@ export default function AuthCallback() {
     }
 
     setAccessToken(token);
-    navigate("/home", { replace: true });
+    const next = consumeAuthNext();
+    navigate(next ?? "/home", { replace: true });
   }, [navigate, pushToast, searchParams, setAccessToken]);
 
   return (
