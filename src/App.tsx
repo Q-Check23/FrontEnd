@@ -43,10 +43,10 @@ export default function App() {
             <Route path="/login-landing" element={<Login_Landing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
-            <Route path="/register" element={<Register />} />
 
             {/* 보호 라우트 */}
             <Route element={<ProtectedRoute />}>
+              <Route path="/register" element={<Register />} />
               <Route path="/dashboard" element={<DashBoard/>} />
               <Route path="/qr-info" element={<QRInfo/>} />
               <Route path="/group-events" element={<GroupEvents />} />
