@@ -16,10 +16,6 @@ export default function QRCheckIn() {
   const [state, setState] = useState<ScanState>("scanning");
   const [result, setResult] = useState<AttendanceCheckInResult | null>(null);
 
-  // on-site registration form
-  const [regName, setRegName] = useState("");
-  const [regPhone, setRegPhone] = useState("");
-
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const processingRef = useRef(false);
   const handleScanRef = useRef<(decodedText: string) => void>(() => {});
@@ -105,11 +101,21 @@ export default function QRCheckIn() {
   }, [state]); // handleCheckIn은 의도적으로 제외 (ref 기반 처리)
 
   const handleRegisterSubmit = useCallback(() => {
-    // TODO: API 연동 - 현장 등록 처리
-    setState("scanning");
-    setRegName("");
-    setRegPhone("");
-  }, []);
+    selfCheckInMutation.mutate(
+      { eventId },
+      {
+        onSuccess: (data) => {
+          setResult(data);
+          setState("success");
+        },
+        onError: (error) => {
+          pushToast(
+            error instanceof Error ? error.message : "체크인에 실패했어요",
+          );
+        },
+      },
+    );
+  }, [eventId, selfCheckInMutation, pushToast]);
 
   return (
     <div className="relative min-h-screen bg-black text-white overflow-hidden">
@@ -186,12 +192,12 @@ export default function QRCheckIn() {
 
         {/* Bottom Actions */}
         <footer className="pb-12 flex flex-col items-center gap-3 pointer-events-auto">
-          {/* Manual Registration */}
+          {/* QR 없이 입장 (셀프 체크인 fallback) */}
           <button
             onClick={() => setState("register")}
             className="px-6 py-3 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 text-sm font-medium active:scale-95 transition-transform"
           >
-            참가자 직접 등록
+            QR 없이 입장하기
           </button>
         </footer>
       </div>
@@ -235,60 +241,32 @@ export default function QRCheckIn() {
         </div>
       )}
 
-      {/* On-site Registration Modal */}
+      {/* QR 없이 입장하기 Modal */}
       {state === "register" && (
         <div className="fixed inset-0 z-50 bg-black flex items-center justify-center p-4">
           <div className="w-full max-w-sm bg-white/95 backdrop-blur-lg rounded-2xl shadow-xl p-6 flex flex-col items-center">
-            {/* Header */}
             <div className="text-center mb-6">
               <h1 className="text-2xl font-bold text-on-surface mb-1">
-                참가자 직접 등록
+                QR 없이 입장하기
               </h1>
               <p className="text-sm text-on-surface-variant">
-                정보를 입력하여 입장 처리합니다.
+                이 행사로 바로 출석 처리합니다.
               </p>
             </div>
 
-            {/* Form */}
-            <div className="w-full space-y-4 mb-6">
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-on-surface-variant block ml-1">
-                  이름
-                </label>
-                <input
-                  type="text"
-                  value={regName}
-                  onChange={(e) => setRegName(e.target.value)}
-                  placeholder="이름을 입력하세요 (예: 홍길동)"
-                  className="w-full bg-surface-container-low border border-outline-variant rounded-xl px-4 py-3 text-on-surface text-sm placeholder:text-on-surface-variant/50 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none"
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-on-surface-variant block ml-1">
-                  전화번호
-                </label>
-                <input
-                  type="text"
-                  value={regPhone}
-                  onChange={(e) => setRegPhone(e.target.value)}
-                  placeholder="전화번호 뒤 4자리"
-                  className="w-full bg-surface-container-low border border-outline-variant rounded-xl px-4 py-3 text-on-surface text-sm placeholder:text-on-surface-variant/50 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none"
-                />
-              </div>
-            </div>
-
-            {/* Actions */}
             <div className="w-full flex flex-col items-center gap-3">
               <button
                 onClick={handleRegisterSubmit}
-                className="w-full bg-gradient-to-br from-primary-container to-primary py-4 rounded-xl text-white text-xl font-semibold shadow-md active:scale-95 transition-transform flex items-center justify-center gap-2"
+                disabled={selfCheckInMutation.isPending}
+                className="w-full bg-gradient-to-br from-primary-container to-primary py-4 rounded-xl text-white text-xl font-semibold shadow-md active:scale-95 transition-transform flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 <span className="material-symbols-outlined">how_to_reg</span>
-                입장 처리
+                {selfCheckInMutation.isPending ? "처리 중..." : "입장 처리"}
               </button>
               <button
                 onClick={() => setState("scanning")}
-                className="text-on-surface-variant text-base font-medium hover:text-primary transition-colors py-2 active:scale-95"
+                disabled={selfCheckInMutation.isPending}
+                className="text-on-surface-variant text-base font-medium hover:text-primary transition-colors py-2 active:scale-95 disabled:opacity-50"
               >
                 취소
               </button>
