@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import BackHeader from "../../components/BackHeader";
-import { useClubDetail, useUpdateClub, useDiscordBotInviteUrl } from "../../hooks";
+import {
+  useClubDetail,
+  useUpdateClub,
+  useDeleteClub,
+  useDiscordBotInviteUrl,
+} from "../../hooks";
 import { useToastStore } from "../../stores/useToastStore";
 
 export default function ClubSettings() {
@@ -13,6 +18,8 @@ export default function ClubSettings() {
   const { data: club, isLoading } = useClubDetail(clubId);
   const { data: botInviteUrl } = useDiscordBotInviteUrl();
   const mutation = useUpdateClub(clubId);
+  const deleteMutation = useDeleteClub();
+  const isOwner = club?.myRole === "OWNER";
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -31,6 +38,27 @@ export default function ClubSettings() {
     (name.trim() !== club.clubName ||
       description.trim() !== club.clubDescription ||
       discordGuildId.trim() !== (club.discordGuildId ?? ""));
+
+  function handleDelete() {
+    if (
+      !window.confirm(
+        "모임을 정말 삭제하시겠어요? 행사·공지·멤버를 먼저 모두 정리해야 삭제할 수 있어요.",
+      )
+    ) {
+      return;
+    }
+    deleteMutation.mutate(clubId, {
+      onSuccess: () => {
+        pushToast("모임을 삭제했어요");
+        navigate("/dashboard", { replace: true });
+      },
+      onError: (error) => {
+        pushToast(
+          error instanceof Error ? error.message : "삭제에 실패했어요",
+        );
+      },
+    });
+  }
 
   function handleSave() {
     if (!hasChanges) return;
@@ -123,7 +151,7 @@ export default function ClubSettings() {
         </section>
       </main>
 
-      <div className="fixed bottom-0 left-0 w-full p-5 bg-surface/70 backdrop-blur-xl z-50">
+      <div className="fixed bottom-0 left-0 w-full p-5 bg-surface/70 backdrop-blur-xl z-50 space-y-3">
         <button
           onClick={handleSave}
           disabled={!hasChanges || mutation.isPending || !name.trim()}
@@ -131,6 +159,15 @@ export default function ClubSettings() {
         >
           {mutation.isPending ? "저장 중..." : "저장하기"}
         </button>
+        {isOwner && (
+          <button
+            onClick={handleDelete}
+            disabled={deleteMutation.isPending}
+            className="w-full border-2 border-red-500 text-red-500 py-3 rounded-xl text-base font-semibold active:scale-[0.98] transition-transform disabled:opacity-50"
+          >
+            {deleteMutation.isPending ? "삭제 중..." : "모임 삭제"}
+          </button>
+        )}
       </div>
     </div>
   );
