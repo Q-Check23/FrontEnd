@@ -36,12 +36,18 @@ export default function CreateEvent() {
   }
 
   function handleAddField() {
-    setFields((prev) => [...prev, { label: "", required: false }]);
+    setFields((prev) => [...prev, { label: "", required: true }]);
   }
 
   function handleFieldLabelChange(index: number, label: string) {
     setFields((prev) =>
       prev.map((f, i) => (i === index ? { ...f, label } : f)),
+    );
+  }
+
+  function handleToggleRequired(index: number) {
+    setFields((prev) =>
+      prev.map((f, i) => (i === index ? { ...f, required: !f.required } : f)),
     );
   }
 
@@ -286,15 +292,17 @@ export default function CreateEvent() {
                   )}
                 </div>
                 <div className="flex items-center gap-3 shrink-0 ml-2">
-                  <span
-                    className={`text-xs font-semibold px-2 py-1 rounded ${
+                  <button
+                    type="button"
+                    onClick={() => handleToggleRequired(i)}
+                    className={`text-xs font-semibold px-2 py-1 rounded active:scale-95 transition-transform ${
                       field.required
                         ? "text-primary bg-primary/10"
                         : "text-on-surface-variant bg-surface-container-high"
                     }`}
                   >
                     {field.required ? "필수" : "선택"}
-                  </span>
+                  </button>
                   <button
                     onClick={() => handleRemoveField(i)}
                     className="text-outline"
