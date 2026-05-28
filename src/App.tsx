@@ -12,7 +12,6 @@ import Login from "./pages/Login/Login"
 import Home from "./pages/Home/Home"
 import Meeting from "./pages/Meetings/Meetings"
 import Profile from "./pages/Profile/ProfilePage"
-import GroupNotice from "./pages/GroupNotice/GroupNotice";
 import GroupEvents from "./pages/GroupEvents/GroupEvents";
 import GroupMembers from "./pages/GroupMembers/GroupMembers";
 import EventInfo from "./pages/EventInfo/EventInfo";
@@ -22,7 +21,6 @@ import CreateEvent from "./pages/CreateEvent/CreateEvent";
 import CreateClub from "./pages/CreateClub/CreateClub";
 import EditEvent from "./pages/EditEvent/EditEvent";
 import ClubSettings from "./pages/ClubSettings/ClubSettings";
-import NoticeDetail from "./pages/NoticeDetail/NoticeDetail";
 import ProfileSettings from "./pages/Profile/ProfileSettings";
 import AuthCallback from "./pages/AuthCallback/AuthCallback";
 import Register from "./pages/Register/Register";
@@ -51,8 +49,6 @@ export default function App() {
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<DashBoard/>} />
               <Route path="/qr-info" element={<QRInfo/>} />
-              <Route path="/group-notice" element={<GroupNotice />} />
-              <Route path="/notice-detail" element={<NoticeDetail />} />
               <Route path="/group-events" element={<GroupEvents />} />
               <Route path="/group-members" element={<GroupMembers />} />
               <Route path="/event-info" element={<EventInfo />} />

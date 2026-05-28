@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import BackHeader from "../../components/BackHeader";
-import GroupTabs from "../../components/GroupTabs";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ErrorFallback from "../../components/ErrorFallback";
 import MemberCard from "./components/MemberCard";
@@ -129,7 +128,7 @@ export default function GroupMembers() {
       <BackHeader
         title={clubName}
         subtitle={`멤버 ${members.length}명`}
-        backTo="/meeting"
+        backTo={`/group-events?clubId=${clubId}&role=${role}`}
         rightSlot={
           isAdmin ? (
             <button
@@ -141,8 +140,6 @@ export default function GroupMembers() {
           ) : undefined
         }
       />
-      <GroupTabs activeTab="members" />
-
       <main className="pb-24">
         {/* 검색 & 필터 */}
         <div className="px-5 pt-6 pb-2 flex items-center justify-between">

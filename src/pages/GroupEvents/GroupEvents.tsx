@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useClubMembers, useDiscordBotInviteUrl, useEvents, useMyClubs } from "../../hooks";
 import BackHeader from "../../components/BackHeader";
-import GroupTabs from "../../components/GroupTabs";
 import EventCard from "./components/EventCard";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ErrorFallback from "../../components/ErrorFallback";
@@ -39,18 +38,24 @@ export default function GroupEvents() {
         subtitle={`멤버 ${memberCount}명`}
         backTo="/meeting"
         rightSlot={
-          isAdmin ? (
+          <div className="flex items-center gap-1">
             <button
-              onClick={() => navigate(`/club-settings?clubId=${clubId}`)}
+              onClick={() => navigate(`/group-members?clubId=${clubId}&role=${role}`)}
               className="material-symbols-outlined text-on-surface-variant p-1 active:scale-95 transition-transform"
             >
-              settings
+              group
             </button>
-          ) : undefined
+            {isAdmin && (
+              <button
+                onClick={() => navigate(`/club-settings?clubId=${clubId}`)}
+                className="material-symbols-outlined text-on-surface-variant p-1 active:scale-95 transition-transform"
+              >
+                settings
+              </button>
+            )}
+          </div>
         }
       />
-      <GroupTabs activeTab="events" />
-
       <main className="p-5 pb-32">
         {/* 디스코드 봇 연동 배너 (관리자 전용) */}
         {isAdmin && botInviteUrl && (
