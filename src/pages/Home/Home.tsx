@@ -83,7 +83,7 @@ export default function Home() {
     <>
       <TopAppBar />
       <main
-        className={`pt-20 pb-24 px-5 transition-all ${
+        className={`pt-20 pb-32 px-5 transition-all ${
           sheetOpen ? "opacity-30 pointer-events-none blur-[2px]" : ""
         }`}
       >
