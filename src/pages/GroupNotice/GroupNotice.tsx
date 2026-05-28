@@ -137,7 +137,7 @@ export default function GroupNotice() {
         </>
       )}
 
-      {/* FAB - 공지 작성 (운영자 전용) */}
+      {/* FAB - 공지 작성 (운영진 전용) */}
       {isAdmin && !showForm && (
         <button
           onClick={() => setShowForm(true)}

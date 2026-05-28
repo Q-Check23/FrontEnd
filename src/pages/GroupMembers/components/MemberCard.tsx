@@ -8,7 +8,7 @@ interface MemberCardProps {
 }
 
 const ROLE_LABEL: Record<ClubRole, string> = {
-  OWNER: "운영자",
+  OWNER: "운영진",
   ADMIN: "운영진",
   MEMBER: "멤버",
 };
