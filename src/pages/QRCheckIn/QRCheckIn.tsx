@@ -5,7 +5,7 @@ import { type AttendanceCheckInResult } from "../../api/attendance";
 import { useEventRegistrations, useManualCheckIn, useSelfCheckIn } from "../../hooks";
 import { useToastStore } from "../../stores/useToastStore";
 
-type ScanState = "scanning" | "success" | "register";
+type ScanState = "scanning" | "success" | "error" | "register";
 
 export default function QRCheckIn() {
   const navigate = useNavigate();
@@ -15,6 +15,7 @@ export default function QRCheckIn() {
 
   const [state, setState] = useState<ScanState>("scanning");
   const [result, setResult] = useState<AttendanceCheckInResult | null>(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
   // on-site registration form
   const [regName, setRegName] = useState("");
@@ -53,16 +54,10 @@ export default function QRCheckIn() {
             setState("success");
           },
           onError: (error) => {
-            pushToast(
+            setErrorMessage(
               error instanceof Error ? error.message : "체크인에 실패했어요",
             );
-            // 실패 시 다시 스캔 재개
-            try {
-              scannerRef.current?.resume();
-            } catch {
-              // 스캐너가 이미 정지된 경우 무시
-            }
-            processingRef.current = false;
+            setState("error");
           },
         },
       );
@@ -285,6 +280,38 @@ export default function QRCheckIn() {
             )}
             <button
               onClick={handleConfirmSuccess}
+              className="w-full py-4 bg-primary text-white rounded-xl text-xl font-semibold active:opacity-70 transition-opacity"
+            >
+              확인
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Error Modal */}
+      {state === "error" && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-5 bg-surface/90 backdrop-blur-md">
+          <div className="bg-surface-container rounded-2xl p-8 max-w-sm w-full text-center shadow-xl border border-outline-variant">
+            <div className="w-20 h-20 bg-error-container rounded-full flex items-center justify-center mx-auto mb-6">
+              <span
+                className="material-symbols-outlined text-on-error-container text-[40px]"
+                style={{ fontVariationSettings: "'FILL' 1" }}
+              >
+                error
+              </span>
+            </div>
+            <h2 className="text-2xl font-bold text-on-surface mb-2">
+              체크인 실패
+            </h2>
+            <p className="text-sm text-on-surface-variant mb-8">
+              {errorMessage}
+            </p>
+            <button
+              onClick={() => {
+                setErrorMessage("");
+                setState("scanning");
+                processingRef.current = false;
+              }}
               className="w-full py-4 bg-primary text-white rounded-xl text-xl font-semibold active:opacity-70 transition-opacity"
             >
               확인
