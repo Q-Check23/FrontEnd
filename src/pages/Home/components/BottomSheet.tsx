@@ -158,22 +158,22 @@ export default function BottomSheet({
             <div className="bg-surface-container-lowest rounded-xl p-4 shadow-sm space-y-3">
               <p className="text-xs font-semibold text-on-surface-variant">기간 선택</p>
               <div className="grid grid-cols-2 gap-3">
-                <div>
+                <div className="min-w-0">
                   <label className="text-xs text-on-surface-variant block mb-1">시작일</label>
                   <input
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full bg-surface-container-low border-none rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+                    className="w-full min-w-0 bg-surface-container-low border-none rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
                   />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <label className="text-xs text-on-surface-variant block mb-1">종료일</label>
                   <input
                     type="date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    className="w-full bg-surface-container-low border-none rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+                    className="w-full min-w-0 bg-surface-container-low border-none rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
                   />
                 </div>
               </div>
