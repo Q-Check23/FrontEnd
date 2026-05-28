@@ -14,7 +14,7 @@ export default function GroupEvents() {
   const clubId = Number(clubIdParam);
   const role = searchParams.get("role");
   const isAdmin = role === "ADMIN" || role === "OWNER";
-  const { data, isLoading, isError, refetch } = useEvents();
+  const { data, isLoading, isError, refetch } = useEvents({ clubId });
   const { data: clubs = [] } = useMyClubs();
   const { data: members = [] } = useClubMembers(clubId);
   const { data: botInviteUrl } = useDiscordBotInviteUrl();

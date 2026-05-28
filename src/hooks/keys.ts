@@ -1,7 +1,7 @@
 export const queryKeys = {
   events: {
     all: ["events"] as const,
-    list: (params?: { page?: number; size?: number }) =>
+    list: (params?: { page?: number; size?: number; clubId?: number }) =>
       [...queryKeys.events.all, "list", params] as const,
     detail: (eventId: number) =>
       [...queryKeys.events.all, "detail", eventId] as const,

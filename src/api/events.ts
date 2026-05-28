@@ -35,6 +35,7 @@ export interface EventListPage {
 export interface ListEventsParams {
   page?: number;
   size?: number;
+  clubId?: number;
 }
 
 export type EventFormFieldType = "TEXT" | "SELECT";
@@ -253,6 +254,7 @@ export async function getEventDetail(eventId: number) {
 export async function getEvents({
   page = 0,
   size = 10,
+  clubId,
 }: ListEventsParams = {}) {
   const response = await apiRequest<EventListResponse>("/events", {
     method: "GET",
@@ -260,6 +262,7 @@ export async function getEvents({
     query: {
       page,
       size,
+      ...(clubId !== undefined ? { clubId } : {}),
     },
   });
 
