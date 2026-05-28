@@ -82,7 +82,7 @@ export default function QRInfo() {
         {/* QR 코드 */}
         <section className="mb-6">
           <h3 className="text-base font-semibold mb-3 text-on-surface">
-            사전 등록 QR 코드
+            체크인 QR 코드
           </h3>
           <div className="bg-surface-container-lowest rounded-xl p-8 shadow-[0px_4px_20px_rgba(0,0,0,0.04)] flex flex-col items-center justify-center border border-outline-variant/30">
             {/* QR 코드 영역 */}
