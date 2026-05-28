@@ -20,6 +20,10 @@ export function useUpdateClubMemberRole(clubId: number) {
       queryClient.invalidateQueries({
         queryKey: queryKeys.clubs.members(clubId),
       });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.clubs.detail(clubId),
+      });
+      queryClient.invalidateQueries({ queryKey: queryKeys.clubs.my() });
     },
   });
 }

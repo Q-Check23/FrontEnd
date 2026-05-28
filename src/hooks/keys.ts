@@ -11,6 +11,7 @@ export const queryKeys = {
       [...queryKeys.events.all, eventId, "my-registration"] as const,
   },
   calendar: {
+    all: ["calendar"] as const,
     monthly: ({ year, month }: { year: number; month: number }) =>
       ["calendar", "monthly", { year, month }] as const,
     search: (query: string) => ["calendar", "search", query] as const,
