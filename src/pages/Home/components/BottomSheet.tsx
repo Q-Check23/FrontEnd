@@ -36,15 +36,14 @@ export default function BottomSheet({
   const { data: filterResults = [] } = useCalendarFilter(filterParams, open && !hasQuery);
   const { data: clubs = [] } = useMyClubs();
 
-  const sortedFilterResults = useMemo(
+  const rawResults = hasQuery ? searchResults : filterResults;
+  const results = useMemo(
     () =>
-      [...filterResults].sort((a, b) =>
+      [...rawResults].sort((a, b) =>
         a.eventTitle.localeCompare(b.eventTitle, "ko"),
       ),
-    [filterResults],
+    [rawResults],
   );
-
-  const results = hasQuery ? searchResults : sortedFilterResults;
   const isDefaultMode = !hasQuery && !startDate && !endDate && !selectedClub;
 
   const handleTogglePeriod = useCallback(() => {
