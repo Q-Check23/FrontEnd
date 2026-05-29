@@ -28,8 +28,9 @@ export default function Checkin() {
   const createMutation = useCreateRegistration(eventId);
   const selfCheckInMutation = useSelfCheckIn(eventId);
 
-  const isRegistered =
-    myRegistration != null && myRegistration.status !== "CANCELED";
+  // 불참(CANCELED) 포함 — 등록 이력이 있으면 등록 폼이 아니라 체크인 경로를 탄다.
+  // (불참자가 "Already registered"로 막히던 문제 방지. 백엔드도 CANCELED 체크인 허용)
+  const isRegistered = myRegistration != null;
   const isCheckedIn = myRegistration?.status === "CHECKED_IN";
 
   const completedRef = useRef(false);
