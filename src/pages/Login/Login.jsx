@@ -141,100 +141,98 @@ export default function Login() {
         : "text-gray-500";
 
   return (
-    <div className="h-full w-full flex flex-col items-center justify-start gap-16">
-      <div className="self-start mt-10 ml-10">
+    <div className="h-full w-full overflow-y-auto px-5 py-10">
+      <header className="mb-8">
         <h1 className="text-2xl font-bold">회원가입</h1>
         <p className="mt-2 text-sm text-gray-500">
           Discord 인증 후 추가 정보를 입력해주세요.
         </p>
-      </div>
+      </header>
 
-      <div className="h-full w-full flex flex-col p-5">
-        <form onSubmit={onSubmit} className="flex flex-col gap-5">
-          {/* 이름 */}
-          <div>
+      <form onSubmit={onSubmit} className="flex flex-col gap-5">
+        {/* 이름 */}
+        <div>
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="성명"
+            className="w-full h-11 rounded-xl border border-gray-200 outline-none focus:border-gray-400 px-4"
+          />
+          <p className="text-xs text-gray-500 text-left pl-3 pt-2">
+            정산시 사용되니 실명으로 입력해주세요.
+          </p>
+        </div>
+
+        {/* 아이디 */}
+        <div>
+          <div className="flex items-center gap-2">
             <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="성명"
-              className="w-full h-11 rounded-xl border border-gray-200 outline-none focus:border-gray-400 p-5"
+              value={username}
+              onChange={(e) => resetUsernameCheck(e.target.value)}
+              placeholder="아이디"
+              className="flex-1 min-w-0 h-11 rounded-xl border border-gray-200 outline-none focus:border-gray-400 px-4"
             />
-            <p className="text-xs text-gray-500 text-left pl-3 pt-2">
-              정산시 사용되니 실명으로 입력해주세요.
-            </p>
-          </div>
-
-          {/* 아이디 */}
-          <div>
-            <div className="flex items-center gap-2">
-              <input
-                value={username}
-                onChange={(e) => resetUsernameCheck(e.target.value)}
-                placeholder="아이디"
-                className="flex-1 h-11 rounded-xl border border-gray-200 outline-none focus:border-gray-400 px-5"
-              />
-              <button
-                type="button"
-                onClick={handleUsernameCheck}
-                disabled={isCheckingUsername}
-                className="shrink-0 h-11 rounded-xl border border-gray-900 px-4 text-sm font-medium text-gray-900 disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-400"
-              >
-                {isCheckingUsername ? "확인 중" : "중복 확인"}
-              </button>
-            </div>
-            <p className={`text-xs text-left pl-3 pt-2 ${usernameMessageColor}`}>
-              {usernameMessage || "회원가입 전 아이디 중복 확인을 진행해주세요."}
-            </p>
-          </div>
-
-          {/* 이메일 */}
-          <div className="flex items-center gap-3 w-full">
-            <input
-              value={emailId}
-              onChange={(e) => setEmailId(e.target.value)}
-              placeholder="이메일 주소"
-              className="w-1/2 h-11 rounded-xl border border-gray-200 px-4 outline-none focus:border-gray-400"
-            />
-
-            <span className="shrink-0 text-gray-700 font-medium">@</span>
-
-            <select
-              value={domain}
-              onChange={(e) => setDomain(e.target.value)}
-              className="w-1/2 h-11 rounded-xl border border-gray-200 px-4 outline-none focus:border-gray-400 bg-white"
+            <button
+              type="button"
+              onClick={handleUsernameCheck}
+              disabled={isCheckingUsername}
+              className="shrink-0 h-11 rounded-xl border border-gray-900 px-3 text-sm font-medium text-gray-900 whitespace-nowrap disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-400"
             >
-              {domains.map((d) => (
-                <option key={d} value={d}>
-                  {d}
-                </option>
-              ))}
-            </select>
+              {isCheckingUsername ? "확인 중" : "중복 확인"}
+            </button>
           </div>
+          <p className={`text-xs text-left pl-3 pt-2 ${usernameMessageColor}`}>
+            {usernameMessage || "회원가입 전 아이디 중복 확인을 진행해주세요."}
+          </p>
+        </div>
 
-          {/* 도메인 직접 입력인 경우 */}
-          {isCustomDomain && (
-            <input
-              value={customDomain}
-              onChange={(e) => setCustomDomain(e.target.value)}
-              placeholder="도메인 직접 입력"
-              className="w-full h-11 rounded-xl border border-gray-200 outline-none focus:border-gray-400 p-5"
-            />
-          )}
-          {/* 가입 버튼 */}
-          <button
-            type="submit"
-            disabled={!isFormValid || !isUsernameAvailable || isSubmitting}
-            className={[
-              "w-full h-11 rounded-xl border outline-none",
-              isFormValid && isUsernameAvailable && !isSubmitting
-                ? "bg-gray-900 text-white cursor-pointer"
-                : "bg-gray-200 text-gray-400 cursor-not-allowed",
-            ].join(" ")}
+        {/* 이메일 */}
+        <div className="flex items-center gap-2 w-full">
+          <input
+            value={emailId}
+            onChange={(e) => setEmailId(e.target.value)}
+            placeholder="이메일 주소"
+            className="flex-1 min-w-0 h-11 rounded-xl border border-gray-200 px-4 outline-none focus:border-gray-400"
+          />
+
+          <span className="shrink-0 text-gray-700 font-medium">@</span>
+
+          <select
+            value={domain}
+            onChange={(e) => setDomain(e.target.value)}
+            className="flex-1 min-w-0 h-11 rounded-xl border border-gray-200 px-3 outline-none focus:border-gray-400 bg-white"
           >
-            {isSubmitting ? "가입 중..." : "회원가입 완료"}
-          </button>
-        </form>
-      </div>
+            {domains.map((d) => (
+              <option key={d} value={d}>
+                {d}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* 도메인 직접 입력인 경우 */}
+        {isCustomDomain && (
+          <input
+            value={customDomain}
+            onChange={(e) => setCustomDomain(e.target.value)}
+            placeholder="도메인 직접 입력"
+            className="w-full h-11 rounded-xl border border-gray-200 outline-none focus:border-gray-400 px-4"
+          />
+        )}
+        {/* 가입 버튼 */}
+        <button
+          type="submit"
+          disabled={!isFormValid || !isUsernameAvailable || isSubmitting}
+          className={[
+            "w-full h-11 rounded-xl border outline-none mt-2",
+            isFormValid && isUsernameAvailable && !isSubmitting
+              ? "bg-gray-900 text-white cursor-pointer"
+              : "bg-gray-200 text-gray-400 cursor-not-allowed",
+          ].join(" ")}
+        >
+          {isSubmitting ? "가입 중..." : "회원가입 완료"}
+        </button>
+      </form>
     </div>
   );
 }
