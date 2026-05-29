@@ -39,7 +39,7 @@ export default function Checkin() {
       navigate(`/event-info?eventId=${eventId}`, { replace: true });
 
     if (alreadyCheckedIn) {
-      pushToast("이미 참여 완료된 행사예요");
+      // 이미 참여 완료된 상태는 정상이므로 토스트 없이 상세로 이동
       goToDetail();
       return;
     }
@@ -54,14 +54,12 @@ export default function Checkin() {
         onError: (error) => {
           // 이미 체크인된 상태(409)는 사실상 성공 — 멱등 처리.
           // stale 캐시로 REGISTERED라 판단해 self-check-in을 쐈는데
-          // 서버는 이미 CHECKED_IN인 경우, 백엔드 영문 메시지를 그대로
-          // 노출하지 않고 친화적 문구로 안내한다.
+          // 서버는 이미 CHECKED_IN인 경우다. 정상 상태이므로 토스트 없이
+          // 조용히 상세로 이동한다. (단, 체크인 외 다른 409는 안내한다)
           if (error instanceof ApiError && error.status === 409) {
-            pushToast(
-              error.message.includes("checked in")
-                ? "이미 참여 완료된 행사예요"
-                : error.message,
-            );
+            if (!error.message.includes("checked in")) {
+              pushToast(error.message);
+            }
             goToDetail();
             return;
           }
