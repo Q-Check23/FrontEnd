@@ -122,6 +122,18 @@ export function joinClubViaEvent(eventId: number) {
   });
 }
 
+export interface AddClubMemberRequest {
+  userId: number;
+}
+
+export function addClubMember(clubId: number, body: AddClubMemberRequest) {
+  return apiRequest<void>(`/clubs/${clubId}/members`, {
+    method: "POST",
+    auth: { type: "dev-user" },
+    body,
+  });
+}
+
 export function updateClubMemberRole(
   clubId: number,
   memberId: number,
