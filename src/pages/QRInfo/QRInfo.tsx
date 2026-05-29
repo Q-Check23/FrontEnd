@@ -10,6 +10,7 @@ export default function QRInfo() {
   const qrRef = useRef<HTMLDivElement>(null);
 
   const registrationLink = `https://qcheck.asia/register?eventId=${eventId ?? ""}`;
+  const checkinLink = `https://qcheck.asia/checkin?eventId=${eventId ?? ""}`;
 
   function handleCopyLink() {
     void navigator.clipboard.writeText(registrationLink);
@@ -88,7 +89,7 @@ export default function QRInfo() {
             {/* QR 코드 영역 */}
             <div ref={qrRef} className="relative w-64 h-64 bg-white p-4 rounded-xl shadow-inner flex items-center justify-center">
               <QRCodeSVG
-                value={registrationLink}
+                value={checkinLink}
                 size={224}
                 level="M"
               />

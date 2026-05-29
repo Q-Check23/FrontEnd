@@ -24,6 +24,7 @@ import ClubSettings from "./pages/ClubSettings/ClubSettings";
 import ProfileSettings from "./pages/Profile/ProfileSettings";
 import AuthCallback from "./pages/AuthCallback/AuthCallback";
 import Register from "./pages/Register/Register";
+import Checkin from "./pages/Checkin/Checkin";
 
 import Layout from "./components/Layout"
 import ProtectedRoute from "./components/ProtectedRoute"
@@ -48,6 +49,7 @@ export default function App() {
             {/* 보호 라우트 */}
             <Route element={<ProtectedRoute />}>
               <Route path="/register" element={<Register />} />
+              <Route path="/checkin" element={<Checkin />} />
               <Route path="/group-events" element={<GroupEvents />} />
               <Route path="/group-members" element={<GroupMembers />} />
               <Route path="/event-info" element={<EventInfo />} />
