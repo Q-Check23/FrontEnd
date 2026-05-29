@@ -9,6 +9,7 @@ export function useJoinClubViaEvent() {
     mutationFn: (eventId: number) => joinClubViaEvent(eventId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.clubs.my() });
+      queryClient.invalidateQueries({ queryKey: ["clubs", "detail"] });
     },
   });
 }

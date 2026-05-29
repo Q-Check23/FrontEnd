@@ -126,7 +126,7 @@ export default function GroupEvents() {
         </div>
       </main>
 
-      {/* FAB - 이벤트 추가 (운영자 전용) */}
+      {/* FAB - 이벤트 추가 (운영진 전용) */}
       {isAdmin && (
         <button
           onClick={() => navigate(`/create-event?clubId=${clubIdParam}`)}

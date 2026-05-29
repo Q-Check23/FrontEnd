@@ -12,6 +12,7 @@ export function useUpdateEvent(eventId: number) {
         queryKey: queryKeys.events.detail(eventId),
       });
       queryClient.invalidateQueries({ queryKey: queryKeys.events.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.calendar.all });
     },
   });
 }

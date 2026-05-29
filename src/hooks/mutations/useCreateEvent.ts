@@ -9,6 +9,7 @@ export function useCreateEvent() {
     mutationFn: (body: CreateEventRequest) => createEvent(body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.events.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.calendar.all });
     },
   });
 }

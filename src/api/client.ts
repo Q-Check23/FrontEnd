@@ -1,7 +1,6 @@
 import { useUserStore } from "../stores/useUserStore";
 
 const DEFAULT_BASE_URL = "http://localhost:8080";
-const DEFAULT_DEV_USER_ID = "1";
 
 type QueryPrimitive = string | number | boolean | null | undefined;
 type QueryValue = QueryPrimitive | QueryPrimitive[];
@@ -60,8 +59,6 @@ export const API_ORIGIN =
   import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "") ?? DEFAULT_BASE_URL;
 const API_BASE_URL = `${API_ORIGIN}/api`;
 
-const DEV_USER_ID = import.meta.env.VITE_DEV_USER_ID ?? DEFAULT_DEV_USER_ID;
-
 function buildUrl(path: string, query?: Record<string, QueryValue>) {
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
   const url = new URL(`${API_BASE_URL}${normalizedPath}`);
@@ -119,8 +116,6 @@ function buildHeaders({
     const storeToken = useUserStore.getState().accessToken;
     if (storeToken) {
       finalHeaders.set("Authorization", `Bearer ${storeToken}`);
-    } else {
-      finalHeaders.set("X-USER-ID", DEV_USER_ID);
     }
   }
 

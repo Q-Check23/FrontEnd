@@ -9,6 +9,7 @@ export function useDeleteEvent() {
     mutationFn: (eventId: number) => deleteEvent(eventId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.events.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.calendar.all });
     },
   });
 }

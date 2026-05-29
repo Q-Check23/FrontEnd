@@ -4,6 +4,7 @@ import { checkUsernameAvailability, signup } from "../../api/auth";
 import { useToastStore } from "../../stores/useToastStore";
 import { useUserStore } from "../../stores/useUserStore";
 import { SIGNUP_TOKEN_STORAGE_KEY } from "../AuthCallback/AuthCallback";
+import { consumeAuthNext } from "../../lib/authRedirect";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -121,7 +122,8 @@ export default function Login() {
       setAccessToken(response.accessToken);
       sessionStorage.removeItem(SIGNUP_TOKEN_STORAGE_KEY);
       pushToast("회원가입이 완료되었습니다.");
-      navigate("/home", { replace: true });
+      const next = consumeAuthNext();
+      navigate(next ?? "/home", { replace: true });
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "회원가입에 실패했습니다.";
