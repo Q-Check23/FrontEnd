@@ -157,6 +157,14 @@ function ParticipantCard({
           <p className="text-xs font-semibold text-on-surface-variant/70">
             @{registration.username}
           </p>
+          {registration.status === "CHECKED_IN" && registration.checkInTime && (
+            <p className="text-xs text-emerald-600 mt-0.5 flex items-center gap-1">
+              <span className="material-symbols-outlined text-[14px]">
+                schedule
+              </span>
+              {formatCheckInTime(registration.checkInTime)} 체크인
+            </p>
+          )}
         </div>
       </div>
       <div
@@ -172,6 +180,18 @@ function ParticipantCard({
       </div>
     </div>
   );
+}
+
+function formatCheckInTime(value: string) {
+  const d = new Date(value);
+  if (isNaN(d.getTime())) return value;
+  return d.toLocaleString("ko-KR", {
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
 }
 
 function getStatusDisplay(status: string) {

@@ -117,6 +117,7 @@ interface EventRegistrationResponse {
   realName: string | null;
   status: string | null;
   qrToken: string | null;
+  checkInTime: string | null;
   answers: RegistrationAnswerResponse[] | null;
 }
 
@@ -127,6 +128,7 @@ export interface EventRegistration {
   realName: string;
   status: string;
   qrToken: string;
+  checkInTime: string | null;
   answers: Array<{
     fieldId: number;
     label: string;
@@ -226,6 +228,7 @@ function mapEventRegistration(
     realName: normalizeText(registration.realName),
     status: normalizeText(registration.status) || "UNKNOWN",
     qrToken: normalizeText(registration.qrToken),
+    checkInTime: registration.checkInTime ?? null,
     answers: (registration.answers ?? []).map(mapAnswer),
   };
 }
