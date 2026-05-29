@@ -4,6 +4,7 @@ import { useToastStore } from "../../stores/useToastStore";
 import EventManageHeader from "../../components/EventManageHeader";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ErrorFallback from "../../components/ErrorFallback";
+import { parseKST } from "../../lib/datetime";
 
 export default function DashBoard() {
   const [searchParams] = useSearchParams();
@@ -194,7 +195,7 @@ function InfoRow({
 
 function formatDateTime(startTime: string) {
   try {
-    const d = new Date(startTime);
+    const d = parseKST(startTime);
     if (!isNaN(d.getTime())) {
       return d.toLocaleString("ko-KR", {
         year: "numeric",

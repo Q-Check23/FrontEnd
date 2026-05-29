@@ -1,5 +1,6 @@
 import type { CalendarEvent } from "../../../api/calendar";
 import ScheduleCard from "./ScheduleCard";
+import { parseKST } from "../../../lib/datetime";
 
 interface ScheduleListProps {
   year: number;
@@ -21,7 +22,7 @@ function formatTime(startTime: string) {
   if (!startTime) return "";
   // startTime comes as ISO or "HH:mm" format
   try {
-    const date = new Date(startTime);
+    const date = parseKST(startTime);
     if (!isNaN(date.getTime())) {
       return date.toLocaleTimeString("ko-KR", {
         hour: "2-digit",

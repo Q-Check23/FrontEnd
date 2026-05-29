@@ -3,10 +3,11 @@ import { useNotices } from "../../hooks";
 import BackHeader from "../../components/BackHeader";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ErrorFallback from "../../components/ErrorFallback";
+import { parseKST } from "../../lib/datetime";
 
 function formatDate(dateString: string) {
   try {
-    const d = new Date(dateString);
+    const d = parseKST(dateString);
     if (isNaN(d.getTime())) return dateString;
     const mm = String(d.getMonth() + 1).padStart(2, "0");
     const dd = String(d.getDate()).padStart(2, "0");
@@ -19,7 +20,7 @@ function formatDate(dateString: string) {
 
 function formatTime(dateString: string) {
   try {
-    const d = new Date(dateString);
+    const d = parseKST(dateString);
     if (isNaN(d.getTime())) return "";
     return d.toLocaleTimeString("ko-KR", {
       hour: "2-digit",
