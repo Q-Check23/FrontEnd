@@ -172,9 +172,6 @@ export default function EventInfo() {
               <p className="text-base font-bold">
                 {event?.location || "-"}
               </p>
-              <p className="text-xs font-semibold text-on-surface-variant underline cursor-pointer">
-                지도 보기
-              </p>
             </div>
           </div>
         </section>
