@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { type EventRegistration } from "../../api/events";
 import { useEventRegistrations } from "../../hooks";
+import { parseKST } from "../../lib/datetime";
 import { useToastStore } from "../../stores/useToastStore";
 import EventManageHeader from "../../components/EventManageHeader";
 import LoadingSpinner from "../../components/LoadingSpinner";
@@ -183,7 +184,7 @@ function ParticipantCard({
 }
 
 function formatCheckInTime(value: string) {
-  const d = new Date(value);
+  const d = parseKST(value);
   if (isNaN(d.getTime())) return value;
   return d.toLocaleString("ko-KR", {
     month: "long",

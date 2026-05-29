@@ -10,9 +10,10 @@ import {
   useNotices,
   useCreateNotice,
 } from "../../hooks";
+import { parseKST } from "../../lib/datetime";
 
 function formatTimeAgo(dateString: string) {
-  const diff = Date.now() - new Date(dateString).getTime();
+  const diff = Date.now() - parseKST(dateString).getTime();
   const minutes = Math.floor(diff / 60_000);
   if (minutes < 1) return "방금 전";
   if (minutes < 60) return `${minutes}분 전`;

@@ -4,10 +4,11 @@ import { useToastStore } from "../../stores/useToastStore";
 import BackHeader from "../../components/BackHeader";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ErrorFallback from "../../components/ErrorFallback";
+import { parseKST } from "../../lib/datetime";
 
 function isBeforeRegistrationCutoff(startTime?: string): boolean {
   if (!startTime) return false;
-  const start = new Date(startTime).getTime();
+  const start = parseKST(startTime).getTime();
   if (isNaN(start)) return false;
   return Date.now() < start - 30 * 60 * 1000;
 }
@@ -244,7 +245,7 @@ export default function EventInfo() {
 function formatDate(startTime?: string) {
   if (!startTime) return "-";
   try {
-    const d = new Date(startTime);
+    const d = parseKST(startTime);
     if (!isNaN(d.getTime())) {
       const mm = String(d.getMonth() + 1).padStart(2, "0");
       const dd = String(d.getDate()).padStart(2, "0");
@@ -260,7 +261,7 @@ function formatDate(startTime?: string) {
 function formatTime(startTime?: string) {
   if (!startTime) return "-";
   try {
-    const d = new Date(startTime);
+    const d = parseKST(startTime);
     if (!isNaN(d.getTime())) {
       return d.toLocaleTimeString("ko-KR", {
         hour: "2-digit",

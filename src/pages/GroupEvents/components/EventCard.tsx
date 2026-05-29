@@ -1,4 +1,5 @@
 import type { EventSummary } from "../../../api/events";
+import { parseKST } from "../../../lib/datetime";
 
 interface EventCardProps {
   event: EventSummary;
@@ -9,7 +10,7 @@ interface EventCardProps {
 function formatEventDate(startTime: string) {
   if (!startTime) return "";
   try {
-    const d = new Date(startTime);
+    const d = parseKST(startTime);
     if (!isNaN(d.getTime())) {
       const mm = String(d.getMonth() + 1).padStart(2, "0");
       const dd = String(d.getDate()).padStart(2, "0");
@@ -26,7 +27,7 @@ function formatEventDate(startTime: string) {
 function formatEventTime(startTime: string) {
   if (!startTime) return "";
   try {
-    const d = new Date(startTime);
+    const d = parseKST(startTime);
     if (!isNaN(d.getTime())) {
       return d.toLocaleTimeString("ko-KR", {
         hour: "2-digit",

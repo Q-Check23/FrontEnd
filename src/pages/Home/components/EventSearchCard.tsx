@@ -1,4 +1,5 @@
 import type { CalendarEvent } from "../../../api/calendar";
+import { parseKST } from "../../../lib/datetime";
 
 interface EventSearchCardProps {
   event: CalendarEvent;
@@ -8,7 +9,7 @@ interface EventSearchCardProps {
 function formatDate(startTime: string) {
   if (!startTime) return "";
   try {
-    const d = new Date(startTime);
+    const d = parseKST(startTime);
     if (!isNaN(d.getTime())) {
       const y = d.getFullYear();
       const m = String(d.getMonth() + 1).padStart(2, "0");

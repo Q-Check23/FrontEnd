@@ -8,6 +8,7 @@ import ScheduleList from "./components/ScheduleList";
 import BottomSheet from "./components/BottomSheet";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ErrorFallback from "../../components/ErrorFallback";
+import { parseKST } from "../../lib/datetime";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ export default function Home() {
     const dates = new Set<number>();
     for (const event of allEvents) {
       if (event.startTime) {
-        const d = new Date(event.startTime);
+        const d = parseKST(event.startTime);
         if (
           d.getFullYear() === year &&
           d.getMonth() + 1 === month
@@ -44,7 +45,7 @@ export default function Home() {
     if (selectedDate === null) return [];
     return allEvents.filter((event) => {
       if (!event.startTime) return false;
-      const d = new Date(event.startTime);
+      const d = parseKST(event.startTime);
       return (
         d.getFullYear() === year &&
         d.getMonth() + 1 === month &&
