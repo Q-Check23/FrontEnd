@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useJoinClubViaEvent, useMyClubs } from "../hooks";
+import { useJoinClubViaEvent, useMyClubs, useMyProfile } from "../hooks";
 import { useToastStore } from "../stores/useToastStore";
 import type { EventDetail } from "../api/events";
+import type { MyProfile } from "../api/users";
 
 interface EventRegistrationFormProps {
   event: EventDetail;
@@ -10,6 +11,22 @@ interface EventRegistrationFormProps {
   submitting: boolean;
   onSubmit: (answers: Array<{ fieldId: number; value: string }>) => void;
   onCancel?: () => void;
+}
+
+/**
+ * 폼 필드 label을 키워드로 추측해 사용자 프로필 값으로 자동입력한다.
+ * 폼 필드엔 의미 매핑이 없으므로(자유 텍스트 label뿐) 휴리스틱으로만 채운다.
+ * 못 맞히면 빈칸으로 두며, 채운 값도 사용자가 자유롭게 수정 가능하다.
+ */
+function guessProfileValue(
+  label: string,
+  profile: MyProfile,
+): string | undefined {
+  if (/이름|성함|실명|name/i.test(label)) return profile.realName || undefined;
+  if (/전화|연락처|휴대폰|핸드폰|phone|mobile/i.test(label))
+    return profile.phone || undefined;
+  if (/이메일|메일|email/i.test(label)) return profile.email || undefined;
+  return undefined;
 }
 
 export default function EventRegistrationForm({
@@ -22,9 +39,27 @@ export default function EventRegistrationForm({
   const navigate = useNavigate();
   const pushToast = useToastStore((state) => state.push);
   const { data: myClubs = [], isLoading: clubsLoading } = useMyClubs();
+  const { data: profile } = useMyProfile();
   const joinMutation = useJoinClubViaEvent();
   const [joinedNow, setJoinedNow] = useState(false);
   const [answers, setAnswers] = useState<Record<number, string>>({});
+
+  // 프로필 로드 시 1회만, 비어있는 TEXT 필드에 한해 자동입력한다.
+  // (SELECT는 옵션 기반이라 제외, 사용자가 이미 입력한 값은 prev로 보존)
+  const prefilledRef = useRef(false);
+  useEffect(() => {
+    if (prefilledRef.current || !profile) return;
+    const seeded: Record<number, string> = {};
+    for (const field of event.formFields) {
+      if (field.type === "SELECT") continue;
+      const guess = guessProfileValue(field.label, profile);
+      if (guess) seeded[field.id] = guess;
+    }
+    prefilledRef.current = true;
+    if (Object.keys(seeded).length > 0) {
+      setAnswers((prev) => ({ ...seeded, ...prev }));
+    }
+  }, [profile, event.formFields]);
 
   const isMember = myClubs.some((club) => club.clubId === event.clubId);
   const needsJoinPrompt = !clubsLoading && !isMember && !joinedNow;
