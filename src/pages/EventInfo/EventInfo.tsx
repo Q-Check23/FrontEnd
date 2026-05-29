@@ -196,7 +196,12 @@ export default function EventInfo() {
       <footer className="fixed bottom-0 left-0 w-full z-50 bg-surface/80 backdrop-blur-md p-5 shadow-[0px_-4px_20px_rgba(0,0,0,0.04)] flex gap-3">
         {isCheckedIn ? (
           <button
-            onClick={() => navigate(-1)}
+            onClick={() =>
+              navigate(
+                event ? `/group-events?clubId=${event.clubId}` : "/home",
+                { replace: true },
+              )
+            }
             className="flex-1 h-14 bg-gradient-to-br from-primary-container to-primary text-white rounded-xl text-xl font-semibold shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2"
           >
             <span
