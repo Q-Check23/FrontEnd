@@ -2,10 +2,30 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Html5Qrcode } from "html5-qrcode";
 import { type AttendanceCheckInResult } from "../../api/attendance";
-import { useEventRegistrations, useManualCheckIn, useSelfCheckIn } from "../../hooks";
+import { useEventRegistrations, useManualCheckIn } from "../../hooks";
 import { useToastStore } from "../../stores/useToastStore";
 
-type ScanState = "scanning" | "success" | "error" | "register";
+type ScanState = "scanning" | "success" | "register";
+
+// 체크인 QR에서 eventId 추출.
+// 외부 기본 카메라와 동일한 QR(URL)을 인앱 스캐너도 인식하도록 통일.
+function parseEventIdFromQr(decodedText: string): number | null {
+  // 체크인 QR(URL): https://qcheck.asia/checkin?eventId=123
+  try {
+    const url = new URL(decodedText);
+    const id = Number(url.searchParams.get("eventId"));
+    if (Number.isInteger(id) && id > 0) return id;
+  } catch {
+    // URL이 아니면 레거시 포맷 확인으로 폴백
+  }
+  // 레거시 포맷: QCHECK:CHECKIN:123
+  const match = decodedText.match(/^QCHECK:CHECKIN:(\d+)$/);
+  if (match) {
+    const id = Number(match[1]);
+    if (id > 0) return id;
+  }
+  return null;
+}
 
 export default function QRCheckIn() {
   const navigate = useNavigate();
@@ -15,9 +35,8 @@ export default function QRCheckIn() {
 
   const [state, setState] = useState<ScanState>("scanning");
   const [result, setResult] = useState<AttendanceCheckInResult | null>(null);
-  const [errorMessage, setErrorMessage] = useState("");
 
-  // on-site registration form
+  // on-site registration form (운영진용 직접 등록)
   const [regName, setRegName] = useState("");
   const [regPhone, setRegPhone] = useState("");
 
@@ -25,7 +44,6 @@ export default function QRCheckIn() {
   const processingRef = useRef(false);
   const handleScanRef = useRef<(decodedText: string) => void>(() => {});
 
-  const selfCheckInMutation = useSelfCheckIn(eventId);
   const manualCheckInMutation = useManualCheckIn(eventId);
   const { data: registrations = [] } = useEventRegistrations(eventId);
 
@@ -33,36 +51,22 @@ export default function QRCheckIn() {
     (decodedText: string) => {
       if (processingRef.current) return;
 
-      // QR 포맷 파싱: "QCHECK:CHECKIN:{eventId}"
-      const match = decodedText.match(/^QCHECK:CHECKIN:(\d+)$/);
-      if (!match) {
+      const scannedEventId = parseEventIdFromQr(decodedText);
+      if (!scannedEventId) {
         pushToast("올바른 체크인 QR 코드가 아닙니다.");
         return;
       }
 
-      const scannedEventId = Number(match[1]);
       processingRef.current = true;
 
       // 스캔 성공 시 카메라 일시 정지
       scannerRef.current?.pause(true);
 
-      selfCheckInMutation.mutate(
-        { eventId: scannedEventId },
-        {
-          onSuccess: (data) => {
-            setResult(data);
-            setState("success");
-          },
-          onError: (error) => {
-            setErrorMessage(
-              error instanceof Error ? error.message : "체크인에 실패했어요",
-            );
-            setState("error");
-          },
-        },
-      );
+      // 외부 카메라 스캔과 동일한 처리 경로(/checkin)로 진입.
+      // 모임 가입 / 사전 등록 / 체크인 분기를 /checkin이 일괄 처리.
+      navigate(`/checkin?eventId=${scannedEventId}`);
     },
-    [selfCheckInMutation, pushToast],
+    [navigate, pushToast],
   );
 
   // 최신 handleScan을 ref에 유지 (useEffect 내 stale closure 방지)
@@ -99,7 +103,7 @@ export default function QRCheckIn() {
         .catch(() => {});
       scannerRef.current = null;
     };
-  }, [state]); // handleCheckIn은 의도적으로 제외 (ref 기반 처리)
+  }, [state]); // handleScan은 의도적으로 제외 (ref 기반 처리)
 
   const handleRegisterSubmit = useCallback(() => {
     const name = regName.trim();
@@ -255,7 +259,7 @@ export default function QRCheckIn() {
         <div className="absolute bottom-0 w-full h-48 bg-gradient-to-t from-black/80 to-transparent" />
       </div>
 
-      {/* Success Modal */}
+      {/* Success Modal (운영진 직접 등록 결과) */}
       {state === "success" && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-5 bg-surface/90 backdrop-blur-md">
           <div className="bg-surface-container rounded-2xl p-8 max-w-sm w-full text-center shadow-xl border border-outline-variant">
@@ -280,38 +284,6 @@ export default function QRCheckIn() {
             )}
             <button
               onClick={handleConfirmSuccess}
-              className="w-full py-4 bg-primary text-white rounded-xl text-xl font-semibold active:opacity-70 transition-opacity"
-            >
-              확인
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Error Modal */}
-      {state === "error" && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-5 bg-surface/90 backdrop-blur-md">
-          <div className="bg-surface-container rounded-2xl p-8 max-w-sm w-full text-center shadow-xl border border-outline-variant">
-            <div className="w-20 h-20 bg-error-container rounded-full flex items-center justify-center mx-auto mb-6">
-              <span
-                className="material-symbols-outlined text-on-error-container text-[40px]"
-                style={{ fontVariationSettings: "'FILL' 1" }}
-              >
-                error
-              </span>
-            </div>
-            <h2 className="text-2xl font-bold text-on-surface mb-2">
-              체크인 실패
-            </h2>
-            <p className="text-sm text-on-surface-variant mb-8">
-              {errorMessage}
-            </p>
-            <button
-              onClick={() => {
-                setErrorMessage("");
-                setState("scanning");
-                processingRef.current = false;
-              }}
               className="w-full py-4 bg-primary text-white rounded-xl text-xl font-semibold active:opacity-70 transition-opacity"
             >
               확인
