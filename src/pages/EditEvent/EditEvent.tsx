@@ -82,7 +82,7 @@ export default function EditEvent() {
 
   function handleSubmit() {
     if (!isValid) return;
-    const startTime = new Date(`${date}T${time}`).toISOString();
+    const startTime = `${date}T${time}${time.length === 5 ? ":00" : ""}`;
     mutation.mutate(
       {
         title: title.trim(),
