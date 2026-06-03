@@ -52,8 +52,10 @@ export default function CreateEvent() {
     );
   }
 
+  const isValid = title.trim().length > 0 && date.length > 0 && time.length > 0;
+
   function handleSubmit() {
-    if (!title.trim() || !date || !time) return;
+    if (!isValid) return;
 
     const startTime = `${date}T${time}${time.length === 5 ? ":00" : ""}`;
 
@@ -364,8 +366,8 @@ export default function CreateEvent() {
       <div className="fixed bottom-0 left-0 w-full p-5 bg-surface/70 backdrop-blur-xl z-50">
         <button
           onClick={handleSubmit}
-          disabled={mutation.isPending}
-          className="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-4 rounded-xl text-xl font-semibold shadow-lg active:scale-[0.98] transition-transform disabled:opacity-50"
+          disabled={!isValid || mutation.isPending}
+          className="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-4 rounded-xl text-xl font-semibold shadow-lg active:scale-[0.98] transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {mutation.isPending ? "생성 중..." : "QR코드 생성하기"}
         </button>
