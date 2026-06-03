@@ -21,6 +21,7 @@ export default function CreateEvent() {
   const [createDiscordChannel, setCreateDiscordChannel] = useState(false);
   const [channelOption, setChannelOption] = useState<"new" | "existing">("new");
   const [discordChannelId, setDiscordChannelId] = useState("");
+  const [collectRegistrationInfo, setCollectRegistrationInfo] = useState(true);
   const [fields, setFields] = useState<FormField[]>([
     { label: "참가자 실명", required: true },
     { label: "연락처 (전화번호)", required: true },
@@ -67,14 +68,18 @@ export default function CreateEvent() {
         ...(createDiscordChannel && channelOption === "existing" && discordChannelId.trim()
           ? { discordChannelId: discordChannelId.trim() }
           : {}),
-        formFields: fields
-          .filter((f) => f.label.trim())
-          .map((f) => ({
-            type: "TEXT" as const,
-            label: f.label.trim(),
-            required: f.required,
-            options: [],
-          })),
+        collectRegistrationInfo,
+        // 토글 OFF 면 입력했던 필드들은 서버로 보내지 않음 — 백엔드도 무시하지만 의도 명확화
+        formFields: collectRegistrationInfo
+          ? fields
+              .filter((f) => f.label.trim())
+              .map((f) => ({
+                type: "TEXT" as const,
+                label: f.label.trim(),
+                required: f.required,
+                options: [],
+              }))
+          : [],
       },
       {
         onSuccess: () => navigate(-1),
@@ -257,6 +262,34 @@ export default function CreateEvent() {
         {/* 참가자 정보 수집 */}
         <section className="space-y-3">
           <SectionHeader icon="assignment_ind" title="참가자 정보 수집" />
+          <div className="bg-surface-container-lowest p-4 rounded-xl shadow-sm">
+            <label className="flex items-center justify-between cursor-pointer">
+              <div className="flex-1 pr-3">
+                <span className="text-sm font-medium text-on-surface block">
+                  참가자에게 정보를 받기
+                </span>
+                <p className="text-xs text-on-surface-variant mt-1">
+                  OFF 면 멤버는 폼 없이 “참여하기” 버튼 한 번으로 등록합니다. 생성 후엔 변경할 수 없어요.
+                </p>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={collectRegistrationInfo}
+                onClick={() => setCollectRegistrationInfo((v) => !v)}
+                className={`relative w-11 h-6 rounded-full transition-colors shrink-0 ${
+                  collectRegistrationInfo ? "bg-primary" : "bg-outline-variant"
+                }`}
+              >
+                <span
+                  className={`absolute top-0.5 left-0.5 w-5 h-5 bg-surface rounded-full shadow transition-transform ${
+                    collectRegistrationInfo ? "translate-x-5" : ""
+                  }`}
+                />
+              </button>
+            </label>
+          </div>
+          {collectRegistrationInfo && (
           <div className="space-y-3">
             {fields.map((field, i) => (
               <div
@@ -323,6 +356,7 @@ export default function CreateEvent() {
               <span className="text-base font-medium">질문 추가하기</span>
             </button>
           </div>
+          )}
         </section>
       </main>
 

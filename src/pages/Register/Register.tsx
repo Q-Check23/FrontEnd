@@ -79,12 +79,50 @@ export default function Register() {
   return (
     <div className="bg-surface h-full overflow-y-auto pb-32">
       <BackHeader title="사전 등록" subtitle={event.title} />
-      <EventRegistrationForm
-        event={event}
-        submitLabel="사전 등록하기"
-        submitting={mutation.isPending || needsJoinPrompt}
-        onSubmit={handleSubmit}
-      />
+      {event.collectRegistrationInfo ? (
+        <EventRegistrationForm
+          event={event}
+          submitLabel="사전 등록하기"
+          submitting={mutation.isPending || needsJoinPrompt}
+          onSubmit={handleSubmit}
+        />
+      ) : (
+        <>
+          <main className="px-5 py-6 space-y-6">
+            <section className="space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-primary text-[20px]">
+                  event_note
+                </span>
+                <h2 className="text-xl font-semibold">행사 정보</h2>
+              </div>
+              <div className="bg-surface-container-lowest p-4 rounded-xl shadow-sm space-y-1">
+                <p className="text-base font-bold">{event.title}</p>
+                <p className="text-sm text-on-surface-variant">
+                  {event.location || "장소 미정"}
+                </p>
+                {event.description && (
+                  <p className="text-sm text-on-surface-variant whitespace-pre-line pt-2">
+                    {event.description}
+                  </p>
+                )}
+              </div>
+            </section>
+            <p className="text-sm text-on-surface-variant text-center pt-2">
+              별도 입력 없이 한 번의 클릭으로 사전 등록이 완료됩니다.
+            </p>
+          </main>
+          <div className="fixed bottom-0 left-0 w-full p-5 bg-surface/70 backdrop-blur-xl z-50">
+            <button
+              onClick={() => handleSubmit([])}
+              disabled={mutation.isPending || needsJoinPrompt}
+              className="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-4 rounded-xl text-xl font-semibold shadow-lg active:scale-[0.98] transition-transform disabled:opacity-50"
+            >
+              {mutation.isPending ? "처리 중..." : "사전 등록하기"}
+            </button>
+          </div>
+        </>
+      )}
 
       {needsJoinPrompt && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-5 bg-on-surface/40 backdrop-blur-[2px]">
