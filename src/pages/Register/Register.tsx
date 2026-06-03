@@ -46,7 +46,7 @@ export default function Register() {
       { answers },
       {
         onSuccess: () => {
-          pushToast("사전 등록이 완료되었어요");
+          pushToast("사전 등록이 완료되었어요", "success");
           navigate(`/event-info?eventId=${eventId}`);
         },
         onError: (error) => {
