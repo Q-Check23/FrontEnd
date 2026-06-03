@@ -179,6 +179,38 @@ export default function EditEvent() {
           </div>
         </section>
 
+        {/* 사전등록 정보 수집 — 생성 시 결정된 값. 표시만 하고 변경 불가 */}
+        <section className="space-y-3">
+          <h2 className="text-xl font-semibold flex items-center gap-2">
+            <span className="material-symbols-outlined text-primary text-[20px]">
+              assignment_ind
+            </span>
+            참가자 정보 수집
+          </h2>
+          <div className="bg-surface-container-lowest p-4 rounded-xl shadow-sm flex items-center justify-between opacity-70">
+            <div className="flex-1 pr-4">
+              <p className="text-base font-medium text-on-surface">
+                {event.collectRegistrationInfo ? "정보 수집 ON" : "정보 수집 OFF"}
+              </p>
+              <p className="text-xs text-on-surface-variant mt-1">
+                행사 생성 시에만 설정 가능합니다.
+              </p>
+            </div>
+            <div
+              className={`relative w-11 h-6 rounded-full shrink-0 ${
+                event.collectRegistrationInfo ? "bg-primary" : "bg-outline-variant"
+              }`}
+              aria-disabled
+            >
+              <span
+                className={`absolute top-0.5 left-0.5 w-5 h-5 bg-surface rounded-full shadow ${
+                  event.collectRegistrationInfo ? "translate-x-5" : ""
+                }`}
+              />
+            </div>
+          </div>
+        </section>
+
         <section className="space-y-3">
           <h2 className="text-xl font-semibold flex items-center gap-2">
             <span className="material-symbols-outlined text-primary text-[20px]">

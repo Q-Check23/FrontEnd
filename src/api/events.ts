@@ -55,6 +55,7 @@ export interface CreateEventRequest {
   location?: string;
   createDiscordChannel?: boolean;
   discordChannelId?: string;
+  collectRegistrationInfo: boolean;
   formFields: CreateEventFormField[];
 }
 
@@ -83,6 +84,7 @@ interface EventDetailResponse {
   location: string | null;
   discordChannelId: string | null;
   isActive: boolean | null;
+  collectRegistrationInfo: boolean | null;
   formFields: EventFormFieldResponse[] | null;
 }
 
@@ -95,6 +97,7 @@ export interface EventDetail {
   location: string;
   discordChannelId: string;
   isActive: boolean;
+  collectRegistrationInfo: boolean;
   formFields: Array<{
     id: number;
     type: EventFormFieldType;
@@ -197,6 +200,8 @@ function mapEventDetail(response: EventDetailResponse): EventDetail {
     location: normalizeText(response.location),
     discordChannelId: normalizeText(response.discordChannelId),
     isActive: Boolean(response.isActive),
+    // 백엔드가 null/undefined 를 내려보내는 (구버전) 경우는 기본 ON 으로 해석 — 명시적 false 일 때만 폼 스킵
+    collectRegistrationInfo: response.collectRegistrationInfo !== false,
     formFields: (response.formFields ?? []).map((field) => ({
       id: field.id,
       type: field.type === "SELECT" ? "SELECT" : "TEXT",
