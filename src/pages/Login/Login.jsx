@@ -11,6 +11,7 @@ export default function Login() {
   const [signupToken, setSignupToken] = useState("");
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
+  const [phone, setPhone] = useState("");
   const [emailId, setEmailId] = useState("");
   const [domain, setDomain] = useState("gmail.com");
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
@@ -41,6 +42,7 @@ export default function Login() {
   const isFormValid =
     name.trim().length > 0 &&
     username.trim().length > 0 &&
+    phone.trim().length > 0 &&
     emailId.trim().length > 0 &&
     (isCustomDomain ? customDomain.trim().length > 0 : true);
 
@@ -116,6 +118,7 @@ export default function Login() {
           name: name.trim(),
           username: username.trim(),
           email: finalEmail,
+          phone: phone.trim(),
         },
         signupToken,
       );
@@ -183,6 +186,21 @@ export default function Login() {
           </div>
           <p className={`text-xs text-left pl-3 pt-2 ${usernameMessageColor}`}>
             {usernameMessage || "회원가입 전 아이디 중복 확인을 진행해주세요."}
+          </p>
+        </div>
+
+        {/* 휴대폰 번호 */}
+        <div>
+          <input
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="휴대폰 번호 (예: 010-1234-5678)"
+            inputMode="tel"
+            autoComplete="tel"
+            className="w-full h-11 rounded-xl border border-gray-200 outline-none focus:border-gray-400 px-4"
+          />
+          <p className="text-xs text-gray-500 text-left pl-3 pt-2">
+            행사 사전등록 시 자동으로 채워집니다.
           </p>
         </div>
 
