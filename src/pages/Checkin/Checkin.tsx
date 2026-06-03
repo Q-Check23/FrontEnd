@@ -49,7 +49,7 @@ export default function Checkin() {
       { eventId },
       {
         onSuccess: () => {
-          pushToast("참여가 완료되었어요");
+          pushToast("참여가 완료되었어요", "success");
           goToDetail();
         },
         onError: (error) => {
