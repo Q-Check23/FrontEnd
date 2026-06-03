@@ -24,7 +24,9 @@ export default function Login_Landing() {
 
   useEffect(() => {
     if (redirecting) {
-      redirectToDiscordLogin();
+      // 자동 재인증 — prompt=none 으로 보내 디스코드 동의 화면을 건너뛴다.
+      // 인가 안 된 사용자의 경우 백엔드가 자동으로 일반 흐름으로 폴백.
+      redirectToDiscordLogin(true);
     }
   }, [redirecting]);
 
