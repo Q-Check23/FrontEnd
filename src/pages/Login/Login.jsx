@@ -77,7 +77,7 @@ export default function Login() {
       if (response.available) {
         setUsernameStatus("available");
         setUsernameMessage("사용 가능한 아이디입니다.");
-        pushToast("아이디를 사용할 수 있습니다.");
+        pushToast("아이디를 사용할 수 있어요", "success");
         return;
       }
 
@@ -88,7 +88,7 @@ export default function Login() {
         error instanceof Error ? error.message : "아이디 확인에 실패했습니다.";
       setUsernameStatus("error");
       setUsernameMessage(message);
-      pushToast(message);
+      pushToast(message, "error");
     } finally {
       setIsCheckingUsername(false);
     }
