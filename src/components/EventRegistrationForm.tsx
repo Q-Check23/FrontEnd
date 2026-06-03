@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useJoinClubViaEvent, useMyClubs, useMyProfile } from "../hooks";
 import { useToastStore } from "../stores/useToastStore";
 import type { EventDetail } from "../api/events";
 import type { MyProfile } from "../api/users";
+
+const PHONE_LABEL_REGEX = /전화|연락처|휴대폰|핸드폰|phone|mobile/i;
 
 interface EventRegistrationFormProps {
   event: EventDetail;
@@ -23,8 +25,7 @@ function guessProfileValue(
   profile: MyProfile,
 ): string | undefined {
   if (/이름|성함|실명|name/i.test(label)) return profile.realName || undefined;
-  if (/전화|연락처|휴대폰|핸드폰|phone|mobile/i.test(label))
-    return profile.phone || undefined;
+  if (PHONE_LABEL_REGEX.test(label)) return profile.phone || undefined;
   if (/이메일|메일|email/i.test(label)) return profile.email || undefined;
   return undefined;
 }
@@ -63,6 +64,14 @@ export default function EventRegistrationForm({
 
   const isMember = myClubs.some((club) => club.clubId === event.clubId);
   const needsJoinPrompt = !clubsLoading && !isMember && !joinedNow;
+
+  // 프로필에 전화번호가 비어있는 상태에서 폼에 전화번호 필드가 있으면 안내 표시.
+  // (PR #40/#43 머지 이전 가입자는 phone NULL — 한 번만 채워두면 다음부턴 자동채움)
+  const showProfilePhoneHint = useMemo(() => {
+    if (!profile) return false;
+    if (profile.phone && profile.phone.trim().length > 0) return false;
+    return event.formFields.some((f) => PHONE_LABEL_REGEX.test(f.label));
+  }, [profile, event.formFields]);
 
   function handleConfirmJoin() {
     joinMutation.mutate(event.eventId, {
@@ -123,6 +132,23 @@ export default function EventRegistrationForm({
             </span>
             <h2 className="text-xl font-semibold">참가자 정보</h2>
           </div>
+          {showProfilePhoneHint && (
+            <button
+              type="button"
+              onClick={() => navigate("/profile/settings")}
+              className="w-full bg-primary/5 border border-primary/20 rounded-xl p-3 flex items-start gap-2 text-left active:scale-[0.99] transition-transform"
+            >
+              <span className="material-symbols-outlined text-primary text-[18px] mt-0.5 shrink-0">
+                lightbulb
+              </span>
+              <span className="text-xs text-on-surface flex-1">
+                프로필에 휴대폰 번호를 등록해두면 다음부턴 자동으로 채워져요.{" "}
+                <span className="text-primary font-semibold underline">
+                  지금 등록하기
+                </span>
+              </span>
+            </button>
+          )}
           <div className="space-y-3">
             {event.formFields.map((field) => (
               <div

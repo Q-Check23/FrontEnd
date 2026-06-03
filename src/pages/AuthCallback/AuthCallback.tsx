@@ -2,7 +2,10 @@ import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useUserStore } from "../../stores/useUserStore";
 import { useToastStore } from "../../stores/useToastStore";
-import { consumeAuthNext } from "../../lib/authRedirect";
+import {
+  clearAutoReloginAttempt,
+  consumeAuthNext,
+} from "../../lib/authRedirect";
 
 const SIGNUP_TOKEN_STORAGE_KEY = "qcheck:signup-token";
 
@@ -36,6 +39,9 @@ export default function AuthCallback() {
     }
 
     setAccessToken(token);
+    // 자동 재인증이 성공으로 끝났으니 가드 플래그 해제 — 다음 보호경로 튕김 시
+    // 또 한 번 자동 시도가 가능하도록 정상 상태로 복귀시킨다.
+    clearAutoReloginAttempt();
     const next = consumeAuthNext();
     navigate(next ?? "/home", { replace: true });
   }, [navigate, pushToast, searchParams, setAccessToken]);
