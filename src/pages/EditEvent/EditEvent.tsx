@@ -142,7 +142,7 @@ export default function EditEvent() {
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <div>
+              <div className="min-w-0">
                 <label className="text-xs font-semibold text-on-surface-variant block mb-2">
                   시작 날짜
                 </label>
@@ -150,10 +150,10 @@ export default function EditEvent() {
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className="w-full bg-surface-container-low border-none rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+                  className="w-full min-w-0 bg-surface-container-low border-none rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
                 />
               </div>
-              <div>
+              <div className="min-w-0">
                 <label className="text-xs font-semibold text-on-surface-variant block mb-2">
                   시작 시간
                 </label>
@@ -161,7 +161,7 @@ export default function EditEvent() {
                   type="time"
                   value={time}
                   onChange={(e) => setTime(e.target.value)}
-                  className="w-full bg-surface-container-low border-none rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+                  className="w-full min-w-0 bg-surface-container-low border-none rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
                 />
               </div>
             </div>
